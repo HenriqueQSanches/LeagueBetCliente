@@ -1,0 +1,8 @@
+<?php
+ini_set('memory_limit', '-1');
+try{
+		$conexao = new PDO('mysql:host=localhost;dbname=nome_banco_aqui', 'nome_user_aqui', 'senha_banco_aqui');
+		$conexao ->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	}catch(PDOException $e){
+		echo 'ERROR: ' . $e->getMessage();
+	}

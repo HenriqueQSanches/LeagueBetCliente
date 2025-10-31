@@ -1,0 +1,449 @@
+/* RIVERBETS LAYOUT - Estrutura de 3 Colunas */
+
+/* Reset do layout antigo */
+.app-container {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+}
+
+.app {
+    max-width: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+.app-header {
+    display: none !important; /* Remove header antigo */
+}
+
+.app-main {
+    padding: 0 !important;
+    background: transparent !important;
+}
+
+/* Esconder elementos do topo (imagem grande e login) */
+#website > div:first-child,
+#website > header,
+.app-container > div:first-child:not(.app),
+#slideshow,
+.header-slideshow,
+header.pt-4.pb-4,
+.app-header,
+body > header,
+#website header {
+    display: none !important;
+}
+
+/* Remover espaços extras */
+body {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
+
+/* Layout Principal - 3 Colunas */
+.riverbets-layout {
+    display: flex;
+    min-height: 100vh;
+    gap: 0;
+}
+
+/* Coluna 1: Menu Lateral Esquerdo */
+.riverbets-sidebar {
+    width: 230px;
+    min-width: 230px;
+    background-color: var(--purple);
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.riverbets-sidebar-logo {
+    background-color: var(--black);
+    padding: 20px;
+    text-align: center;
+    color: var(--orange);
+    font-size: 24px;
+    font-weight: 700;
+    border-bottom: 3px solid var(--orange);
+}
+
+.sidebar-logo-img {
+    max-width: 100%;
+    height: auto;
+    max-height: 80px;
+    object-fit: contain;
+}
+
+.riverbets-sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.riverbets-sidebar-menu li {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.riverbets-sidebar-menu a {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    color: white !important;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.riverbets-sidebar-menu a i {
+    margin-right: 10px;
+    width: 20px;
+}
+
+.riverbets-sidebar-menu a:hover {
+    background-color: var(--black-lighter);
+    padding-left: 25px;
+    border-left: 4px solid var(--orange);
+}
+
+.riverbets-sidebar-menu a.active {
+    background-color: var(--orange);
+    color: #000 !important;
+    font-weight: 700;
+}
+
+.riverbets-sidebar-login {
+    margin-top: auto;
+    padding: 20px;
+}
+
+.riverbets-sidebar-login .btn {
+    width: 100%;
+    background-color: var(--orange);
+    color: #000;
+    font-weight: 700;
+    border: none;
+    padding: 12px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.riverbets-sidebar-login .btn:hover {
+    background-color: var(--orange-dark);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 152, 0, 0.3);
+}
+
+/* Coluna 2: Área Central (Jogos) */
+.riverbets-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.riverbets-banner {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.5) 0%, rgba(255, 152, 0, 0.3) 100%), 
+                url('../../../../static_files/user_storage/banner/040120251417180.png') center center;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 32px;
+    font-weight: 700;
+    position: relative;
+    padding: 30px 20px;
+    border: 2px solid var(--orange);
+}
+
+.riverbets-banner h1 {
+    text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.8);
+    z-index: 2;
+    position: relative;
+}
+
+.banner-logo {
+    max-width: 600px;
+    width: 90%;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(3px 3px 8px rgba(0, 0, 0, 0.8));
+    z-index: 2;
+    position: relative;
+}
+
+@media (max-width: 768px) {
+    .banner-logo {
+        max-width: 100%;
+        width: 95%;
+    }
+}
+
+.riverbets-games-header {
+    background-color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.riverbets-games-header h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+}
+
+.riverbets-games-header h2 i {
+    margin-right: 10px;
+    color: #000;
+    background-color: var(--orange);
+    width: 35px;
+    height: 35px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-weight: bold;
+}
+
+.riverbets-search {
+    flex: 1;
+    max-width: 400px;
+    margin-left: 20px;
+}
+
+.riverbets-search input {
+    width: 100%;
+    padding: 10px 15px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.riverbets-search input:focus {
+    border-color: var(--orange);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 152, 0, 0.2);
+}
+
+.riverbets-search button {
+    background-color: var(--orange);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    margin-left: 10px;
+    cursor: pointer;
+    color: #000;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.riverbets-search button:hover {
+    background-color: var(--orange-dark);
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+/* Coluna 3: Cupom de Apostas */
+.riverbets-sidebar-right {
+    width: 340px;
+    min-width: 340px;
+    padding: 20px 20px 20px 0;
+}
+
+/* Tabela de Jogos */
+.riverbets-games-table {
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.riverbets-games-table table {
+    width: 100%;
+    margin: 0;
+}
+
+.riverbets-championship-header {
+    background-color: var(--neon-green) !important;
+    color: #000 !important;
+    font-weight: 700 !important;
+    padding: 12px 15px !important;
+}
+
+.riverbets-championship-header td {
+    background-color: var(--neon-green) !important;
+    color: #000 !important;
+}
+
+.riverbets-game-row {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.riverbets-game-row td {
+    padding: 10px 15px;
+    vertical-align: middle;
+}
+
+.riverbets-game-info {
+    min-width: 200px;
+}
+
+.riverbets-game-teams {
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.riverbets-game-datetime {
+    font-size: 12px;
+    color: #666;
+}
+
+.riverbets-odds-labels {
+    text-align: center;
+    font-size: 12px;
+    color: #666;
+    padding: 8px 5px !important;
+}
+
+.riverbets-odds {
+    text-align: center;
+    padding: 5px !important;
+}
+
+/* Responsivo */
+@media (max-width: 1200px) {
+    .riverbets-sidebar-right {
+        width: 300px;
+        min-width: 300px;
+    }
+}
+
+@media (max-width: 992px) {
+    .riverbets-layout {
+        flex-direction: column;
+    }
+    
+    .riverbets-sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+    
+    .riverbets-sidebar-right {
+        width: 100%;
+        padding: 20px;
+    }
+}
+
+/* ===== TEMA LARANJA + PRETO - COMPLEMENTOS ===== */
+
+/* Bilhete/Cupom com destaque laranja */
+.bilhete {
+    border: 2px solid var(--orange) !important;
+}
+
+.bilhete .title,
+.bilhete header {
+    background-color: var(--black) !important;
+    color: var(--orange) !important;
+    border-bottom: 3px solid var(--orange) !important;
+}
+
+/* Botões de odds/cotação */
+.btn-cotacao,
+.odds-button,
+button[class*="odd"] {
+    background-color: var(--black) !important;
+    color: var(--orange) !important;
+    border: 2px solid var(--orange) !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-cotacao:hover,
+.odds-button:hover {
+    background-color: var(--orange) !important;
+    color: #000 !important;
+    transform: scale(1.05) !important;
+}
+
+.btn-cotacao.active,
+.odds-button.active {
+    background-color: var(--orange) !important;
+    color: #000 !important;
+    font-weight: 700 !important;
+}
+
+/* Tabelas de jogos com tema laranja */
+.table-jogos tr:hover {
+    background-color: rgba(255, 152, 0, 0.1) !important;
+}
+
+.table-jogos .time {
+    color: #fff;
+    font-weight: 600;
+}
+
+/* Cards com bordas laranja */
+.card {
+    border: 2px solid var(--orange) !important;
+    background-color: #fff !important;
+}
+
+.card-header {
+    background-color: var(--black) !important;
+    color: var(--orange) !important;
+    border-bottom: 2px solid var(--orange) !important;
+}
+
+/* Badges e labels */
+.badge {
+    background-color: var(--orange) !important;
+    color: #000 !important;
+}
+
+/* Saldo e valores em destaque */
+.saldo,
+.valor-premio,
+.text-success {
+    color: var(--orange) !important;
+    font-weight: 700 !important;
+}
+
+/* Finalizar aposta button */
+button[type="submit"],
+.btn-finalizar,
+.btn-apostar {
+    background-color: var(--orange) !important;
+    color: #000 !important;
+    font-weight: 700 !important;
+    border: none !important;
+    transition: all 0.3s ease !important;
+}
+
+button[type="submit"]:hover,
+.btn-finalizar:hover,
+.btn-apostar:hover {
+    background-color: var(--orange-dark) !important;
+    color: #fff !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4) !important;
+}
+

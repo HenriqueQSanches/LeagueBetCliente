@@ -1,0 +1,177 @@
+╔════════════════════════════════════════════════════════════════╗
+║                                                                ║
+║        🎰 BANCA ESPORTIVA - GUIA DE INÍCIO RÁPIDO             ║
+║                                                                ║
+╚════════════════════════════════════════════════════════════════╝
+
+
+📋 CONFIGURAÇÃO EM 5 MINUTOS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ BANCO DE DADOS ENCONTRADO!
+Arquivo: reidoscript bancas.sql (38.220 linhas)
+Nome: reiscrip_bancas
+Admin: admin / Senha: 123456
+
+🚀 OPÇÃO 1: IMPORTAÇÃO E CONFIGURAÇÃO AUTOMÁTICA (Recomendado)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Windows:
+  1. Dê duplo clique em: IMPORTAR_BANCO.bat
+  2. Depois clique em: INICIAR_CONFIGURACAO.bat
+  3. Siga as instruções na tela
+  4. Pronto!
+
+Linux/Mac:
+  1. Abra o terminal nesta pasta
+  2. Execute: php importar-banco.php
+  3. Execute: php configurar.php
+  4. Siga as instruções
+  5. Pronto!
+
+
+🔧 OPÇÃO 2: CONFIGURAÇÃO MANUAL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Passo 0: IMPORTAR BANCO DE DADOS
+─────────────────────────────────
+📄 Via phpMyAdmin:
+   1. Acesse http://localhost/phpmyadmin
+   2. Crie um banco: banca_esportiva
+   3. Clique em "Importar"
+   4. Selecione: reidoscript bancas.sql
+   5. Clique em "Executar"
+
+📖 Consulte IMPORTAR-BANCO.md para detalhes completos!
+
+
+Passo 1: CONFIGURAR CONEXÃO DO BANCO
+────────────────────────
+✏️ Edite: conexao.php (linha 4)
+
+$conexao = new PDO('mysql:host=localhost;dbname=SEU_BANCO', 'USUARIO', 'SENHA');
+
+Exemplo:
+$conexao = new PDO('mysql:host=localhost;dbname=banca_esportiva', 'root', 'minhasenha');
+
+
+Passo 2: CONFIGURAÇÕES DO SITE
+───────────────────────────────
+✏️ Edite: inc.config.php
+
+🔹 Linhas 27 a 31:
+   - 'title' => 'Nome do Seu Site'
+   - 'dominio' => 'https://seudominio.com'
+   - 'email' => 'contato@seudominio.com'
+   - 'uri' => 'https://seudominio.com'
+
+🔹 Linhas 58 a 71:
+   - 'host' => 'localhost'
+   - 'username' => 'seu_usuario_db'
+   - 'password' => 'sua_senha_db'
+   - 'database' => 'seu_banco'
+
+🔹 Linhas 80 e 81:
+   - Trocar 'bancaesportiva.tk' por 'seudominio.com'
+   - Trocar 'nome_banco' pelo nome real do banco
+
+🔹 Linhas 89 e 90:
+   - Mesmas alterações acima (para fallback)
+
+🔹 Linha 99 (Escolher Layout):
+   Layout 1: $config['modules']['site'] = $config['modules']['site1'];
+   Layout 2: $config['modules']['site'] = $config['modules']['site2'];
+   Layout 3: $config['modules']['site'] = $config['modules']['site3'];
+
+
+Passo 3: PERMISSÕES (Linux/Mac)
+────────────────────────────────
+chmod -R 777 _temp/
+chmod -R 777 imagens/
+chmod -R 777 arquivos/
+
+
+Passo 4: CRON JOBS (no cPanel)
+───────────────────────────────
+CRON 1 - Atualizar jogos (1x por dia):
+  Comando: curl -s https://seudominio.com/jogos.php
+  Tempo: 0 0 * * *
+
+CRON 2 - Resultados (a cada minuto):
+  Comando: curl -s https://seudominio.com/cron/jogos/resultados
+  Tempo: * * * * *
+
+
+🔐 ACESSO AO SISTEMA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+URL Admin: https://seudominio.com/admin/
+
+Login Padrão:
+  Usuário: admin
+  Senha: 123456
+
+⚠️ IMPORTANTE: Altere a senha após o primeiro login!
+
+
+📚 DOCUMENTAÇÃO COMPLETA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🗄️ IMPORTAR-BANCO.md       → Guia de importação do banco
+📄 CONFIGURACAO.md          → Guia completo de configuração
+🌐 painel-configuracao.html → Interface visual (abra no navegador)
+📖 README.md                → Documentação geral
+🛠️ importar-banco.php       → Script de importação automática
+🛠️ configurar.php           → Script de configuração automática
+
+
+📦 ARQUIVOS CRIADOS PARA VOCÊ
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ INICIO-RAPIDO.txt (este arquivo)
+✅ IMPORTAR-BANCO.md (guia de importação)
+✅ CONFIGURACAO.md (guia de configuração)
+✅ README.md (documentação do projeto)
+✅ painel-configuracao.html (interface visual)
+✅ importar-banco.php (importador automático)
+✅ configurar.php (configurador automático)
+✅ IMPORTAR_BANCO.bat (importar banco - Windows)
+✅ INICIAR_CONFIGURACAO.bat (configurar sistema - Windows)
+
+
+🆘 PROBLEMAS?
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+❌ Erro de conexão com banco
+   → Verifique as credenciais em conexao.php e inc.config.php
+
+❌ Página em branco
+   → Verifique permissões das pastas _temp, imagens, arquivos
+
+❌ Layout não carrega
+   → Verifique a linha 99 do inc.config.php
+
+❌ Admin não funciona
+   → Certifique-se de que o banco foi importado corretamente
+
+
+🎯 CHECKLIST FINAL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+☐ Banco de dados criado no MySQL
+☐ Arquivo SQL importado (reidoscript bancas.sql)
+☐ 43 tabelas criadas com sucesso
+☐ conexao.php configurado
+☐ inc.config.php configurado
+☐ Layout escolhido
+☐ Permissões configuradas
+☐ Site acessível no navegador
+☐ Admin acessível (admin/123456)
+☐ Senha alterada
+☐ CRON jobs configurados
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎉 Boa sorte com sua Banca Esportiva!
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+

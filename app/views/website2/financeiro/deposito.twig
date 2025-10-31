@@ -1,0 +1,133 @@
+{% extends layout %}
+
+{% block list %}
+
+    <div class="container-fluid pb-3">
+        {% if busca.getCount() %}
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class="table-responsive m-0">
+                        <table class="table table-minified table-striped table-bordered table-hover m-0">
+                            <thead>
+                            <tr class="table-danger">
+                                <th width="70">#</th>
+                                <th width="100">Data</th>
+                                <th>Cliente/CPF</th>
+                                <th width="120">Valor</th>
+                                <th width="150">Situação</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for v in busca.getRegistros() %}
+                                <tr>
+                                    <td class="text-center">{{ v.getId() }}</td>
+                                    <td class="text-center">{{ v.getData(true) }}</td>
+                                    <td>
+                                        {{ v.voUser().getNome }} ({{ v.voUser().getLogin() }})
+                                        <div>{{ v.voUser().getCpf() }}</div>
+                                    </td>
+                                    <td class="text-center">R$ {{ v.getValor(true) }}</td>
+                                    <td>{{ v.getStatusTitle() }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer">{{ busca }}</div>
+                </div>
+            </div>
+        {% elseif message %}
+            <div class="alert alert-warning m-0">
+                <i class="fa fa-warning"></i> {{ message }}
+            </div>
+        {% else %}
+            <div class="alert alert-warning m-0">
+                <i class="fa fa-warning"></i> Nenhum registro encontrado
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock %}
+
+{% block main %}
+
+    <form class="modal fade admpage-form" enctype="multipart/form-data">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Novo depósito</h3>
+                    <div class="close" data-dismiss="modal">&times;</div>
+                </div>
+                <div class="modal-body">
+                    <label>Valor do depósito</label>
+                    <input type="text" name="valor" class="form-control mask-valor form-control-lg" required/>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    {{ inputFile('<i class="fa fa-upload"></i> Comprovante', 'upfile', 'pdf,jpg,jpeg,png') }}
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-send"></i> Enviar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="page-title">
+        <div class="row justify-content-between align-items-center">
+            <div class="col">
+                <h4 class="title"><i class="fa fa-upload d-none d-md-inline"></i> Depósitos</h4>
+            </div>
+            <div class="col-auto">
+                <button class="btn btn-primary" onclick="$('.admpage-form').setValues({});">
+                    <i class="fa fa-plus"></i> Novo depósito
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="py-3">
+            <form class="admpage-form-search" onsubmit="javascript:return false;">
+                <div class="row">
+                    <div class="form-group col-md-6 col-12">
+                        <label>De:</label>
+                        <input type="date" name="dataInicial" class="form-control"/>
+                    </div>
+                    <div class="form-group col-md-6 col-12">
+                        <label>Até:</label>
+                        <div class="row">
+                            <div class="col">
+                                <input type="date" name="dataFinal" class="form-control"/>
+                            </div>
+                            <div class="col-auto">
+                                <div class="input-group-btn">
+                                    <button class="btn btn-primary">
+                                        <i class="fa fa-search"></i> Filtrar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="admpage-container"></div>
+
+{% endblock %}
+
+{% block script %}
+
+    <script>
+
+        $(".admpage-form")
+            .adminPage({
+                formSearch: '.admpage-form-search',
+                container: '.admpage-container',
+                autoSearch: true,
+            });
+
+    </script>
+
+{% endblock %}

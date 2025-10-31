@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="pt-br" class="pre-loading {{ responsive ? 'responsive' : null }}">
+<head>
+
+    {{ seo_header() }}
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/bootstrap4.css"/>
+    <link rel="stylesheet" href="css/site.css?v=1.0.9"/>
+    <link rel="stylesheet" href="css/loading.css"/>
+    <link rel="stylesheet" href="css/riverbets-style.css?v=2.0"/>
+    <link rel="stylesheet" href="css/riverbets-layout.css?v=2.0"/>
+
+    <style>
+        html {
+            background-image: url('{{ dados.imgCapa(true, 'background').getSource(true) }}');
+        }
+    </style>
+
+    {{ dados.getHtmlHead()|raw }}
+
+</head>
+<body>
+
+<div id="website">
+
+    {% include 'website/inc/header.twig' %}
+
+    <div class="app-container container">
+        <div class="app shadow-lg rounded border mb-3">
+            <header class="app-header rounded-top">
+                <div class="row justify-content-end">
+                    <div class="col {{ responsive ? 'd-none d-md-block' : '' }}">
+                        <ul>
+                            <li>
+                                <a href="{{ url() }}">
+                                    Apostar
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ url('bilhete') }}">
+                                    Consultar bilhete
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ url("comunicados") }}">
+                                    Comunicados
+                                </a>
+                            </li>
+                            {% if user %}
+                                <li>
+                                    <a href="{{ url('apostas') }}">
+                                        Minhas apostas
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ url('logout') }}">
+                                        Sair
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    {% if user %}
+                        <div class="col-auto">
+                            <div class="btn-group">
+                                <a href="{{ url('financeiro/extrato') }}" class="text-white dropdown-toggle"
+                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Meu saldo: <span class="text-warning">R$ {{ user.getCredito(true) }}</span>
+                                </a>
+                                <div class="dropdown-menu text-dark">
+                                    <a class="dropdown-item" href="{{ url("financeiro/extrato") }}">Extrato</a>
+                                    <a class="dropdown-item" href="{{ url("financeiro/deposito") }}">Depósito</a>
+                                    <a class="dropdown-item"
+                                       href="{{ url("financeiro/transferencia") }}">Transferencia</a>
+                                    <a class="dropdown-item" href="{{ url("financeiro/saque") }}">Saque</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </header>
+            <main class="app-main">
+                {% block main endblock %}
+            </main>
+            <footer class="app-footer rounded-bottom">
+                <div class="container-fluid">
+                    <div class="row {{ responsive ? 'justify-content-center justify-content-md-between' : 'justify-content-between' }}">
+                        <div class="col-auto">
+                            ©{{ 'now'|date('Y') }} Todos os direitos reservados.
+                        </div>
+                        {% if responsive %}
+                            <div class="col-12 d-block d-md-none">
+                                <hr class="my-1"/>
+                            </div>
+                        {% endif %}
+                        <div class="col-auto">
+                            <ul>
+                                <li><a href="{{ url('regras') }}"><i class="fa fa-2x fa-book"></i> Regulamento</a></li>
+                                <li>|</li>
+                                <li><a href="{{ url('cotacoes') }}"><i class="fa fa-2x fa-usd"></i> Cotações</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+</div>
+
+{{ seo_footer() }}
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script type="text/javascript" src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+
+<script type="text/javascript" src="node_modules/owl.carousel2/dist/owl.carousel.js"></script>
+
+<script type="text/javascript" src="node_modules/sweetalert/dist/sweetalert.min.js"></script>
+<script type="text/javascript" src="cdn/js/clipboard.min.js"></script>
+<script type="text/javascript" src="cdn/js/jquery.form.js"></script>
+<script type="text/javascript" src="cdn/js/jquery.serializeObject.js"></script>
+<script type="text/javascript" src="cdn/js/modernizr.min.js"></script>
+<script type="text/javascript" src="cdn/js/jquery.mask.js"></script>
+<script type="text/javascript" src="cdn/js/mask.js"></script>
+<script type="text/javascript" src="cdn/js/fastclick.js"></script>
+<script type="text/javascript" src="cdn/js/admin.js?v=1.0.0"></script>
+<script type="text/javascript" src="cdn/js/string.js"></script>
+<script type="text/javascript" src="js/site.js?v=1.0.0"></script>
+<script type="text/javascript" src="js/riverbets-structure.js?v=2.0"></script>
+
+{% include 'website/modals/login.twig' %}
+
+{{ dados.getHtmlFooter()|raw }}
+
+{% block script %}{% endblock %}
+
+<script>
+
+    $('.carousel').carousel();
+    
+    // RIVERBETS Layout Structure
+    $(document).ready(function() {
+        const appMain = document.querySelector('.app-main');
+        if (!appMain || appMain.querySelector('.riverbets-layout')) return;
+        
+        // Criar estrutura
+        const layout = $('<div class="riverbets-layout"></div>');
+        
+        // Menu Lateral Esquerdo
+        const sidebar = $(`
+            <aside class="riverbets-sidebar">
+                <div class="riverbets-sidebar-logo">{{ dados.getBanca() }}</div>
+                <nav>
+                    <ul class="riverbets-sidebar-menu">
+                        <li><a href="{{ url() }}" class="active"><i class="fa fa-home"></i> Início</a></li>
+                        <li><a href="{{ url() }}"><i class="fa fa-futbol-o"></i> Futebol</a></li>
+                        <li><a href="{{ url() }}"><i class="fa fa-play-circle"></i> Ao Vivo</a></li>
+                        <li><a href="{{ url() }}"><i class="fa fa-list"></i> Mais Esportes</a></li>
+                        <li><a href="{{ url('regras') }}"><i class="fa fa-book"></i> Regulamento</a></li>
+                        <li><a href="{{ url('bilhete') }}"><i class="fa fa-ticket"></i> Conferir Bilhete</a></li>
+                    </ul>
+                </nav>
+                <div class="riverbets-sidebar-login">
+                    {% if user %}
+                        <a href="{{ url('logout') }}" class="btn">Sair</a>
+                        <div style="text-align: center; color: white; margin-top: 10px; font-size: 14px;">
+                            Saldo: <strong>R$ {{ user.getCredito(true) }}</strong>
+                        </div>
+                    {% else %}
+                        <button class="btn" data-toggle="modal" data-target="#modal-login">LOGIN</button>
+                    {% endif %}
+                </div>
+            </aside>
+        `);
+        
+        // Área Central
+        const content = $('<div class="riverbets-content"></div>');
+        
+        // Banner (se na página de apostas)
+        if (window.location.pathname === '/' || window.location.pathname.includes('apostar')) {
+            content.append(`
+                <div class="riverbets-banner">
+                    <div style="text-align: center; padding: 40px 20px;">
+                        <h1 style="font-size: 32px; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+                            BOTE SEU ESPÍRITO COMPETITIVO<br>PRA JOGO!
+                        </h1>
+                    </div>
+                </div>
+            `);
+            
+            // Cabeçalho dos jogos
+            content.append(`
+                <div class="riverbets-games-header">
+                    <h2><i class="fa fa-futbol-o"></i> Jogos Disponíveis</h2>
+                    <div class="riverbets-search">
+                        <input type="text" placeholder="Buscar jogos e campeonatos" id="search-games">
+                        <button onclick="return false;"><i class="fa fa-search"></i></button>
+                    </div>
+                </div>
+            `);
+        }
+        
+        // Mover conteúdo existente
+        $(appMain).children().each(function() {
+            if (!$(this).hasClass('bilhete')) {
+                content.append($(this));
+            }
+        });
+        
+        // Lateral Direita (Cupom)
+        const rightSidebar = $('<aside class="riverbets-sidebar-right"></aside>');
+        const bilhete = $('.bilhete').first();
+        if (bilhete.length) {
+            rightSidebar.append(bilhete);
+        }
+        
+        // Montar estrutura
+        layout.append(sidebar);
+        layout.append(content);
+        layout.append(rightSidebar);
+        
+        // Inserir no app-main
+        $(appMain).empty().append(layout);
+    });
+
+</script>
+
+</body>
+</html>

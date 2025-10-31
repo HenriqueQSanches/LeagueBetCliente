@@ -1,0 +1,135 @@
+{% if responsive %}
+    <header class="header-mobile mb-3 d-blok d-md-none">
+        <div class="container-fluid py-1">
+            <div class="row align-items-center">
+                <div class="col">
+                    <img src="{{ dados.imgCapa(true, 'logo').getSource(true) }}" height="45"/>
+                </div>
+                <div class="col-auto">
+                    <a href="app.apk" class="btn btn-link" target="_blank">
+                        <span class="text-success">
+                            <i class="fa fa-android"></i> APP
+                        </span>
+                    </a>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-link" onclick="$('html').toggleClass('show-menu');">
+                        <i class="fa fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% if pageAposta %}
+            <div class="row-aposta py-2">
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <input type="number" v-model="valorAposta" v-bind:min="apostaMinima"
+                                   v-bind:max="apostaMaxima"
+                                   step="1.00" placeholder="Valor da aposta" class="form-control form-control-sm"/>
+                        </div>
+                        <div class="col px-0">
+                            <input class="form-control form-control-sm" disabled="" v-bind:value="`R$ ${premio}`"/>
+                        </div>
+                        <div class="col-auto">
+                            <button type="button" class="btn btn-danger btn-sm" v-bind:disabled="!apostaValida"
+                                    onclick="$('.bilhete').addClass('show')">
+                                Finalizar <span class="count">${aposta.jogos.length}</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </header>
+    <div class="menu-mobile">
+        <div class="header">
+            <i class="fa fa-bars"></i> Menu
+        </div>
+        <ul>
+            <li>
+                <a href="{{ url() }}">
+                    Apostar
+                </a>
+            </li>
+            <li>
+                <a href="{{ url('bilhete') }}">
+                    Consultar bilhete
+                </a>
+            </li>
+            {% if user %}
+                <li>
+                    <a href="{{ url('apostas') }}">
+                        Minhas apostas
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url('logout') }}">
+                        Sair
+                    </a>
+                </li>
+            {% else %}
+                <li>
+                    <a href="#modal-login" data-toggle="modal" onclick="$('html').removeClass('show-menu');">
+                        Entrar
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+{% endif %}
+
+<header class="pt-4 pb-4 {{ responsive ? 'd-none d-md-block' : '' }}">
+    <div class="app-container container">
+        <div class="row justify-content-center align-items-center">
+            <div class="col">
+                <a href="./">
+                    <img src="{{ dados.imgCapa(true, 'logo').getSource(true) }}" class="img-fluid"/>
+                </a>
+            </div>
+            {% if not user %}
+                <div class="col-auto d-none d-md-block">
+                    <h6 class="text-white">Login</h6>
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <div class="row">
+                                <div class="col">
+                                    <input type="text" v-model="auth.username" class="form-control form-control-sm"
+                                           required
+                                           placeholder="Login/E-mail"/>
+                                </div>
+                                <div class="col">
+                                    <input type="password" v-model="auth.password" class="form-control form-control-sm"
+                                           required
+                                           readonly placeholder="Senha"/>
+                                </div>
+                                <div class="col-auto">
+                                    <button type="button" v-on:click="onAuth" class="btn btn-warning btn-sm">
+                                        <i class="fa fa-sign-in"></i> Entrar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-auto d-none d-md-block text-white text-right" style="line-height: 100%;">
+                    <div class="row align-items-center">
+                        <div class="col-auto pr-0">
+                            <div>{{ user.getNome() }}</div>
+                            <small>
+                                <span class="text-warning">{{ user.getTypetitle() }}</span>
+                                |
+                                <a href="{{ url('logout') }}" class="text-white">Sair</a>
+                            </small>
+                        </div>
+                        <div class="col-auto">
+                            <img src="{{ user.imgCapa().redimensiona(50,50) }}"
+                                 class="rounded-circle img-fluid border"/>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</header>

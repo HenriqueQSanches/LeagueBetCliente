@@ -1,0 +1,423 @@
+/* LEAGUE BET STYLE - Cores Laranja + Preto */
+/* Esquema de cores da marca: Laranja (#ff9800) + Preto (#000) */
+
+/* Esconder barra verde do topo com "RIVERBETS" e LOGIN */
+body > div:first-child:not(.app-container):not(#website),
+.top-bar,
+.header-top,
+#top-header {
+    display: none !important;
+}
+
+:root {
+    --orange: #ff9800;
+    --orange-dark: #f57c00;
+    --orange-light: #ffb74d;
+    --black: #000000;
+    --black-light: #1a1a1a;
+    --black-lighter: #2d2d2d;
+    
+    /* Manter compatibilidade com código antigo */
+    --purple: #000000;
+    --purple-dark: #000000;
+    --purple-light: #1a1a1a;
+    --neon-green: #ff9800;
+    --neon-green-dark: #f57c00;
+}
+
+/* Background Preto */
+html {
+    background-color: var(--black) !important;
+    background: linear-gradient(135deg, var(--black) 0%, var(--black-light) 100%) !important;
+    background-image: none !important;
+    background-attachment: fixed !important;
+}
+
+body {
+    background: transparent !important;
+}
+
+/* Header Laranja */
+.app-header {
+    background-color: var(--orange) !important;
+    color: #000 !important;
+}
+
+.app-header a {
+    color: #000 !important;
+    font-weight: 600 !important;
+}
+
+.app-header a:hover {
+    background-color: var(--orange-dark) !important;
+    color: #fff !important;
+}
+
+.app-header .dropdown-menu a {
+    color: #000 !important;
+}
+
+.app-header .text-warning {
+    color: var(--orange-dark) !important;
+}
+
+/* Footer Preto */
+.app-footer {
+    background-color: var(--black) !important;
+    color: #fff !important;
+    border-top: 2px solid var(--orange) !important;
+}
+
+.app-footer a {
+    color: #fff !important;
+}
+
+/* Botões de Cotação/Odds - Estilo RIVERBETS */
+.btn-cotacao {
+    background-color: var(--purple) !important;
+    color: #fff !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    width: 60px !important;
+    min-width: 60px !important;
+    height: 36px !important;
+    line-height: 36px !important;
+    border-radius: 4px !important;
+    border: 2px solid transparent !important;
+    transition: all 0.3s ease !important;
+    padding: 0 !important;
+}
+
+.btn-cotacao:hover {
+    background-color: var(--purple-light) !important;
+    border-color: var(--neon-green) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
+}
+
+.btn-cotacao.outras {
+    background-color: var(--neon-green) !important;
+    color: #000 !important;
+}
+
+.btn-cotacao.outras:hover {
+    background-color: var(--neon-green-dark) !important;
+}
+
+.btn-cotacao.active {
+    background-color: var(--neon-green) !important;
+    color: #000 !important;
+    border-color: var(--purple) !important;
+}
+
+/* Cards de Campeonatos - Verde Neon */
+tr.campeonato {
+    background-color: var(--neon-green) !important;
+}
+
+tr.campeonato a {
+    color: #000 !important;
+    font-weight: 700 !important;
+}
+
+tr.campeonato th,
+tr.campeonato td {
+    background-color: var(--neon-green) !important;
+    color: #000 !important;
+}
+
+/* Cabeçalho de País - Roxo */
+tr.tr-pais {
+    background-color: var(--purple) !important;
+    color: #fff !important;
+}
+
+tr.tr-pais th {
+    background-color: var(--purple) !important;
+    color: #fff !important;
+    font-weight: 600 !important;
+}
+
+/* Bilhete/Cupom de Apostas */
+.bilhete {
+    background-color: #fff !important;
+    border: 2px solid var(--purple) !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+}
+
+.bilhete .title {
+    background-color: var(--neon-green) !important;
+    color: #000 !important;
+    font-weight: 700 !important;
+    border-radius: 0 !important;
+}
+
+.bilhete header {
+    background-color: var(--neon-green) !important;
+}
+
+.bilhete header h3 {
+    color: #000 !important;
+}
+
+.lista-jogos {
+    background-color: rgba(61, 45, 107, 0.05) !important;
+}
+
+/* Tabela do Bilhete */
+.table-aposta {
+    margin-bottom: 0 !important;
+}
+
+.tabelaBilheteTitulo {
+    background-color: var(--purple) !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+}
+
+.tabelaBilheteTitulo td {
+    background-color: var(--purple) !important;
+    color: #fff !important;
+}
+
+/* Botões */
+.btn-primary {
+    background-color: var(--purple) !important;
+    border-color: var(--purple) !important;
+    color: #fff !important;
+}
+
+.btn-primary:hover {
+    background-color: var(--purple-light) !important;
+    border-color: var(--purple-light) !important;
+}
+
+.btn-success {
+    background-color: var(--neon-green) !important;
+    border-color: var(--neon-green) !important;
+    color: #000 !important;
+    font-weight: 600 !important;
+}
+
+.btn-success:hover {
+    background-color: var(--neon-green-dark) !important;
+    border-color: var(--neon-green-dark) !important;
+}
+
+/* Links */
+.btn-link {
+    color: var(--purple) !important;
+}
+
+a {
+    color: var(--purple) !important;
+}
+
+a:hover {
+    color: var(--purple-light) !important;
+}
+
+/* Page Title */
+.page-title {
+    background-color: var(--neon-green) !important;
+}
+
+.page-subtitle {
+    background-color: rgba(180, 255, 0, 0.7) !important;
+}
+
+/* Campeonatos Sidebar */
+.campeonatos {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.campeonatos .title {
+    background-color: var(--purple) !important;
+    color: #fff !important;
+}
+
+/* Slideshow/Banner */
+#slideshow {
+    border: 2px solid var(--neon-green) !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+}
+
+/* Forms */
+.form-control:focus {
+    border-color: var(--neon-green) !important;
+    box-shadow: 0 0 0 0.2rem rgba(180, 255, 0, 0.25) !important;
+}
+
+/* Menu Mobile */
+.menu-mobile .title {
+    background-color: var(--neon-green) !important;
+    color: #000 !important;
+    font-weight: 700 !important;
+}
+
+/* Responsivo - Menu Mobile Bottom */
+@media (max-width: 768px) {
+    .bilhete.show header .title {
+        background-color: #666 !important;
+        color: #fff !important;
+    }
+}
+
+/* Tabelas de Jogos */
+.table-jogos thead tr.tr-header th {
+    background-color: var(--purple) !important;
+    color: #fff !important;
+}
+
+/* Alertas */
+.alert-warning {
+    background-color: var(--neon-green) !important;
+    color: #000 !important;
+    border-color: var(--neon-green-dark) !important;
+}
+
+/* Cards */
+.card-header {
+    background-color: var(--purple) !important;
+    color: #fff !important;
+}
+
+/* Badges */
+.badge-primary {
+    background-color: var(--purple) !important;
+}
+
+.badge-success {
+    background-color: var(--neon-green) !important;
+    color: #000 !important;
+}
+
+/* Hover effects para tabelas */
+.table-hover tbody tr:hover {
+    background-color: rgba(180, 255, 0, 0.1) !important;
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+    border: 2px solid var(--purple) !important;
+}
+
+/* Sombras e bordas */
+.shadow-lg {
+    box-shadow: 0 1rem 3rem rgba(61, 45, 107, 0.3) !important;
+}
+
+/* Text colors */
+.text-primary {
+    color: var(--purple) !important;
+}
+
+.text-success {
+    color: var(--neon-green-dark) !important;
+}
+
+/* Scrollbar personalizada - Tema Laranja/Preto */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--orange);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--orange-dark);
+}
+
+/* ===== REFORÇO DO TEMA LARANJA + PRETO ===== */
+
+/* Destaques laranja */
+.text-warning,
+.badge-warning {
+    background-color: var(--orange) !important;
+    color: #000 !important;
+}
+
+/* Bordas laranja em elementos importantes */
+.card,
+.modal-content,
+.alert {
+    border-color: var(--orange) !important;
+}
+
+/* Títulos e headings com destaque laranja */
+h1, h2, h3, h4, h5, h6 {
+    color: inherit;
+}
+
+h1::before, h2::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 20px;
+    background-color: var(--orange);
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+/* Links com tema laranja */
+a:not(.btn) {
+    color: var(--orange) !important;
+}
+
+a:not(.btn):hover {
+    color: var(--orange-dark) !important;
+    text-decoration: underline;
+}
+
+/* Inputs focus laranja */
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--orange) !important;
+    box-shadow: 0 0 0 0.2rem rgba(255, 152, 0, 0.25) !important;
+}
+
+/* Checkbox e radio buttons */
+input[type="checkbox"]:checked,
+input[type="radio"]:checked {
+    background-color: var(--orange) !important;
+    border-color: var(--orange) !important;
+}
+
+/* Tabelas com header laranja */
+.table thead th {
+    background-color: var(--black) !important;
+    color: var(--orange) !important;
+    border-bottom: 2px solid var(--orange) !important;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(255, 152, 0, 0.1) !important;
+}
+
+/* Paginação */
+.pagination .page-item.active .page-link {
+    background-color: var(--orange) !important;
+    border-color: var(--orange) !important;
+    color: #000 !important;
+}
+
+.pagination .page-link {
+    color: var(--orange) !important;
+}
+
+.pagination .page-link:hover {
+    background-color: var(--orange) !important;
+    color: #000 !important;
+}
+
