@@ -16,6 +16,8 @@ body > div:first-child:not(.app-container):not(#website),
     --black: #000000;
     --black-light: #1a1a1a;
     --black-lighter: #2d2d2d;
+    --gray-bg: #e8e8e8;
+    --gray-bg-light: #f5f5f5;
     
     /* Manter compatibilidade com código antigo */
     --purple: #000000;
@@ -25,10 +27,10 @@ body > div:first-child:not(.app-container):not(#website),
     --neon-green-dark: #f57c00;
 }
 
-/* Background Preto */
+/* Background Cinza Claro */
 html {
-    background-color: var(--black) !important;
-    background: linear-gradient(135deg, var(--black) 0%, var(--black-light) 100%) !important;
+    background-color: var(--gray-bg) !important;
+    background: linear-gradient(135deg, var(--gray-bg-light) 0%, var(--gray-bg) 100%) !important;
     background-image: none !important;
     background-attachment: fixed !important;
 }
