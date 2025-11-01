@@ -46,13 +46,34 @@ $(document).ready(function() {
         </div>
     `);
     
+    // Obter data e dia da semana atual
+    const hoje = new Date();
+    const diasSemana = ['Domingo', 'Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feira', 'Sexta-Feira', 'Sábado'];
+    const diaSemana = diasSemana[hoje.getDay()];
+    const dia = String(hoje.getDate()).padStart(2, '0');
+    const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+    const ano = hoje.getFullYear();
+    const dataFormatada = `${dia}/${mes}/${ano}`;
+    
+    // Data e hora do dia
+    content.append(`
+        <div class="riverbets-date-header">
+            <i class="fa fa-calendar"></i>
+            <span class="date-day">${diaSemana}</span>
+            <span class="date-separator">-</span>
+            <span class="date-number">${dataFormatada}</span>
+        </div>
+    `);
+    
     // Cabeçalho dos jogos
     content.append(`
         <div class="riverbets-games-header">
             <h2><i class="fa fa-futbol-o"></i> Jogos Disponíveis</h2>
             <div class="riverbets-search">
-                <input type="text" placeholder="Buscar jogos e campeonatos" id="search-games">
-                <button onclick="return false;"><i class="fa fa-search"></i></button>
+                <div class="search-input-wrapper">
+                    <input type="text" placeholder="Buscar partidas" id="search-games">
+                    <button onclick="return false;"><i class="fa fa-search"></i></button>
+                </div>
             </div>
         </div>
     `);

@@ -190,6 +190,68 @@ body {
     }
 }
 
+/* Cabeçalho de Data */
+.riverbets-date-header {
+    background: linear-gradient(135deg, var(--orange) 0%, var(--orange-dark) 100%);
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
+    font-weight: 600;
+    color: #000;
+}
+
+.riverbets-date-header i {
+    font-size: 24px;
+    color: #000;
+}
+
+.riverbets-date-header .date-day {
+    font-size: 20px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.riverbets-date-header .date-separator {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 5px;
+}
+
+.riverbets-date-header .date-number {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .riverbets-date-header {
+        font-size: 14px;
+        padding: 12px 15px;
+        gap: 8px;
+    }
+    
+    .riverbets-date-header i {
+        font-size: 18px;
+    }
+    
+    .riverbets-date-header .date-day {
+        font-size: 16px;
+    }
+    
+    .riverbets-date-header .date-separator {
+        font-size: 16px;
+    }
+    
+    .riverbets-date-header .date-number {
+        font-size: 14px;
+    }
+}
+
 .riverbets-games-header {
     background-color: white;
     padding: 15px 20px;
@@ -228,9 +290,15 @@ body {
     margin-left: 20px;
 }
 
+.search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
 .riverbets-search input {
     width: 100%;
-    padding: 10px 15px;
+    padding: 10px 50px 10px 15px;
     border: 2px solid #ddd;
     border-radius: 4px;
     font-size: 14px;
@@ -243,21 +311,30 @@ body {
 }
 
 .riverbets-search button {
+    position: absolute;
+    right: 5px;
     background-color: var(--orange);
     border: none;
-    padding: 10px 20px;
+    padding: 8px 15px;
     border-radius: 4px;
-    margin-left: 10px;
     cursor: pointer;
     color: #000;
     font-weight: 600;
     transition: all 0.3s ease;
+    height: calc(100% - 10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .riverbets-search button:hover {
     background-color: var(--orange-dark);
     color: #fff;
-    transform: translateY(-1px);
+    transform: scale(1.05);
+}
+
+.riverbets-search button i {
+    font-size: 16px;
 }
 
 /* Coluna 3: Cupom de Apostas */
@@ -445,5 +522,97 @@ button[type="submit"]:hover,
     color: #fff !important;
     transform: translateY(-2px) !important;
     box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4) !important;
+}
+
+/* Footer do Desenvolvedor */
+.riverbets-footer {
+    background: linear-gradient(135deg, var(--black) 0%, var(--black-lighter) 100%);
+    margin-top: 40px;
+    padding: 30px 20px;
+    border-radius: 8px;
+    border: 2px solid var(--orange);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.footer-content {
+    text-align: center;
+}
+
+.footer-developer {
+    color: #fff;
+}
+
+.footer-developer p {
+    margin: 8px 0;
+    line-height: 1.6;
+}
+
+.developer-title {
+    font-size: 14px;
+    color: #ccc;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px !important;
+}
+
+.developer-name {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--orange);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.developer-name i {
+    font-size: 22px;
+}
+
+.developer-contact,
+.developer-site {
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.developer-contact a,
+.developer-site a {
+    color: var(--orange) !important;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.developer-contact a:hover,
+.developer-site a:hover {
+    color: var(--orange-dark) !important;
+    text-decoration: underline;
+}
+
+.developer-contact i,
+.developer-site i {
+    color: var(--orange);
+    font-size: 16px;
+}
+
+/* Responsivo para Footer */
+@media (max-width: 768px) {
+    .riverbets-footer {
+        margin-top: 30px;
+        padding: 20px 15px;
+    }
+    
+    .developer-name {
+        font-size: 18px;
+    }
+    
+    .developer-contact,
+    .developer-site {
+        font-size: 13px;
+        flex-wrap: wrap;
+    }
 }
 
