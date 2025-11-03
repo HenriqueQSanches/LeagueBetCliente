@@ -13,7 +13,7 @@ class loginController extends Controller
     {
         try {
 
-            $user = UsersModel::login(inputPost('username'), inputPost('password'));
+            $user = UsersModel::LogIn(inputPost('username'), inputPost('password'));
 
             UsersModel::setLogged($user);
 
@@ -25,7 +25,10 @@ class loginController extends Controller
                 'result' => 1,
             ];
         } catch (\Exception $ex) {
-            return $ex;
+            return [
+                'message' => $ex->getMessage(),
+                'result' => 0,
+            ];
         }
     }
 

@@ -1,0 +1,31 @@
+=======================================================
+  ADICIONAR LINK "ÁREA ADMINISTRATIVA" NO RODAPÉ
+=======================================================
+
+INSTRUÇÕES:
+
+Procure no arquivo de template/view do rodapé e adicione:
+
+<a href="/admin-login.php" style="color: #999; font-size: 11px; text-decoration: none;">
+    Área Administrativa
+</a>
+
+Ou simplesmente informe ao admin para acessar diretamente:
+
+📍 http://localhost:8000/admin-login.php
+
+Login: admin
+Senha: 123456
+
+=======================================================
+
+VANTAGENS:
+
+✅ Não interfere com sistema atual
+✅ Usuários normais nem veem/sabem que existe
+✅ Admin tem acesso direto
+✅ Funciona 100% sem problemas de AJAX
+✅ Layout profissional Wolf Sistemas
+
+=======================================================
+
