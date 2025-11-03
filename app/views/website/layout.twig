@@ -91,6 +91,12 @@
                     <div class="row {{ responsive ? 'justify-content-center justify-content-md-between' : 'justify-content-between' }}">
                         <div class="col-auto">
                             ©{{ 'now'|date('Y') }} Todos os direitos reservados.
+                            <span style="margin: 0 8px; color: #666;">|</span>
+                            <a href="/admin-login.php" style="color: #999; font-size: 12px; text-decoration: none; opacity: 0.7;" 
+                               onmouseover="this.style.opacity='1'; this.style.color='#ff9800'" 
+                               onmouseout="this.style.opacity='0.7'; this.style.color='#999'">
+                                <i class="fa fa-lock"></i> Área Administrativa
+                            </a>
                         </div>
                         {% if responsive %}
                             <div class="col-12 d-block d-md-none">

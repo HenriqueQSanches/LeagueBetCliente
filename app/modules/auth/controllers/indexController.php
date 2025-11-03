@@ -11,7 +11,9 @@ class indexController extends Controller
 
     function indexAction()
     {
-        location(url(null, null, 0));
+        // Redirecionar para página de login do admin
+        header('Location: /admin-login.php');
+        exit;
     }
 
     function emailAction()
