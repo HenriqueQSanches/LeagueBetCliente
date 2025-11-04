@@ -391,9 +391,343 @@ $admin_credito = $_SESSION['admin_credito'] ?? 0;
         :root:not([data-theme]) .theme-toggle-btn .icon-dark {
             display: none;
         }
+        
+        /* ===== RESPONSIVO MOBILE - ADMIN DASHBOARD ===== */
+        
+        /* Botão Menu Mobile (Hamburguer) */
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 10000;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            border: 3px solid #000;
+            border-radius: 8px;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .mobile-menu-btn i {
+            color: #000;
+            font-size: 24px;
+        }
+        
+        /* Overlay para fechar menu */
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9998;
+        }
+        
+        .mobile-overlay.active {
+            display: block;
+        }
+        
+        /* TABLETS */
+        @media (max-width: 992px) {
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-container {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+        }
+        
+        /* MOBILE */
+        @media (max-width: 768px) {
+            /* Prevenir scroll horizontal */
+            * {
+                max-width: 100vw !important;
+            }
+            
+            html, body {
+                overflow-x: hidden !important;
+                width: 100vw !important;
+            }
+            
+            /* Header Mobile */
+            .header {
+                padding: 12px 15px;
+                flex-wrap: wrap;
+            }
+            
+            .header h1 {
+                font-size: 16px;
+                color: #ff9800;
+                width: 100%;
+                text-align: center;
+                margin-bottom: 10px;
+            }
+            
+            .header-right {
+                width: 100%;
+                justify-content: space-between;
+                gap: 10px;
+                font-size: 12px;
+            }
+            
+            .header-info {
+                font-size: 11px;
+            }
+            
+            .user-avatar {
+                width: 30px;
+                height: 30px;
+                font-size: 12px;
+            }
+            
+            /* Container Mobile */
+            .container {
+                flex-direction: column;
+            }
+            
+            /* Sidebar Mobile - Escondida por padrão */
+            .sidebar {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 280px;
+                height: 100vh;
+                z-index: 9999;
+                box-shadow: 4px 0 12px rgba(0, 0, 0, 0.5);
+                overflow-y: auto;
+            }
+            
+            .sidebar.active {
+                display: block;
+            }
+            
+            /* Mostrar botão menu mobile */
+            .mobile-menu-btn {
+                display: flex !important;
+            }
+            
+            /* Content Mobile */
+            .content {
+                padding: 15px 10px;
+                width: 100%;
+            }
+            
+            .page-title {
+                font-size: 20px;
+                margin-bottom: 20px;
+                text-align: center;
+            }
+            
+            /* Alert Mobile */
+            .alert {
+                font-size: 13px;
+                padding: 10px 12px;
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            /* Stats Cards Mobile */
+            .stats-container {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .stat-card {
+                padding: 20px;
+                text-align: center;
+            }
+            
+            .stat-card h3 {
+                font-size: 28px;
+            }
+            
+            .stat-card p {
+                font-size: 13px;
+            }
+            
+            /* Charts Mobile */
+            .charts-container {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .chart-box {
+                padding: 15px;
+            }
+            
+            .chart-box h3 {
+                font-size: 14px;
+            }
+            
+            /* Tabela Mobile */
+            .table-container {
+                padding: 15px 10px;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .table-container h3 {
+                font-size: 16px;
+                margin-bottom: 12px;
+            }
+            
+            table {
+                font-size: 12px;
+                min-width: 100%;
+            }
+            
+            table th,
+            table td {
+                padding: 10px 8px;
+                white-space: nowrap;
+            }
+            
+            /* Footer Mobile */
+            .footer {
+                padding: 15px 10px;
+                font-size: 12px;
+                text-align: center;
+            }
+            
+            /* Theme Toggle Mobile */
+            .theme-toggle-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+                top: 15px;
+                right: 15px;
+            }
+        }
+        
+        /* MOBILE PEQUENO */
+        @media (max-width: 576px) {
+            .header {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 14px;
+            }
+            
+            .header-right {
+                font-size: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .header-info {
+                font-size: 10px;
+            }
+            
+            .content {
+                padding: 10px 5px;
+            }
+            
+            .page-title {
+                font-size: 18px;
+            }
+            
+            .stat-card {
+                padding: 15px;
+            }
+            
+            .stat-card h3 {
+                font-size: 24px;
+            }
+            
+            .stat-card p {
+                font-size: 12px;
+            }
+            
+            .chart-box,
+            .table-container {
+                padding: 12px 8px;
+            }
+            
+            table {
+                font-size: 11px;
+            }
+            
+            table th,
+            table td {
+                padding: 8px 5px;
+            }
+            
+            .mobile-menu-btn,
+            .theme-toggle-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 18px;
+                top: 10px;
+            }
+            
+            .mobile-menu-btn {
+                left: 10px;
+            }
+            
+            .theme-toggle-btn {
+                right: 10px;
+            }
+            
+            .sidebar {
+                width: 260px;
+            }
+        }
+        
+        /* MOBILE EXTRA PEQUENO */
+        @media (max-width: 400px) {
+            .header h1 {
+                font-size: 13px;
+            }
+            
+            .content {
+                padding: 8px 3px;
+            }
+            
+            .page-title {
+                font-size: 16px;
+            }
+            
+            .stat-card h3 {
+                font-size: 22px;
+            }
+            
+            table {
+                font-size: 10px;
+            }
+            
+            table th,
+            table td {
+                padding: 6px 3px;
+            }
+            
+            .mobile-menu-btn,
+            .theme-toggle-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+        }
+        
     </style>
 </head>
 <body>
+    <!-- Botão Menu Mobile -->
+    <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Menu">
+        <i class="fas fa-bars"></i>
+    </button>
+    
+    <!-- Overlay Mobile -->
+    <div class="mobile-overlay" id="mobile-overlay"></div>
+    
     <!-- HEADER -->
     <div class="header">
         <h1>LeagueBet</h1>
@@ -598,6 +932,57 @@ $admin_credito = $_SESSION['admin_credito'] ?? 0;
                     toggleTheme();
                 }
             });
+        })();
+    </script>
+    
+    <!-- SCRIPT MOBILE MENU -->
+    <script>
+        (function() {
+            'use strict';
+            
+            const menuBtn = document.getElementById('mobile-menu-btn');
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.getElementById('mobile-overlay');
+            
+            if (!menuBtn || !sidebar || !overlay) return;
+            
+            // Abrir menu
+            menuBtn.addEventListener('click', function() {
+                sidebar.classList.add('active');
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+            
+            // Fechar menu ao clicar no overlay
+            overlay.addEventListener('click', function() {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+            
+            // Fechar menu ao clicar em um link
+            const menuLinks = sidebar.querySelectorAll('a');
+            menuLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    setTimeout(() => {
+                        sidebar.classList.remove('active');
+                        overlay.classList.remove('active');
+                        document.body.style.overflow = '';
+                    }, 300);
+                });
+            });
+            
+            // Fechar menu com tecla ESC
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+            
+            // Log de inicialização
+            console.log('✅ Admin Dashboard Mobile: Inicializado!');
         })();
     </script>
 </body>

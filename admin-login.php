@@ -164,6 +164,122 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-size: 36px;
             font-weight: bold;
         }
+        
+        /* ===== RESPONSIVO MOBILE - LOGIN ===== */
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .login-container {
+                padding: 30px 25px;
+                max-width: 100%;
+            }
+            
+            .logo {
+                width: 70px;
+                height: 70px;
+                font-size: 32px;
+            }
+            
+            .login-header h1 {
+                font-size: 24px;
+            }
+            
+            .login-header p {
+                font-size: 13px;
+            }
+            
+            .form-group label {
+                font-size: 13px;
+            }
+            
+            .form-group input {
+                font-size: 15px;
+                padding: 12px;
+            }
+            
+            .btn-login {
+                font-size: 15px;
+                padding: 14px;
+            }
+            
+            .error-message {
+                font-size: 13px;
+                padding: 10px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            body {
+                padding: 10px;
+            }
+            
+            .login-container {
+                padding: 25px 20px;
+            }
+            
+            .logo {
+                width: 60px;
+                height: 60px;
+                font-size: 28px;
+                margin-bottom: 15px;
+            }
+            
+            .login-header h1 {
+                font-size: 22px;
+            }
+            
+            .login-header p {
+                font-size: 12px;
+            }
+            
+            .form-group {
+                margin-bottom: 18px;
+            }
+            
+            .form-group label {
+                font-size: 12px;
+            }
+            
+            .form-group input {
+                font-size: 14px;
+                padding: 11px;
+            }
+            
+            .btn-login {
+                font-size: 14px;
+                padding: 13px;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .login-container {
+                padding: 20px 15px;
+            }
+            
+            .logo {
+                width: 55px;
+                height: 55px;
+                font-size: 24px;
+            }
+            
+            .login-header h1 {
+                font-size: 20px;
+            }
+            
+            .form-group input {
+                font-size: 13px;
+                padding: 10px;
+            }
+            
+            .btn-login {
+                font-size: 13px;
+                padding: 12px;
+            }
+        }
+        
     </style>
 </head>
 <body>
