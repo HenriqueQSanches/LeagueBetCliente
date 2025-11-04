@@ -405,14 +405,21 @@ body {
     padding: 5px !important;
 }
 
-/* Responsivo */
+/* ===== RESPONSIVO MOBILE - MELHORIAS ===== */
+
+/* Tablets Grandes */
 @media (max-width: 1200px) {
     .riverbets-sidebar-right {
         width: 300px;
         min-width: 300px;
     }
+    
+    .riverbets-content {
+        padding: 15px;
+    }
 }
 
+/* Tablets */
 @media (max-width: 992px) {
     .riverbets-layout {
         flex-direction: column;
@@ -422,11 +429,479 @@ body {
         width: 100%;
         height: auto;
         position: relative;
+        max-height: none;
     }
     
     .riverbets-sidebar-right {
         width: 100%;
         padding: 20px;
+    }
+    
+    .riverbets-content {
+        padding: 15px;
+    }
+    
+    .riverbets-games-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+    }
+    
+    .riverbets-search {
+        max-width: 100%;
+        margin-left: 0;
+    }
+}
+
+/* Mobile Grande */
+@media (max-width: 768px) {
+    /* Prevenir scroll horizontal */
+    html, body {
+        overflow-x: hidden !important;
+        max-width: 100vw !important;
+    }
+    
+    .riverbets-layout,
+    .riverbets-content,
+    .app-container,
+    .app,
+    .container-fluid,
+    .row {
+        max-width: 100vw !important;
+        overflow-x: hidden !important;
+    }
+    
+    /* Layout Principal */
+    .riverbets-content {
+        padding: 10px 5px;
+        width: 100% !important;
+    }
+    
+    /* Sidebar Menu - Menu Hamburguer */
+    .riverbets-sidebar {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 280px;
+        height: 100vh;
+        z-index: 10000;
+        box-shadow: 4px 0 12px rgba(0, 0, 0, 0.5);
+    }
+    
+    .riverbets-sidebar.active {
+        display: flex;
+    }
+    
+    /* Botão Menu Mobile */
+    .mobile-menu-btn {
+        display: flex !important;
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        z-index: 9998;
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, var(--orange) 0%, var(--orange-dark) 100%);
+        border: 3px solid var(--black);
+        border-radius: 8px;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    
+    .mobile-menu-btn i {
+        color: #000;
+        font-size: 24px;
+    }
+    
+    /* Overlay para fechar menu */
+    .mobile-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 9999;
+    }
+    
+    .mobile-overlay.active {
+        display: block;
+    }
+    
+    /* Banner Responsivo */
+    .riverbets-banner {
+        min-height: 150px;
+        padding: 20px 10px;
+        font-size: 18px;
+        width: 100%;
+        margin: 0 auto 15px;
+    }
+    
+    .riverbets-banner h1 {
+        font-size: 18px !important;
+        line-height: 1.3;
+        word-break: break-word;
+    }
+    
+    /* Games Header */
+    .riverbets-games-header {
+        padding: 12px 8px;
+        width: 100%;
+        margin: 0 auto 15px;
+    }
+    
+    .riverbets-games-header h2 {
+        font-size: 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .riverbets-games-header h2 i {
+        width: 28px;
+        height: 28px;
+        font-size: 13px;
+        margin-right: 8px;
+    }
+    
+    /* Tabelas de Jogos - SEM SCROLL HORIZONTAL */
+    .riverbets-games-table {
+        font-size: 11px;
+        width: 100%;
+        margin: 0 auto 10px;
+        overflow: visible;
+    }
+    
+    .riverbets-games-table table {
+        width: 100% !important;
+        table-layout: fixed;
+    }
+    
+    /* Info do Jogo - Compacta */
+    .riverbets-game-info {
+        min-width: auto !important;
+        width: 45% !important;
+        padding: 8px 5px !important;
+    }
+    
+    .riverbets-game-teams {
+        font-size: 11px;
+        line-height: 1.3;
+        white-space: normal;
+        word-break: break-word;
+    }
+    
+    .riverbets-game-datetime {
+        font-size: 9px;
+        margin-top: 3px;
+    }
+    
+    /* Labels das Odds - Ocultar ou Compactar */
+    .riverbets-odds-labels {
+        font-size: 8px;
+        padding: 3px 2px !important;
+    }
+    
+    .riverbets-odds-labels span {
+        display: block;
+    }
+    
+    /* Odds/Cotações - Menores e compactas */
+    .riverbets-odds {
+        padding: 3px 2px !important;
+        width: 18% !important;
+    }
+    
+    .btn-cotacao {
+        width: 100% !important;
+        max-width: 48px !important;
+        min-width: 38px !important;
+        height: 30px !important;
+        line-height: 30px !important;
+        font-size: 10px !important;
+        padding: 0 2px !important;
+    }
+    
+    /* Cabeçalho do Campeonato */
+    .riverbets-championship-header {
+        font-size: 11px !important;
+        padding: 8px 5px !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    /* Cupom/Bilhete Mobile */
+    .riverbets-sidebar-right {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 0;
+        z-index: 9000;
+        max-height: 50vh;
+        overflow-y: auto;
+        background: var(--bg-cards);
+        border-top: 3px solid var(--orange);
+        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease;
+    }
+    
+    .riverbets-sidebar-right.minimized {
+        transform: translateY(calc(100% - 60px));
+    }
+    
+    .bilhete {
+        margin: 0 !important;
+        border-radius: 0 !important;
+        border-left: none !important;
+        border-right: none !important;
+        border-bottom: none !important;
+    }
+    
+    /* Botão de minimizar bilhete */
+    .bilhete-toggle-btn {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 50px;
+        background: var(--orange);
+        color: #000;
+        font-weight: 700;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        gap: 10px;
+    }
+    
+    /* Footer Mobile */
+    .app-footer {
+        padding: 15px 10px !important;
+        margin-bottom: 60px; /* Espaço para o bilhete fixo */
+    }
+    
+    .app-footer ul {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .app-footer ul li {
+        display: block !important;
+    }
+    
+    /* Theme Toggle Mobile */
+    .theme-toggle-btn {
+        top: 15px;
+        right: 15px;
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+}
+
+/* Mobile Pequeno */
+@media (max-width: 576px) {
+    /* Forçar largura 100% */
+    html, body {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        overflow-x: hidden !important;
+    }
+    
+    .riverbets-content {
+        padding: 5px 3px;
+        width: 100% !important;
+    }
+    
+    .riverbets-banner {
+        min-height: 120px;
+        font-size: 14px;
+        padding: 15px 5px;
+        width: 100%;
+    }
+    
+    .riverbets-banner h1 {
+        font-size: 15px !important;
+        line-height: 1.3;
+        padding: 0 5px;
+    }
+    
+    .riverbets-games-header {
+        padding: 10px 5px;
+    }
+    
+    .riverbets-games-header h2 {
+        font-size: 12px;
+    }
+    
+    .riverbets-games-header h2 i {
+        width: 24px;
+        height: 24px;
+        font-size: 11px;
+    }
+    
+    /* Tabelas ainda mais compactas */
+    .riverbets-games-table {
+        font-size: 10px;
+    }
+    
+    .riverbets-game-info {
+        width: 50% !important;
+        padding: 6px 3px !important;
+    }
+    
+    .riverbets-game-teams {
+        font-size: 10px;
+    }
+    
+    .riverbets-game-datetime {
+        font-size: 8px;
+    }
+    
+    .riverbets-odds {
+        width: 16.66% !important;
+        padding: 2px 1px !important;
+    }
+    
+    .btn-cotacao {
+        width: 100% !important;
+        max-width: 42px !important;
+        min-width: 32px !important;
+        height: 28px !important;
+        line-height: 28px !important;
+        font-size: 9px !important;
+        padding: 0 1px !important;
+    }
+    
+    .riverbets-odds-labels {
+        font-size: 7px;
+        padding: 2px 1px !important;
+    }
+    
+    .riverbets-championship-header {
+        font-size: 10px !important;
+        padding: 6px 3px !important;
+    }
+    
+    .mobile-menu-btn {
+        width: 45px;
+        height: 45px;
+        top: 10px;
+        left: 10px;
+    }
+    
+    .mobile-menu-btn i {
+        font-size: 20px;
+    }
+    
+    .theme-toggle-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 18px;
+        top: 10px;
+        right: 10px;
+    }
+    
+    /* Sidebar Mobile menor */
+    .riverbets-sidebar {
+        width: 260px;
+    }
+    
+    /* Busca compacta */
+    .riverbets-search input {
+        padding: 8px 40px 8px 10px;
+        font-size: 12px;
+    }
+    
+    .riverbets-search button {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+}
+
+/* Mobile Extra Pequeno */
+@media (max-width: 400px) {
+    /* Máxima compactação */
+    html, body {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        overflow-x: hidden !important;
+    }
+    
+    .riverbets-content {
+        padding: 3px 2px;
+    }
+    
+    .riverbets-banner {
+        min-height: 100px;
+        padding: 10px 3px;
+        font-size: 12px;
+    }
+    
+    .riverbets-banner h1 {
+        font-size: 13px !important;
+    }
+    
+    .riverbets-games-header {
+        padding: 8px 3px;
+    }
+    
+    .riverbets-games-header h2 {
+        font-size: 11px;
+    }
+    
+    .riverbets-games-table {
+        font-size: 9px;
+    }
+    
+    .riverbets-game-info {
+        width: 52% !important;
+        padding: 5px 2px !important;
+    }
+    
+    .riverbets-game-teams {
+        font-size: 9px;
+    }
+    
+    .riverbets-game-datetime {
+        font-size: 7px;
+    }
+    
+    .riverbets-odds {
+        width: 16% !important;
+        padding: 1px !important;
+    }
+    
+    .btn-cotacao {
+        width: 100% !important;
+        max-width: 38px !important;
+        min-width: 28px !important;
+        height: 26px !important;
+        line-height: 26px !important;
+        font-size: 8px !important;
+        padding: 0 !important;
+    }
+    
+    .riverbets-odds-labels {
+        font-size: 6px;
+        padding: 1px !important;
+    }
+    
+    .riverbets-championship-header {
+        font-size: 9px !important;
+        padding: 5px 2px !important;
+    }
+    
+    .mobile-menu-btn,
+    .theme-toggle-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
     }
 }
 
