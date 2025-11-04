@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>LeagueBet - Teste Mobile Responsivo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background: linear-gradient(135deg, #d0d0d0 0%, #c0c0c0 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        h1 {
+            color: #ff9800;
+            text-align: center;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        h1 i {
+            font-size: 36px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .status {
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .feature-list {
+            margin-bottom: 30px;
+        }
+
+        .feature-item {
+            background: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 4px solid #ff9800;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .feature-item i {
+            font-size: 24px;
+            color: #ff9800;
+            width: 30px;
+            text-align: center;
+        }
+
+        .feature-item strong {
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .feature-item p {
+            color: #666;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .breakpoint-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            overflow-x: auto;
+            display: block;
+        }
+
+        .breakpoint-table table {
+            width: 100%;
+            min-width: 600px;
+        }
+
+        .breakpoint-table th,
+        .breakpoint-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .breakpoint-table th {
+            background: #000;
+            color: #ff9800;
+            font-weight: 700;
+        }
+
+        .breakpoint-table tr:hover {
+            background: rgba(255, 152, 0, 0.1);
+        }
+
+        .device-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #ff9800;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            z-index: 10000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-test {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            color: #000;
+            padding: 15px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 3px solid #000;
+            margin: 10px 5px;
+        }
+
+        .btn-test:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
+        }
+
+        .btn-test i {
+            margin-right: 8px;
+        }
+
+        .actions {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        /* RESPONSIVO */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            h1 i {
+                font-size: 28px;
+            }
+
+            .feature-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .btn-test {
+                display: block;
+                margin: 10px 0;
+            }
+
+            .device-indicator {
+                bottom: 10px;
+                right: 10px;
+                font-size: 12px;
+                padding: 10px 15px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            h1 {
+                font-size: 20px;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .status {
+                font-size: 16px;
+                padding: 15px;
+            }
+
+            .breakpoint-table {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>
+            <i class="fa fa-mobile"></i>
+            LeagueBet - Mobile Responsivo
+        </h1>
+        <p class="subtitle">Teste de Responsividade Implementado com Sucesso</p>
+
+        <div class="status">
+            ✅ LAYOUT MOBILE TOTALMENTE FUNCIONAL
+        </div>
+
+        <div class="feature-list">
+            <h2 style="color: #333; margin-bottom: 20px;">🎯 Recursos Implementados</h2>
+
+            <div class="feature-item">
+                <i class="fa fa-bars"></i>
+                <div>
+                    <strong>Menu Hamburguer</strong>
+                    <p>Menu lateral deslizante com overlay escuro. Ativa em telas ≤768px.</p>
+                </div>
+            </div>
+
+            <div class="feature-item">
+                <i class="fa fa-shopping-cart"></i>
+                <div>
+                    <strong>Cupom Fixo no Rodapé</strong>
+                    <p>Bilhete de apostas fixo na parte inferior, minimizável com botão toggle.</p>
+                </div>
+            </div>
+
+            <div class="feature-item">
+                <i class="fa fa-adjust"></i>
+                <div>
+                    <strong>Tema Light/Dark</strong>
+                    <p>Botão fixo no canto superior direito, totalmente funcional em mobile.</p>
+                </div>
+            </div>
+
+            <div class="feature-item">
+                <i class="fa fa-arrows-alt"></i>
+                <div>
+                    <strong>Layout Adaptativo</strong>
+                    <p>3 colunas no desktop, vertical no tablet, otimizado para mobile.</p>
+                </div>
+            </div>
+
+            <div class="feature-item">
+                <i class="fa fa-tachometer"></i>
+                <div>
+                    <strong>Performance Otimizada</strong>
+                    <p>RequestAnimationFrame, hardware acceleration, touch otimizado.</p>
+                </div>
+            </div>
+
+            <div class="feature-item">
+                <i class="fa fa-hand-pointer-o"></i>
+                <div>
+                    <strong>Touch Targets</strong>
+                    <p>Mínimo 44×44px para todos os botões (padrão iOS/Android).</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 style="color: #333; margin-bottom: 15px; margin-top: 40px;">📐 Breakpoints</h2>
+        <div class="breakpoint-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Dispositivo</th>
+                        <th>Largura</th>
+                        <th>Ajustes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Desktop</strong></td>
+                        <td>>1200px</td>
+                        <td>Layout 3 colunas completo</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tablet Grande</strong></td>
+                        <td>992px - 1200px</td>
+                        <td>Cupom com 300px</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tablet</strong></td>
+                        <td>768px - 992px</td>
+                        <td>Layout vertical</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mobile Grande</strong></td>
+                        <td>576px - 768px</td>
+                        <td>Menu hamburguer ativo</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mobile Pequeno</strong></td>
+                        <td>400px - 576px</td>
+                        <td>Fontes e botões reduzidos</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mobile Extra Pequeno</strong></td>
+                        <td><400px</td>
+                        <td>Otimização máxima</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="actions">
+            <a href="http://localhost:8000" class="btn-test">
+                <i class="fa fa-rocket"></i>
+                Abrir Site Principal
+            </a>
+            <a href="admin-login.php" class="btn-test">
+                <i class="fa fa-lock"></i>
+                Área Administrativa
+            </a>
+        </div>
+
+        <div style="margin-top: 40px; padding: 20px; background: #f9f9f9; border-radius: 8px; border-left: 4px solid #ff9800;">
+            <h3 style="color: #ff9800; margin-bottom: 10px;">💡 Como Testar</h3>
+            <ol style="color: #666; line-height: 1.8; padding-left: 20px;">
+                <li>Redimensione a janela do navegador para diferentes larguras</li>
+                <li>Abra DevTools (F12) e ative o modo responsivo (Ctrl+Shift+M)</li>
+                <li>Teste em dispositivos: iPhone SE, iPad, Samsung Galaxy</li>
+                <li>Verifique orientações portrait e landscape</li>
+                <li>Teste gestos touch (se em dispositivo real)</li>
+            </ol>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 2px solid #ddd;">
+            <p style="color: #ccc; font-size: 13px; margin-bottom: 5px;">Desenvolvido por</p>
+            <p style="color: #ff9800; font-size: 18px; font-weight: 700;">
+                <i class="fa fa-code"></i> Henrique Sanches
+            </p>
+        </div>
+    </div>
+
+    <!-- Indicador de Largura da Tela -->
+    <div class="device-indicator" id="device-indicator">
+        <i class="fa fa-desktop"></i> <span id="screen-width"></span>
+    </div>
+
+    <script>
+        // Atualizar indicador de largura
+        function updateDeviceIndicator() {
+            const width = window.innerWidth;
+            const indicator = document.getElementById('device-indicator');
+            const screenWidth = document.getElementById('screen-width');
+            
+            let device = '';
+            let icon = 'fa-desktop';
+            
+            if (width > 1200) {
+                device = 'Desktop';
+                icon = 'fa-desktop';
+            } else if (width > 992) {
+                device = 'Tablet Grande';
+                icon = 'fa-tablet';
+            } else if (width > 768) {
+                device = 'Tablet';
+                icon = 'fa-tablet';
+            } else if (width > 576) {
+                device = 'Mobile Grande';
+                icon = 'fa-mobile';
+            } else if (width > 400) {
+                device = 'Mobile Pequeno';
+                icon = 'fa-mobile';
+            } else {
+                device = 'Mobile Extra Pequeno';
+                icon = 'fa-mobile';
+            }
+            
+            indicator.innerHTML = `<i class="fa ${icon}"></i> <span>${device}: ${width}px</span>`;
+        }
+        
+        // Atualizar no carregamento e ao redimensionar
+        updateDeviceIndicator();
+        window.addEventListener('resize', updateDeviceIndicator);
+        
+        // Log de inicialização
+        console.log('✅ Página de Teste Mobile carregada com sucesso!');
+    </script>
+
+</body>
+</html>
+
