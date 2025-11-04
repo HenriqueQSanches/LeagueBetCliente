@@ -692,3 +692,17 @@ Stack trace:
 [30-Oct-2025 09:20:54 America/Sao_Paulo] PHP Deprecated:  Required parameter $lineno follows optional parameter $only in C:\xampp\htdocs\banca-esportiva\Cliente1\SCRIPT BANCA ESPORTIVA FUTEBOL\SCRIPT BANCA ESPORTIVA FUTEBOL\Arquivos Sistema\Subir e extrair\vendor\twig\twig\lib\Twig\Node\Include.php on line 20
 [03-Nov-2025 13:01:08 America/Sao_Paulo] PHP Warning:  ini_set(): Cannot change zlib.output_compression - headers already sent in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\boot.inc.php on line 58
 [03-Nov-2025 13:01:08 America/Sao_Paulo] PHP Warning:  ini_set(): Cannot change zlib.output_compression - headers already sent in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\boot.inc.php on line 60
+[04-Nov-2025 12:04:04 America/Sao_Paulo] PHP Fatal error:  Uncaught Exception: Não foi possível conectar a base de dados. in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\core\crud\Conn.php:98
+Stack trace:
+#0 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\core\crud\Conn.php(70): app\core\crud\Conn::pdoConnect()
+#1 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\core\crud\Read.php(55): app\core\crud\Conn::getConn()
+#2 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\core\crud\Read.php(40): app\core\crud\Read->Connect()
+#3 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\core\crud\Read.php(109): app\core\crud\Read->Execute()
+#4 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\core\Model.php(171): app\core\crud\Read->FullRead('SELECT a.* FROM...', NULL)
+#5 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\core\Model.php(128): app\core\Model::select('SELECT a.* FROM...', NULL)
+#6 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\models\DadosModel.php(45): app\core\Model::lista('ORDER BY a.id D...', NULL, false, true, true)
+#7 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\Site.php(15): app\models\DadosModel::get()
+#8 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\APP.php(176): app\modules\website\Site->__construct()
+#9 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\index.php(5): app\APP::Initialize()
+#10 {main}
+  thrown in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\core\crud\Conn.php on line 98

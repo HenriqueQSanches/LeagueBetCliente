@@ -1,6 +1,7 @@
 <?php
 session_start();
 session_destroy();
-header('Location: admin-login.php');
+// Redirecionar para a página inicial do site (layout padrão)
+header('Location: /');
 exit;
 

@@ -39,9 +39,28 @@ $admin_credito = $_SESSION['admin_credito'] ?? 0;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Wolf Sistemas</title>
+    <title>Dashboard - LeagueBet</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* THEME VARIABLES */
+        :root {
+            --bg-primary: #f5f5f5;
+            --bg-secondary: #ffffff;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --border-color: #e0e0e0;
+            --card-bg: #ffffff;
+        }
+        
+        [data-theme="dark"] {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --border-color: #404040;
+            --card-bg: #242424;
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -50,8 +69,9 @@ $admin_credito = $_SESSION['admin_credito'] ?? 0;
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
-            color: #333;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background 0.3s ease, color 0.3s ease;
         }
         
         /* HEADER */
@@ -96,7 +116,7 @@ $admin_credito = $_SESSION['admin_credito'] ?? 0;
         .user-avatar {
             width: 35px;
             height: 35px;
-            background: #8B1A1A;
+            background: #ff9800;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -112,7 +132,7 @@ $admin_credito = $_SESSION['admin_credito'] ?? 0;
         /* SIDEBAR */
         .sidebar {
             width: 230px;
-            background: #8B1A1A;
+            background: #212121;
             color: white;
             overflow-y: auto;
         }
@@ -163,6 +183,7 @@ $admin_credito = $_SESSION['admin_credito'] ?? 0;
         .content {
             flex: 1;
             padding: 30px;
+            background: var(--bg-primary);
         }
         
         .alert {
@@ -179,7 +200,7 @@ $admin_credito = $_SESSION['admin_credito'] ?? 0;
         
         .page-title {
             font-size: 24px;
-            color: #333;
+            color: var(--text-primary);
             margin-bottom: 25px;
             font-weight: 600;
         }
@@ -246,30 +267,32 @@ $admin_credito = $_SESSION['admin_credito'] ?? 0;
         }
         
         .chart-box {
-            background: white;
+            background: var(--card-bg);
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
         }
         
         .chart-box h3 {
             font-size: 16px;
             margin-bottom: 15px;
-            color: #333;
+            color: var(--text-primary);
         }
         
         /* TABELA */
         .table-container {
-            background: white;
+            background: var(--card-bg);
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
         }
         
         .table-container h3 {
             font-size: 18px;
             margin-bottom: 15px;
-            color: #333;
+            color: var(--text-primary);
         }
         
         table {
@@ -278,7 +301,7 @@ $admin_credito = $_SESSION['admin_credito'] ?? 0;
         }
         
         table th {
-            background: #333;
+            background: #212121;
             color: white;
             padding: 12px;
             text-align: left;
@@ -288,23 +311,24 @@ $admin_credito = $_SESSION['admin_credito'] ?? 0;
         
         table td {
             padding: 12px;
-            border-bottom: 1px solid #e0e0e0;
+            border-bottom: 1px solid var(--border-color);
             font-size: 14px;
+            color: var(--text-primary);
         }
         
         table tr:hover {
-            background: #f9f9f9;
+            background: var(--bg-secondary);
         }
         
         /* FOOTER */
         .footer {
             text-align: center;
             padding: 20px;
-            background: white;
+            background: var(--card-bg);
             margin-top: 20px;
-            border-top: 1px solid #e0e0e0;
+            border-top: 1px solid var(--border-color);
             font-size: 13px;
-            color: #666;
+            color: var(--text-secondary);
         }
         
         .logout-btn {
@@ -322,18 +346,57 @@ $admin_credito = $_SESSION['admin_credito'] ?? 0;
         }
         
         .date-filter {
-            background: white;
+            background: var(--card-bg);
             padding: 10px 15px;
             border-radius: 5px;
-            border: 1px solid #ddd;
+            border: 1px solid var(--border-color);
             font-size: 14px;
+            color: var(--text-primary);
+        }
+        
+        /* THEME TOGGLE BUTTON */
+        .theme-toggle-btn {
+            position: fixed;
+            top: 20px;
+            right: 80px;
+            z-index: 9999;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            border: 3px solid #212121;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle-btn:hover {
+            transform: scale(1.1) rotate(15deg);
+            box-shadow: 0 6px 20px rgba(255, 152, 0, 0.5);
+        }
+        
+        .theme-toggle-btn:active {
+            transform: scale(0.95);
+        }
+        
+        [data-theme="dark"] .theme-toggle-btn .icon-light {
+            display: none;
+        }
+        
+        [data-theme="light"] .theme-toggle-btn .icon-dark,
+        :root:not([data-theme]) .theme-toggle-btn .icon-dark {
+            display: none;
         }
     </style>
 </head>
 <body>
     <!-- HEADER -->
     <div class="header">
-        <h1>Wolf Sistemas</h1>
+        <h1>LeagueBet</h1>
         <div class="header-right">
             <div class="header-info">
                 <i class="fas fa-wallet"></i>
@@ -367,8 +430,6 @@ $admin_credito = $_SESSION['admin_credito'] ?? 0;
             <ul class="sidebar-menu">
                 <li><a href="admin-dashboard.php"><i class="fas fa-home"></i> RETORNAR AO SITE</a></li>
                 <li><a href="#" class="active"><i class="fas fa-chart-line"></i> DASHBOARD</a></li>
-                <li><a href="#"><i class="fas fa-gem"></i> PLANO</a></li>
-                <li><a href="#"><i class="fas fa-star"></i> NOVIDADES</a></li>
                 <li><a href="#"><i class="fas fa-gamepad"></i> JOGOS MAIS JOGADOS</a></li>
                 <li><a href="#" class="submenu-toggle"><i class="fas fa-cog"></i> ADMINISTRAÇÃO</a></li>
                 <li><a href="#" class="submenu-toggle"><i class="fas fa-dollar-sign"></i> FINANCEIRO</a></li>
@@ -379,7 +440,6 @@ $admin_credito = $_SESSION['admin_credito'] ?? 0;
                 <li><a href="#"><i class="fas fa-trophy"></i> SORTEIOS</a></li>
                 <li><a href="#"><i class="fas fa-check-circle"></i> CONFERIR BILHETE</a></li>
                 <li><a href="#"><i class="fas fa-credit-card"></i> CARTÕES PRÉ PAGOS</a></li>
-                <li><a href="#"><i class="fas fa-flag"></i> BILHETE PARA BANNER</a></li>
                 <li><a href="#"><i class="fas fa-volume-up"></i> LANÇAR RESULTADOS</a></li>
                 <li><a href="#"><i class="fas fa-headset"></i> AUDITORIA</a></li>
                 <li><a href="#"><i class="fas fa-layer-group"></i> ACUMULADÃO</a></li>
@@ -483,10 +543,63 @@ $admin_credito = $_SESSION['admin_credito'] ?? 0;
             
             <!-- FOOTER -->
             <div class="footer">
-                © 2025 <strong>WOLF SISTEMAS</strong>. Todos os direitos reservados. | V4.0.0 B179
+                © 2025 <strong>LEAGUEBET</strong>. Todos os direitos reservados. | V1.0.0
             </div>
         </div>
     </div>
+    
+    <!-- BOTÃO DE TEMA -->
+    <button class="theme-toggle-btn" id="theme-toggle" aria-label="Alternar tema">
+        <span class="icon-light">☀️</span>
+        <span class="icon-dark">🌙</span>
+    </button>
+    
+    <!-- SCRIPT DO TEMA -->
+    <script>
+        (function() {
+            'use strict';
+            
+            // Verificar preferência salva ou usar tema claro como padrão
+            const currentTheme = localStorage.getItem('admin-theme') || 'light';
+            
+            // Aplicar tema ao carregar a página
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            
+            // Função para alternar tema
+            function toggleTheme() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                // Aplicar novo tema
+                document.documentElement.setAttribute('data-theme', newTheme);
+                
+                // Salvar preferência
+                localStorage.setItem('admin-theme', newTheme);
+                
+                // Feedback visual
+                const button = document.getElementById('theme-toggle');
+                button.style.transform = 'scale(0.8) rotate(180deg)';
+                
+                setTimeout(() => {
+                    button.style.transform = '';
+                }, 300);
+            }
+            
+            // Adicionar evento de clique
+            const button = document.getElementById('theme-toggle');
+            if (button) {
+                button.addEventListener('click', toggleTheme);
+            }
+            
+            // Suporte para atalho de teclado (Ctrl+Shift+T)
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && e.shiftKey && e.key === 'T') {
+                    e.preventDefault();
+                    toggleTheme();
+                }
+            });
+        })();
+    </script>
 </body>
 </html>
 

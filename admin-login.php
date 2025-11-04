@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         
         .login-header h1 {
-            color: #8B1A1A;
+            color: #ff9800;
             font-size: 28px;
             margin-bottom: 10px;
         }
@@ -120,13 +120,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         .form-group input:focus {
             outline: none;
-            border-color: #8B1A1A;
+            border-color: #ff9800;
         }
         
         .btn-login {
             width: 100%;
             padding: 14px;
-            background: #8B1A1A;
+            background: #ff9800;
             color: white;
             border: none;
             border-radius: 5px;
@@ -137,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         
         .btn-login:hover {
-            background: #6B0A0A;
+            background: #f57c00;
         }
         
         .error-message {
@@ -155,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             width: 80px;
             height: 80px;
             margin: 0 auto 20px;
-            background: #8B1A1A;
+            background: #ff9800;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -169,8 +169,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <div class="login-container">
         <div class="login-header">
-            <div class="logo">WS</div>
-            <h1>Wolf Sistemas</h1>
+            <div class="logo">LB</div>
+            <h1>LeagueBet</h1>
             <p>Painel Administrativo</p>
         </div>
         

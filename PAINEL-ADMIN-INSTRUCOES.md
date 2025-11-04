@@ -1,8 +1,8 @@
-# 🎯 PAINEL ADMINISTRATIVO - WOLF SISTEMAS
+# 🎯 PAINEL ADMINISTRATIVO - LEAGUEBET
 
 ## ✅ PAINEL CRIADO COM SUCESSO!
 
-Criei um **painel administrativo completo** com layout **idêntico** ao da Wolf Sistemas!
+Criei um **painel administrativo completo** com layout profissional para o LeagueBet!
 
 ---
 
@@ -33,9 +33,9 @@ http://localhost:8000/admin-dashboard.php
    - Validação de usuário e senha
    - Mensagens de erro amigáveis
 
-2. **Dashboard Completo (Estilo Wolf Sistemas)**
+2. **Dashboard Completo (Estilo LeagueBet)**
    - Header com informações do usuário
-   - Sidebar vermelha (#8B1A1A) com menu completo
+   - Sidebar preta (#212121) com menu completo
    - Cards de estatísticas coloridos:
      * 🟢 Verde - Entradas (R$)
      * 🔴 Vermelho - Saídas (R$)
@@ -118,7 +118,8 @@ admin-logout.php     → Logout
 ## 🎨 CORES E DESIGN
 
 **Cores Principais:**
-- Vermelho escuro: `#8B1A1A` (sidebar)
+- Preto: `#212121` (sidebar)
+- Laranja: `#ff9800` (destaques e botões)
 - Cinza escuro: `#2c3e50` (header)
 - Verde: Entradas
 - Vermelho: Saídas
@@ -188,11 +189,16 @@ Edite o arquivo `admin-dashboard.php` na seção `<style>`:
 
 ```css
 .sidebar {
-    background: #8B1A1A; /* Mude aqui */
+    background: #212121; /* Sidebar preta */
 }
 
 .header {
-    background: #2c3e50; /* Mude aqui */
+    background: #2c3e50; /* Header cinza */
+}
+
+/* Laranja LeagueBet */
+.user-avatar {
+    background: #ff9800;
 }
 ```
 
@@ -231,5 +237,5 @@ Seu **painel administrativo estilo Wolf Sistemas** está **100% funcional**!
 
 ---
 
-**Desenvolvido para: Banca Esportiva** | **Estilo: Wolf Sistemas**
+**Desenvolvido para: LeagueBet** | **Sistema de Apostas Esportivas**
 

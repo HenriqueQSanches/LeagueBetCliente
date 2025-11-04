@@ -53,8 +53,8 @@ http://localhost:8000/entrar
 | Característica | Sistema Original | Novo Painel Admin |
 |----------------|-----------------|-------------------|
 | Login | Via AJAX (com problemas) | Server-side (funciona 100%) |
-| Layout | Usa layout do site | Layout próprio Wolf Sistemas |
-| Cores | Laranja/Amarelo | Vermelho escuro profissional |
+| Layout | Usa layout do site | Layout próprio LeagueBet |
+| Cores | Laranja/Amarelo | Preto e Laranja profissional |
 | Acesso | /entrar → redireciona | admin-login.php direto |
 | Dashboard | Layout site | Layout administrativo completo |
 
@@ -77,7 +77,7 @@ http://localhost:8000/entrar
    ↓
 7. Redireciona para: admin-dashboard.php
    ↓
-8. Admin vê dashboard com layout Wolf Sistemas (vermelho)
+8. Admin vê dashboard com layout LeagueBet (preto e laranja)
 ```
 
 ---
