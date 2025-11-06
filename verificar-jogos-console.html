@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 Verificar Jogos - Console</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            background: linear-gradient(135deg, #ff8000 0%, #ff6000 100%);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 2px solid rgba(255, 128, 0, 0.3);
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 5px;
+        }
+        .status.success { background: #51cf66; color: #000; }
+        .status.error { background: #ff6b6b; color: #fff; }
+        .status.warning { background: #ffd43b; color: #000; }
+        .code {
+            background: #000;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #ff8000;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+        .spinner {
+            border: 5px solid rgba(255, 255, 255, 0.1);
+            border-top: 5px solid #ff8000;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .result {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .result.ok { background: rgba(81, 207, 102, 0.2); border-left: 4px solid #51cf66; }
+        .result.fail { background: rgba(255, 107, 107, 0.2); border-left: 4px solid #ff6b6b; }
+        button {
+            background: linear-gradient(135deg, #ff8000 0%, #ff6000 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            transform: scale(1.05);
+        }
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔍 DIAGNÓSTICO - Por que os jogos não aparecem?</h1>
+        <p>Verificação completa do sistema</p>
+    </div>
+
+    <div class="section">
+        <h2>📊 Status Geral</h2>
+        <div id="status-geral">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Verificando sistema...</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>🔌 1. Teste da API</h2>
+        <button onclick="testarAPI()">🔄 Testar API Agora</button>
+        <div id="resultado-api"></div>
+    </div>
+
+    <div class="section">
+        <h2>💾 2. Verificar Banco de Dados</h2>
+        <button onclick="testarBanco()">🔄 Verificar Banco</button>
+        <div id="resultado-banco"></div>
+    </div>
+
+    <div class="section">
+        <h2>🎨 3. Verificar Vue.js</h2>
+        <button onclick="testarVue()">🔄 Verificar Vue</button>
+        <div id="resultado-vue"></div>
+    </div>
+
+    <div class="section">
+        <h2>🛠️ 4. Solução Rápida</h2>
+        <div id="solucao"></div>
+    </div>
+
+    <script>
+        // Executar verificação automática ao carregar
+        window.onload = function() {
+            verificarTudo();
+        };
+
+        async function verificarTudo() {
+            await testarAPI();
+            await testarBanco();
+            await testarVue();
+            gerarSolucao();
+        }
+
+        async function testarAPI() {
+            const div = document.getElementById('resultado-api');
+            div.innerHTML = '<div class="loading"><div class="spinner"></div><p>Testando API...</p></div>';
+
+            try {
+                const response = await fetch('/Cliente/LeagueBetCliente-main/apostar/jogos');
+                const contentType = response.headers.get('content-type');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error(`API retornou ${contentType} ao invés de JSON!`);
+                }
+
+                const data = await response.json();
+
+                let html = '<div class="result ok">';
+                html += '<h3>✅ API Funcionando!</h3>';
+                html += `<p><strong>Status HTTP:</strong> ${response.status}</p>`;
+                html += `<p><strong>Content-Type:</strong> ${contentType}</p>`;
+                html += `<p><strong>Total de Cotações:</strong> ${data.cotacoes?.length || 0}</p>`;
+                html += `<p><strong>Total de Países:</strong> ${data.paises?.length || 0}</p>`;
+                
+                // Contar jogos
+                let totalJogos = 0;
+                if (data.paises && Array.isArray(data.paises)) {
+                    data.paises.forEach(pais => {
+                        if (pais.campeonatos && Array.isArray(pais.campeonatos)) {
+                            pais.campeonatos.forEach(camp => {
+                                if (camp.jogos && Array.isArray(camp.jogos)) {
+                                    totalJogos += camp.jogos.length;
+                                }
+                            });
+                        }
+                    });
+                }
+                
+                html += `<p><strong>Total de Jogos:</strong> ${totalJogos}</p>`;
+                
+                if (totalJogos === 0) {
+                    html += '<div class="result fail" style="margin-top: 15px;">';
+                    html += '<h4>⚠️ PROBLEMA ENCONTRADO!</h4>';
+                    html += '<p>A API está funcionando, mas <strong>não há jogos disponíveis</strong>!</p>';
+                    html += '<p><strong>Solução:</strong> Importar jogos do banco de dados.</p>';
+                    html += '</div>';
+                } else {
+                    html += '<div class="code">';
+                    html += '<strong>Exemplo de Jogo:</strong><br>';
+                    const primeiroJogo = data.paises[0]?.campeonatos[0]?.jogos[0];
+                    if (primeiroJogo) {
+                        html += `${primeiroJogo.casa} x ${primeiroJogo.fora}<br>`;
+                        html += `Data: ${primeiroJogo.data} ${primeiroJogo.hora}<br>`;
+                        html += `Campeonato: ${primeiroJogo.campeonato}`;
+                    }
+                    html += '</div>';
+                }
+                
+                html += '</div>';
+                div.innerHTML = html;
+
+                // Salvar resultado
+                window.apiOk = true;
+                window.totalJogos = totalJogos;
+
+            } catch (error) {
+                let html = '<div class="result fail">';
+                html += '<h3>❌ Erro na API!</h3>';
+                html += `<p><strong>Erro:</strong> ${error.message}</p>`;
+                html += '<p><strong>URL testada:</strong> /Cliente/LeagueBetCliente-main/apostar/jogos</p>';
+                html += '</div>';
+                div.innerHTML = html;
+
+                window.apiOk = false;
+                window.apiError = error.message;
+            }
+        }
+
+        async function testarBanco() {
+            const div = document.getElementById('resultado-banco');
+            div.innerHTML = '<div class="loading"><div class="spinner"></div><p>Verificando banco...</p></div>';
+
+            try {
+                const response = await fetch('/Cliente/LeagueBetCliente-main/teste-jogos-direto.php');
+                const text = await response.text();
+
+                let html = '<div class="result ok">';
+                html += '<h3>✅ Banco de Dados Acessível</h3>';
+                
+                // Extrair informações do resultado
+                const totalMatch = text.match(/Total de jogos disponíveis[^\d]*(\d+)/i);
+                const jogosMatch = text.match(/Próximos (\d+) Jogos/i);
+                
+                if (totalMatch) {
+                    const total = parseInt(totalMatch[1]);
+                    html += `<p><strong>Jogos no banco (futuros):</strong> ${total}</p>`;
+                    window.jogosBanco = total;
+                    
+                    if (total === 0) {
+                        html += '<div class="result fail" style="margin-top: 15px;">';
+                        html += '<h4>⚠️ PROBLEMA ENCONTRADO!</h4>';
+                        html += '<p>Não há jogos futuros no banco de dados!</p>';
+                        html += '<p><strong>Solução:</strong> Importar jogos novos da API externa.</p>';
+                        html += '</div>';
+                    }
+                }
+                
+                html += '</div>';
+                div.innerHTML = html;
+
+            } catch (error) {
+                let html = '<div class="result fail">';
+                html += '<h3>❌ Erro ao acessar banco!</h3>';
+                html += `<p><strong>Erro:</strong> ${error.message}</p>`;
+                html += '</div>';
+                div.innerHTML = html;
+            }
+        }
+
+        function testarVue() {
+            const div = document.getElementById('resultado-vue');
+            
+            let html = '<div class="result ok">';
+            html += '<h3>📋 Verificação do Vue.js</h3>';
+            
+            // Verificar se Vue está carregado
+            if (typeof Vue !== 'undefined') {
+                html += '<p>✅ <strong>Vue.js:</strong> Carregado</p>';
+            } else {
+                html += '<p>❌ <strong>Vue.js:</strong> NÃO carregado!</p>';
+            }
+            
+            // Verificar se Axios está carregado
+            if (typeof axios !== 'undefined') {
+                html += '<p>✅ <strong>Axios:</strong> Carregado</p>';
+            } else {
+                html += '<p>❌ <strong>Axios:</strong> NÃO carregado!</p>';
+            }
+            
+            // Instruções para verificar no site principal
+            html += '<div class="code" style="margin-top: 15px;">';
+            html += '<strong>Para verificar no site principal:</strong><br>';
+            html += '1. Abra: http://localhost/Cliente/LeagueBetCliente-main/<br>';
+            html += '2. Pressione F12 (abrir console)<br>';
+            html += '3. Vá na aba "Console"<br>';
+            html += '4. Procure por erros em vermelho<br>';
+            html += '5. Digite: <code>app.paises</code> e pressione Enter<br>';
+            html += '6. Deve mostrar um Array com os países/jogos';
+            html += '</div>';
+            
+            html += '</div>';
+            div.innerHTML = html;
+        }
+
+        function gerarSolucao() {
+            const div = document.getElementById('solucao');
+            
+            let html = '<h3>🎯 Diagnóstico e Solução</h3>';
+            
+            if (!window.apiOk) {
+                html += '<div class="result fail">';
+                html += '<h4>❌ Problema: API não está respondendo</h4>';
+                html += '<p><strong>Causa:</strong> ' + (window.apiError || 'Erro desconhecido') + '</p>';
+                html += '<p><strong>Solução:</strong></p>';
+                html += '<ol>';
+                html += '<li>Verifique se o Apache está rodando</li>';
+                html += '<li>Verifique se o MySQL está rodando</li>';
+                html += '<li>Teste acessar: <a href="/Cliente/LeagueBetCliente-main/apostar/jogos" target="_blank">/apostar/jogos</a></li>';
+                html += '</ol>';
+                html += '</div>';
+            } else if (window.totalJogos === 0) {
+                html += '<div class="result fail">';
+                html += '<h4>⚠️ Problema: Não há jogos disponíveis</h4>';
+                html += '<p><strong>Causa:</strong> O banco de dados não tem jogos futuros ou ativos.</p>';
+                html += '<p><strong>Solução:</strong></p>';
+                html += '<ol>';
+                html += '<li><strong>Importar jogos agora:</strong><br>';
+                html += '<a href="/Cliente/LeagueBetCliente-main/importar-agora.php" target="_blank" style="color: #ff8000; font-weight: bold;">→ Clique aqui para importar jogos</a></li>';
+                html += '<li>Ou execute via terminal:<br>';
+                html += '<code style="background: #000; padding: 5px; display: block; margin: 5px 0;">C:\\xampp\\php\\php.exe jogos.php</code></li>';
+                html += '<li>Aguarde a importação concluir (pode levar 1-2 minutos)</li>';
+                html += '<li>Recarregue a página principal (Ctrl + F5)</li>';
+                html += '</ol>';
+                html += '</div>';
+            } else {
+                html += '<div class="result ok">';
+                html += '<h4>✅ Sistema OK - Jogos devem estar aparecendo!</h4>';
+                html += `<p>Há <strong>${window.totalJogos} jogos</strong> disponíveis na API.</p>';
+                html += '<p><strong>Se os jogos NÃO estão aparecendo no site:</strong></p>';
+                html += '<ol>';
+                html += '<li>Limpe o cache do navegador (Ctrl + Shift + Delete)</li>';
+                html += '<li>Recarregue a página (Ctrl + F5)</li>';
+                html += '<li>Abra o Console (F12) e procure por erros</li>';
+                html += '<li>Verifique se o Vue.js está carregando os dados:<br>';
+                html += '<code style="background: #000; padding: 5px; display: block; margin: 5px 0;">Digite no console: app.paises</code></li>';
+                html += '</ol>';
+                html += '</div>';
+            }
+            
+            html += '<div style="margin-top: 20px; padding: 15px; background: rgba(255, 128, 0, 0.1); border-radius: 5px;">';
+            html += '<h4>🔗 Links Úteis:</h4>';
+            html += '<ul>';
+            html += '<li><a href="/Cliente/LeagueBetCliente-main/" target="_blank" style="color: #ff8000;">→ Abrir Site Principal</a></li>';
+            html += '<li><a href="/Cliente/LeagueBetCliente-main/apostar/jogos" target="_blank" style="color: #ff8000;">→ Testar API (JSON)</a></li>';
+            html += '<li><a href="/Cliente/LeagueBetCliente-main/importar-agora.php" target="_blank" style="color: #ff8000;">→ Importar Jogos</a></li>';
+            html += '<li><a href="/Cliente/LeagueBetCliente-main/teste-visual-jogos.html" target="_blank" style="color: #ff8000;">→ Visualização de Teste</a></li>';
+            html += '</ul>';
+            html += '</div>';
+            
+            div.innerHTML = html;
+            
+            // Atualizar status geral
+            const statusDiv = document.getElementById('status-geral');
+            let statusHtml = '';
+            
+            if (window.apiOk && window.totalJogos > 0) {
+                statusHtml = '<div class="result ok">';
+                statusHtml += '<h3>✅ Sistema Funcionando!</h3>';
+                statusHtml += `<p>${window.totalJogos} jogos disponíveis</p>`;
+                statusHtml += '</div>';
+            } else {
+                statusHtml = '<div class="result fail">';
+                statusHtml += '<h3>⚠️ Ação Necessária</h3>';
+                statusHtml += '<p>Veja a seção "Solução Rápida" abaixo</p>';
+                statusHtml += '</div>';
+            }
+            
+            statusDiv.innerHTML = statusHtml;
+        }
+    </script>
+</body>
+</html>
+

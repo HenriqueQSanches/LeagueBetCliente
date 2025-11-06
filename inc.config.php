@@ -29,9 +29,9 @@ $config = [
     ],
     'config' => [
         'title' => 'Minha Banca Esportiva',
-        'dominio' => 'http://localhost:8000',
+        'dominio' => 'http://localhost/Cliente/LeagueBetCliente-main',
         'email' => 'contato@localhost',
-        'uri' => 'http://localhost:8000',
+        'uri' => 'http://localhost/Cliente/LeagueBetCliente-main',
         'api' => 'https://apijogos.com/betsports2.php',
         'redes' => [
             'facebook' => '',
@@ -46,7 +46,7 @@ $config = [
 ];
 
 $config['modules'] = [
-    'site' => null,
+    'site' => ['path' => 'app\\modules\\website', 'class' => Site::class],
     'site1' => ['path' => 'app\\modules\\website', 'class' => Site::class],
     'site2' => ['path' => 'app\\modules\\website2', 'class' => Site2::class],
     'site3' => ['path' => 'app\\modules\\website3', 'class' => Site3::class],

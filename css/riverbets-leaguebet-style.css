@@ -1,0 +1,427 @@
+/* 🎨 RIVERBETS LAYOUT COM CORES LEAGUEBET */
+/* Layout inspirado na RIVERBETS com identidade visual LeagueBet */
+
+:root {
+    --leaguebet-orange: #ff9800;
+    --leaguebet-dark: #1a1a2e; /* Azul escuro elegante */
+    --leaguebet-medium: #16213e; /* Azul médio */
+    --leaguebet-light: #0f3460; /* Azul claro */
+    --leaguebet-accent: #e94560; /* Rosa/Vermelho elegante */
+    --bg-elegant: #f5f7fa; /* Cinza clarinho elegante */
+}
+
+/* Fundo geral elegante */
+body {
+    background: var(--bg-elegant) !important;
+}
+
+.riverbets-content {
+    background: var(--bg-elegant) !important;
+    padding: 0 !important;
+}
+
+.riverbets-layout {
+    background: var(--bg-elegant) !important;
+}
+
+/* ========================================
+   BANNER SUPERIOR
+   ======================================== */
+.riverbets-banner {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%) !important;
+    padding: 50px 20px !important;
+    text-align: center !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 32px rgba(26, 26, 46, 0.15) !important;
+    margin: 15px !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.riverbets-banner::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: linear-gradient(135deg, rgba(255, 152, 0, 0.1) 0%, rgba(233, 69, 96, 0.1) 100%) !important;
+    pointer-events: none !important;
+}
+
+.banner-logo {
+    max-width: 400px !important;
+    height: auto !important;
+}
+
+/* ========================================
+   DATA DO DIA (Estilo RIVERBETS)
+   ======================================== */
+.riverbets-date-header {
+    background: var(--leaguebet-orange) !important;
+    color: #000 !important;
+    padding: 12px 20px !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    box-shadow: 0 2px 10px rgba(255, 152, 0, 0.3) !important;
+}
+
+.riverbets-date-header i {
+    font-size: 20px !important;
+}
+
+.date-separator {
+    margin: 0 8px !important;
+}
+
+/* ========================================
+   CABEÇALHO DOS JOGOS
+   ======================================== */
+.riverbets-games-header {
+    background: #fff !important;
+    padding: 20px 20px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    border-radius: 12px !important;
+    margin: 15px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06) !important;
+}
+
+.riverbets-games-header h2 {
+    color: var(--leaguebet-orange) !important;
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+}
+
+.riverbets-search {
+    flex: 0 0 300px !important;
+}
+
+.search-input-wrapper {
+    display: flex !important;
+    gap: 0 !important;
+}
+
+.search-input-wrapper input {
+    flex: 1 !important;
+    padding: 8px 15px !important;
+    border: 2px solid var(--leaguebet-orange) !important;
+    border-radius: 4px 0 0 4px !important;
+    background: #fff !important;
+    color: #000 !important;
+    font-size: 14px !important;
+}
+
+.search-input-wrapper button {
+    padding: 8px 20px !important;
+    background: var(--leaguebet-orange) !important;
+    border: 2px solid var(--leaguebet-orange) !important;
+    border-radius: 0 4px 4px 0 !important;
+    color: #000 !important;
+    cursor: pointer !important;
+    font-size: 16px !important;
+    transition: all 0.3s ease !important;
+}
+
+.search-input-wrapper button:hover {
+    background: #f57c00 !important;
+}
+
+/* ========================================
+   TABELA DE JOGOS (Estilo RIVERBETS)
+   ======================================== */
+
+/* Container dos jogos */
+.overflow-jogos {
+    padding: 15px !important;
+    background: transparent !important;
+}
+
+.table-jogos {
+    width: 100% !important;
+    margin-bottom: 20px !important;
+    background: #fff !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06) !important;
+    border: none !important;
+}
+
+/* Cabeçalho do País */
+.table-jogos thead tr.tr-pais {
+    background: var(--neon-green) !important;
+    color: #000 !important;
+}
+
+.table-jogos thead tr.tr-pais th {
+    padding: 12px 15px !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+}
+
+.table-jogos thead tr.tr-pais img {
+    height: 20px !important;
+    margin-right: 10px !important;
+    vertical-align: middle !important;
+}
+
+/* Cabeçalho das Colunas */
+.table-jogos thead tr.tr-header {
+    background: #f8f9fa !important;
+    color: #495057 !important;
+    border-bottom: 2px solid #e9ecef !important;
+}
+
+.table-jogos thead tr.tr-header th {
+    padding: 10px 8px !important;
+    font-size: 12px !important;
+    text-align: center !important;
+    text-transform: uppercase !important;
+    font-weight: 600 !important;
+}
+
+/* Linha do Campeonato */
+.table-jogos tbody tr.campeonato {
+    background: var(--leaguebet-orange) !important;
+}
+
+.table-jogos tbody tr.campeonato td {
+    padding: 10px 15px !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    color: #000 !important;
+}
+
+.table-jogos tbody tr.campeonato a {
+    color: #000 !important;
+    text-decoration: none !important;
+}
+
+/* Linhas dos Jogos */
+.table-jogos tbody tr:not(.campeonato) {
+    background: #fff !important;
+    border-bottom: 1px solid #f1f3f5 !important;
+    transition: all 0.3s ease !important;
+}
+
+.table-jogos tbody tr:not(.campeonato):hover {
+    background: #f8f9fa !important;
+    transform: translateX(2px) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+.table-jogos tbody tr:not(.campeonato) td {
+    padding: 15px 12px !important;
+    color: #212529 !important;
+    vertical-align: middle !important;
+}
+
+.table-jogos tbody tr:not(.campeonato) td:first-child {
+    padding-left: 20px !important;
+}
+
+/* Times e Data */
+.table-jogos tbody tr td b {
+    color: #212529 !important;
+    font-weight: 700 !important;
+    font-size: 15px !important;
+}
+
+.table-jogos tbody tr td small {
+    color: #6c757d !important;
+    font-size: 12px !important;
+}
+
+/* ========================================
+   BOTÕES DE COTAÇÃO (Elegante e Moderno)
+   ======================================== */
+.btn-cotacao {
+    display: inline-block !important;
+    padding: 12px 10px !important;
+    min-width: 65px !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: #fff !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    text-align: center !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.btn-cotacao::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent) !important;
+    transition: left 0.5s !important;
+}
+
+.btn-cotacao:hover::before {
+    left: 100% !important;
+}
+
+.btn-cotacao:hover {
+    transform: translateY(-3px) scale(1.02) !important;
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4) !important;
+}
+
+.btn-cotacao.active {
+    background: linear-gradient(135deg, var(--leaguebet-orange) 0%, #f57c00 100%) !important;
+    color: #fff !important;
+    transform: scale(1.05) !important;
+    box-shadow: 0 6px 24px rgba(255, 152, 0, 0.5) !important;
+    animation: pulse 2s infinite !important;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1.05); }
+    50% { transform: scale(1.08); }
+}
+
+.btn-cotacao.outras {
+    background: var(--leaguebet-orange) !important;
+    color: #000 !important;
+}
+
+.btn-cotacao.outras:hover {
+    background: #f57c00 !important;
+}
+
+/* ========================================
+   CUPOM DE APOSTAS (Lateral Direita)
+   ======================================== */
+.riverbets-sidebar-right {
+    background: #fff !important;
+    border-left: 3px solid var(--leaguebet-orange) !important;
+    padding: 0 !important;
+    position: sticky !important;
+    top: 0 !important;
+    height: 100vh !important;
+    overflow-y: auto !important;
+    width: 350px !important;
+    min-width: 350px !important;
+    max-width: 350px !important;
+    flex-shrink: 0 !important;
+    order: 3 !important; /* FORÇA a ficar à direita */
+}
+
+.bilhete {
+    background: #fff !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+}
+
+.bilhete header {
+    background: var(--leaguebet-orange) !important;
+}
+
+.bilhete .title {
+    background: var(--leaguebet-orange) !important;
+    color: #000 !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+}
+
+.bilhete .btn-danger,
+.bilhete button[type="button"] {
+    background: var(--leaguebet-purple) !important;
+    border-color: var(--leaguebet-purple) !important;
+}
+
+.bilhete .btn-danger:hover {
+    background: var(--leaguebet-purple-dark) !important;
+}
+
+/* ========================================
+   MENU LATERAL ESQUERDO
+   ======================================== */
+.riverbets-sidebar {
+    background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%) !important;
+    border-right: none !important;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+.riverbets-sidebar-menu li a {
+    color: #fff !important;
+    transition: all 0.3s ease !important;
+}
+
+.riverbets-sidebar-menu li a:hover,
+.riverbets-sidebar-menu li a.active {
+    background: var(--leaguebet-orange) !important;
+    color: #000 !important;
+    border-left: 4px solid var(--leaguebet-purple) !important;
+}
+
+.riverbets-sidebar-login .btn {
+    background: var(--leaguebet-orange) !important;
+    color: #000 !important;
+    font-weight: 700 !important;
+    border: none !important;
+}
+
+.riverbets-sidebar-login .btn:hover {
+    background: var(--neon-green) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* ========================================
+   AJUSTES NO CUPOM
+   ======================================== */
+
+/* Esconder campo Cliente (não obrigatório) */
+.bilhete .form-group:has(input[placeholder="opcional"]) {
+    display: none !important;
+}
+
+/* Ajustar espaçamento do bilhete */
+.bilhete .content {
+    padding: 15px !important;
+}
+
+.bilhete footer {
+    padding: 15px !important;
+    background: #f9f9f9 !important;
+}
+
+/* ========================================
+   RESPONSIVO
+   ======================================== */
+@media (max-width: 768px) {
+    .riverbets-games-header {
+        flex-direction: column !important;
+        gap: 15px !important;
+    }
+    
+    .riverbets-search {
+        width: 100% !important;
+        flex: 1 !important;
+    }
+    
+    .btn-cotacao {
+        min-width: 50px !important;
+        font-size: 14px !important;
+        padding: 8px 4px !important;
+    }
+}
+
