@@ -706,3 +706,37 @@ Stack trace:
 #9 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\index.php(5): app\APP::Initialize()
 #10 {main}
   thrown in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\core\crud\Conn.php on line 98
+[05-Nov-2025 13:12:05 America/Sao_Paulo] PHP Fatal error:  Cannot use lexical variable $eventName as a parameter name in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\vendor\guzzlehttp\guzzle\src\Event\Emitter.php on line 48
+[05-Nov-2025 13:42:59 America/Sao_Paulo] PHP Fatal error:  Uncaught Exception: Não foi possível conectar a base de dados. in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\core\crud\Conn.php:98
+Stack trace:
+#0 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\core\crud\Conn.php(70): app\core\crud\Conn::pdoConnect()
+#1 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\teste-jogos-direto.php(23): app\core\crud\Conn::getConn()
+#2 {main}
+  thrown in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\core\crud\Conn.php on line 98
+[05-Nov-2025 13:55:04 America/Sao_Paulo] PHP Warning:  ini_set(): Cannot change zlib.output_compression - headers already sent in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\boot.inc.php on line 58
+[05-Nov-2025 13:55:04 America/Sao_Paulo] PHP Warning:  ini_set(): Cannot change zlib.output_compression - headers already sent in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\boot.inc.php on line 60
+[05-Nov-2025 13:55:04 America/Sao_Paulo] PHP Fatal error:  Uncaught Error: Call to undefined method app\models\DadosModel::eSporteCampeonatos() in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\teste-jogos-completo.php:373
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\teste-jogos-completo.php on line 373
+[05-Nov-2025 14:03:46 America/Sao_Paulo] PHP Warning:  ini_set(): Cannot change zlib.output_compression - headers already sent in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\boot.inc.php on line 58
+[05-Nov-2025 14:03:46 America/Sao_Paulo] PHP Warning:  ini_set(): Cannot change zlib.output_compression - headers already sent in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\boot.inc.php on line 60
+[05-Nov-2025 14:07:39 America/Sao_Paulo] PHP Warning:  ini_set(): Cannot change zlib.output_compression - headers already sent in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\boot.inc.php on line 58
+[05-Nov-2025 14:07:39 America/Sao_Paulo] PHP Warning:  ini_set(): Cannot change zlib.output_compression - headers already sent in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\boot.inc.php on line 60
+[05-Nov-2025 21:51:50 America/Sao_Paulo] PHP Fatal error:  Cannot use lexical variable $eventName as a parameter name in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\vendor\guzzlehttp\guzzle\src\Event\Emitter.php on line 48
+[05-Nov-2025 21:52:00 America/Sao_Paulo] PHP Fatal error:  Cannot use lexical variable $eventName as a parameter name in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\vendor\guzzlehttp\guzzle\src\Event\Emitter.php on line 48
+[05-Nov-2025 22:05:17 America/Sao_Paulo] PHP Fatal error:  Uncaught TypeError: json_decode(): Argument #1 ($json) must be of type string, array given in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\teste-api-direto.php:92
+Stack trace:
+#0 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\teste-api-direto.php(92): json_decode(Array, true)
+#1 {main}
+  thrown in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\teste-api-direto.php on line 92
+[05-Nov-2025 22:32:43 America/Sao_Paulo] PHP Fatal error:  Uncaught TypeError: json_decode(): Argument #1 ($json) must be of type string, array given in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\teste-api-direto.php:92
+Stack trace:
+#0 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\teste-api-direto.php(92): json_decode(Array, true)
+#1 {main}
+  thrown in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\teste-api-direto.php on line 92
+[06-Nov-2025 00:02:09 America/Sao_Paulo] PHP Fatal error:  Uncaught TypeError: json_decode(): Argument #1 ($json) must be of type string, array given in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\teste-api-direto.php:92
+Stack trace:
+#0 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\teste-api-direto.php(92): json_decode(Array, true)
+#1 {main}
+  thrown in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\teste-api-direto.php on line 92

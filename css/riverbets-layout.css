@@ -47,12 +47,16 @@ body {
     display: flex;
     min-height: 100vh;
     gap: 0;
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
 }
 
 /* Coluna 1: Menu Lateral Esquerdo */
 .riverbets-sidebar {
     width: 230px;
     min-width: 230px;
+    max-width: 230px;
     background-color: var(--purple);
     display: flex;
     flex-direction: column;
@@ -60,6 +64,7 @@ body {
     top: 0;
     height: 100vh;
     overflow-y: auto;
+    order: 1; /* Fica à esquerda */
 }
 
 .riverbets-sidebar-logo {
@@ -142,8 +147,10 @@ body {
 /* Coluna 2: Área Central (Jogos) */
 .riverbets-content {
     flex: 1;
-    padding: 20px;
+    padding: 0;
     overflow-y: auto;
+    order: 2; /* Fica no meio */
+    min-width: 0; /* Permite encolher se necessário */
 }
 
 .riverbets-banner {
@@ -339,9 +346,12 @@ body {
 
 /* Coluna 3: Cupom de Apostas */
 .riverbets-sidebar-right {
-    width: 340px;
-    min-width: 340px;
-    padding: 20px 20px 20px 0;
+    width: 350px;
+    min-width: 350px;
+    max-width: 350px;
+    padding: 0;
+    background: #fff;
+    order: 3; /* Força a ficar à direita */
 }
 
 /* Tabela de Jogos */

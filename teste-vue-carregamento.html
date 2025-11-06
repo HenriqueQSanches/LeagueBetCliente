@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Carregamento do Vue.js</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+            padding: 20px;
+        }
+        .box {
+            background: #2d2d2d;
+            border: 2px solid #ff9800;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #ff9800;
+        }
+        .success {
+            color: #4caf50;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .error {
+            color: #f44336;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        #app {
+            background: #fff;
+            color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Teste de Carregamento do Vue.js</h1>
+
+    <div class="box">
+        <h2>1️⃣ Testando Carregamento do Vue.js</h2>
+        <div id="status-vue">⏳ Carregando...</div>
+    </div>
+
+    <div class="box">
+        <h2>2️⃣ Testando Carregamento do Axios</h2>
+        <div id="status-axios">⏳ Carregando...</div>
+    </div>
+
+    <div class="box">
+        <h2>3️⃣ Testando Vue.js Funcionando</h2>
+        <div id="app">
+            <h3>{{ mensagem }}</h3>
+            <p>Contador: {{ contador }}</p>
+            <button @click="contador++">Incrementar</button>
+        </div>
+    </div>
+
+    <div class="box">
+        <h2>4️⃣ Testando Requisição AJAX</h2>
+        <button onclick="testarAPI()" style="background: #ff9800; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold;">
+            🔄 Testar API /apostar/jogos
+        </button>
+        <div id="api-result" style="margin-top: 15px;"></div>
+    </div>
+
+    <!-- Carregando Vue.js -->
+    <script src="node_modules/vue/dist/vue.min.js"></script>
+    <script src="node_modules/axios/dist/axios.js"></script>
+
+    <script>
+        // Teste 1: Vue.js carregado?
+        setTimeout(function() {
+            const statusVue = document.getElementById('status-vue');
+            if (typeof Vue !== 'undefined') {
+                statusVue.innerHTML = '<p class="success">✅ Vue.js carregado com sucesso!</p>';
+                statusVue.innerHTML += '<p style="color: #2196f3;">Versão: ' + Vue.version + '</p>';
+                
+                // Teste 3: Inicializar Vue
+                try {
+                    new Vue({
+                        el: '#app',
+                        data: {
+                            mensagem: '✅ Vue.js está funcionando!',
+                            contador: 0
+                        }
+                    });
+                } catch (e) {
+                    document.getElementById('app').innerHTML = '<p class="error">❌ Erro ao inicializar Vue: ' + e.message + '</p>';
+                }
+            } else {
+                statusVue.innerHTML = '<p class="error">❌ Vue.js NÃO foi carregado!</p>';
+                statusVue.innerHTML += '<p style="color: #ffeb3b;">⚠️ Verifique o Console (F12) para erros.</p>';
+            }
+        }, 500);
+
+        // Teste 2: Axios carregado?
+        setTimeout(function() {
+            const statusAxios = document.getElementById('status-axios');
+            if (typeof axios !== 'undefined') {
+                statusAxios.innerHTML = '<p class="success">✅ Axios carregado com sucesso!</p>';
+            } else {
+                statusAxios.innerHTML = '<p class="error">❌ Axios NÃO foi carregado!</p>';
+            }
+        }, 500);
+
+        // Teste 4: API
+        function testarAPI() {
+            const resultDiv = document.getElementById('api-result');
+            resultDiv.innerHTML = '<p style="color: #2196f3;">⏳ Testando API...</p>';
+            
+            if (typeof axios === 'undefined') {
+                resultDiv.innerHTML = '<p class="error">❌ Axios não está carregado!</p>';
+                return;
+            }
+            
+            axios.get('/Cliente/LeagueBetCliente-main/apostar/jogos')
+                .then(function(response) {
+                    resultDiv.innerHTML = '<p class="success">✅ API respondeu!</p>';
+                    resultDiv.innerHTML += '<p style="color: #2196f3;">Status: ' + response.status + '</p>';
+                    
+                    if (response.data && response.data.paises) {
+                        let totalJogos = 0;
+                        response.data.paises.forEach(function(pais) {
+                            if (pais.campeonatos) {
+                                pais.campeonatos.forEach(function(camp) {
+                                    if (camp.jogos) {
+                                        totalJogos += camp.jogos.length;
+                                    }
+                                });
+                            }
+                        });
+                        
+                        resultDiv.innerHTML += '<p style="color: #2196f3;">🌍 Países: ' + response.data.paises.length + '</p>';
+                        resultDiv.innerHTML += '<p style="color: #2196f3;">⚽ Jogos: ' + totalJogos + '</p>';
+                        
+                        if (totalJogos > 0) {
+                            resultDiv.innerHTML += '<p class="success" style="font-size: 20px;">🎉 TUDO FUNCIONANDO! ' + totalJogos + ' jogos disponíveis!</p>';
+                        }
+                    }
+                })
+                .catch(function(error) {
+                    resultDiv.innerHTML = '<p class="error">❌ Erro: ' + error.message + '</p>';
+                    resultDiv.innerHTML += '<p style="color: #ffeb3b;">Detalhes: ' + JSON.stringify(error) + '</p>';
+                });
+        }
+    </script>
+
+    <div class="box">
+        <h2>📋 Conclusão</h2>
+        <p style="font-size: 16px; line-height: 1.8;">
+            Se TODOS os testes acima passarem (✅), significa que:
+        </p>
+        <ul style="font-size: 16px; line-height: 1.8;">
+            <li>✅ Vue.js está carregando corretamente</li>
+            <li>✅ Axios está carregando corretamente</li>
+            <li>✅ A API está retornando jogos</li>
+            <li>✅ O problema está no template <code>apostar.twig</code></li>
+        </ul>
+        <p style="color: #ffeb3b; font-size: 18px; margin-top: 20px;">
+            📌 Se algum teste FALHAR, me envie o erro do Console (F12)!
+        </p>
+    </div>
+</body>
+</html>
+

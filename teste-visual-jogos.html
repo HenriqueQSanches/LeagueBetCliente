@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 Teste Visual - Onde Aparecem os Jogos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #fff;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #ff9800;
+            margin-bottom: 30px;
+            font-size: 32px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .layout-demo {
+            display: grid;
+            grid-template-columns: 250px 1fr 300px;
+            gap: 20px;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            min-height: 600px;
+        }
+        .sidebar {
+            background: linear-gradient(180deg, #ff9800 0%, #f57c00 100%);
+            padding: 20px;
+            color: #fff;
+        }
+        .sidebar h3 {
+            margin-bottom: 20px;
+            font-size: 18px;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+        .sidebar ul {
+            list-style: none;
+        }
+        .sidebar li {
+            padding: 10px;
+            margin-bottom: 5px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .sidebar li:hover {
+            background: rgba(0,0,0,0.4);
+            transform: translateX(5px);
+        }
+        .main-content {
+            background: #f5f5f5;
+            padding: 20px;
+            color: #333;
+            overflow-y: auto;
+            max-height: 600px;
+        }
+        .banner {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            padding: 40px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            color: #fff;
+            box-shadow: 0 5px 15px rgba(255,152,0,0.3);
+        }
+        .games-header {
+            background: #fff;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .games-header h2 {
+            color: #ff9800;
+            font-size: 22px;
+        }
+        .games-area {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            min-height: 300px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .game-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+            background: #fafafa;
+        }
+        .game-card:hover {
+            border-color: #ff9800;
+            box-shadow: 0 5px 15px rgba(255,152,0,0.2);
+            transform: translateY(-2px);
+        }
+        .country-header {
+            background: linear-gradient(135deg, #333 0%, #555 100%);
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .championship {
+            background: #ff9800;
+            color: #fff;
+            padding: 8px 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .teams {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+        .datetime {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .odds {
+            display: flex;
+            gap: 10px;
+        }
+        .odd-btn {
+            background: #ff9800;
+            color: #fff;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        .odd-btn:hover {
+            background: #f57c00;
+            transform: scale(1.05);
+        }
+        .coupon {
+            background: linear-gradient(180deg, #333 0%, #444 100%);
+            padding: 20px;
+            color: #fff;
+        }
+        .coupon h3 {
+            margin-bottom: 20px;
+            color: #ff9800;
+            border-bottom: 2px solid #ff9800;
+            padding-bottom: 10px;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+        .status-box {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .status-item:last-child {
+            border-bottom: none;
+        }
+        .status-label {
+            color: #666;
+            font-weight: 600;
+        }
+        .status-value {
+            color: #333;
+            font-weight: bold;
+        }
+        .status-value.success {
+            color: #4caf50;
+        }
+        .status-value.error {
+            color: #f44336;
+        }
+        .btn-test {
+            background: #ff9800;
+            color: #fff;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+        .btn-test:hover {
+            background: #f57c00;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255,152,0,0.3);
+        }
+        .console-output {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+        .arrow {
+            position: absolute;
+            font-size: 48px;
+            color: #ff9800;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+        .highlight-area {
+            position: relative;
+            border: 3px dashed #ff9800;
+            animation: glow 2s infinite;
+        }
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(255,152,0,0.5); }
+            50% { box-shadow: 0 0 40px rgba(255,152,0,0.8); }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Teste Visual - Onde os Jogos Devem Aparecer</h1>
+        
+        <div class="status-box">
+            <h3 style="color: #333; margin-bottom: 15px;">📊 Status do Sistema</h3>
+            <div class="status-item">
+                <span class="status-label">API de Jogos:</span>
+                <span class="status-value" id="api-status">Testando...</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Total de Jogos:</span>
+                <span class="status-value" id="total-games">0</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Vue.js Carregado:</span>
+                <span class="status-value" id="vue-status">Verificando...</span>
+            </div>
+            <button class="btn-test" onclick="testarAPI()">🔄 Testar API Agora</button>
+            <div class="console-output" id="console-output">Aguardando teste...</div>
+        </div>
+
+        <h2 style="color: #ff9800; margin: 30px 0 20px;">📍 Layout da Página (Onde os Jogos Aparecem)</h2>
+        
+        <div class="layout-demo">
+            <!-- Sidebar Esquerda -->
+            <div class="sidebar">
+                <h3>📱 Menu</h3>
+                <ul>
+                    <li><i class="fa fa-home"></i> Início</li>
+                    <li><i class="fa fa-futbol-o"></i> Futebol</li>
+                    <li><i class="fa fa-play-circle"></i> Ao Vivo</li>
+                    <li><i class="fa fa-list"></i> Mais Esportes</li>
+                    <li><i class="fa fa-book"></i> Regulamento</li>
+                </ul>
+            </div>
+
+            <!-- Conteúdo Central -->
+            <div class="main-content">
+                <div class="banner">
+                    <h1 style="margin: 0; font-size: 28px;">BOTE SEU ESPÍRITO COMPETITIVO<br>PRA JOGO!</h1>
+                </div>
+
+                <div class="games-header">
+                    <h2><i class="fa fa-futbol-o"></i> Jogos Disponíveis</h2>
+                    <input type="text" placeholder="Buscar jogos..." style="padding: 8px; border-radius: 5px; border: 1px solid #ddd;">
+                </div>
+
+                <div class="games-area highlight-area" id="games-area">
+                    <div style="position: absolute; top: -60px; left: 50%; transform: translateX(-50%); color: #ff9800; font-size: 24px; font-weight: bold; text-align: center; width: 300px; background: rgba(0,0,0,0.8); padding: 10px; border-radius: 5px;">
+                        ⬇️ OS JOGOS APARECEM AQUI! ⬇️
+                    </div>
+                    
+                    <!-- Exemplo de como os jogos aparecem -->
+                    <div class="country-header">
+                        🇧🇷 BRASIL
+                    </div>
+                    <div class="championship">
+                        Campeonato Brasileiro - Série A
+                    </div>
+                    <div class="game-card">
+                        <div class="game-info">
+                            <div>
+                                <div class="teams">Flamengo x Palmeiras</div>
+                                <div class="datetime">06/11/2025 às 19:00</div>
+                            </div>
+                            <div class="odds">
+                                <div class="odd-btn">1.85</div>
+                                <div class="odd-btn">3.20</div>
+                                <div class="odd-btn">2.90</div>
+                                <div class="odd-btn">+15</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="game-card">
+                        <div class="game-info">
+                            <div>
+                                <div class="teams">Corinthians x São Paulo</div>
+                                <div class="datetime">06/11/2025 às 20:00</div>
+                            </div>
+                            <div class="odds">
+                                <div class="odd-btn">2.10</div>
+                                <div class="odd-btn">3.00</div>
+                                <div class="odd-btn">2.50</div>
+                                <div class="odd-btn">+15</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="country-header" style="margin-top: 20px;">
+                        🇪🇸 ESPANHA
+                    </div>
+                    <div class="championship">
+                        La Liga
+                    </div>
+                    <div class="game-card">
+                        <div class="game-info">
+                            <div>
+                                <div class="teams">Real Madrid x Barcelona</div>
+                                <div class="datetime">07/11/2025 às 16:00</div>
+                            </div>
+                            <div class="odds">
+                                <div class="odd-btn">1.95</div>
+                                <div class="odd-btn">3.40</div>
+                                <div class="odd-btn">2.80</div>
+                                <div class="odd-btn">+15</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 30px; padding: 20px; background: #fff3cd; border-radius: 5px; color: #856404; border: 2px solid #ffc107;">
+                        <strong>⚠️ ATENÇÃO:</strong> Se você vê esta área VAZIA no seu site, significa que:
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>Vue.js não está carregando os dados da API</li>
+                            <li>Há um erro no Console do navegador (F12)</li>
+                            <li>A API não está retornando os jogos corretamente</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar Direita (Cupom) -->
+            <div class="coupon">
+                <h3><i class="fa fa-file-text-o"></i> Bilhete</h3>
+                <div class="empty-state">
+                    <i class="fa fa-ticket"></i>
+                    <p>Selecione os jogos<br>para adicionar ao bilhete</p>
+                </div>
+            </div>
+        </div>
+
+        <div style="background: #fff; border-radius: 10px; padding: 30px; margin-top: 30px; color: #333; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            <h2 style="color: #ff9800; margin-bottom: 20px;">🔍 Como Diagnosticar o Problema</h2>
+            
+            <h3 style="color: #333; margin-top: 20px;">1️⃣ Abra o Console do Navegador</h3>
+            <p>Pressione <kbd style="background: #333; color: #fff; padding: 5px 10px; border-radius: 3px;">F12</kbd> no seu site</p>
+            
+            <h3 style="color: #333; margin-top: 20px;">2️⃣ Digite estes comandos:</h3>
+            <div style="background: #1e1e1e; color: #00ff00; padding: 15px; border-radius: 5px; font-family: monospace; margin-top: 10px;">
+                <div>console.log('Países:', app.paises);</div>
+                <div>console.log('Total:', app.paises ? app.paises.length : 0);</div>
+            </div>
+            
+            <h3 style="color: #333; margin-top: 20px;">3️⃣ Verifique a Rede</h3>
+            <p>Na aba <strong>Network</strong> (Rede), procure por:</p>
+            <ul style="margin-left: 20px;">
+                <li><code>/apostar/jogos</code> - deve retornar status <span style="color: #4caf50; font-weight: bold;">200</span></li>
+                <li>O Response deve ser um JSON com países, campeonatos e jogos</li>
+            </ul>
+            
+            <h3 style="color: #333; margin-top: 20px;">4️⃣ Me envie:</h3>
+            <ul style="margin-left: 20px;">
+                <li>✅ O que aparece no Console</li>
+                <li>✅ Se há erros em vermelho</li>
+                <li>✅ O status da requisição <code>/apostar/jogos</code></li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function testarAPI() {
+            const output = document.getElementById('console-output');
+            output.innerHTML = '> Iniciando teste...\n';
+            
+            // Teste 1: API de Jogos
+            output.innerHTML += '> Testando /apostar/jogos...\n';
+            fetch('/Cliente/LeagueBetCliente-main/apostar/jogos')
+                .then(response => {
+                    output.innerHTML += `> Status: ${response.status}\n`;
+                    document.getElementById('api-status').textContent = response.ok ? '✅ Online' : '❌ Erro';
+                    document.getElementById('api-status').className = 'status-value ' + (response.ok ? 'success' : 'error');
+                    return response.json();
+                })
+                .then(data => {
+                    output.innerHTML += '> Resposta recebida!\n';
+                    output.innerHTML += `> Países: ${data.paises ? data.paises.length : 0}\n`;
+                    
+                    let totalGames = 0;
+                    if (data.paises) {
+                        data.paises.forEach(pais => {
+                            if (pais.campeonatos) {
+                                pais.campeonatos.forEach(camp => {
+                                    if (camp.jogos) {
+                                        totalGames += camp.jogos.length;
+                                    }
+                                });
+                            }
+                        });
+                    }
+                    
+                    output.innerHTML += `> Total de jogos: ${totalGames}\n`;
+                    document.getElementById('total-games').textContent = totalGames;
+                    document.getElementById('total-games').className = 'status-value ' + (totalGames > 0 ? 'success' : 'error');
+                    
+                    if (totalGames === 0) {
+                        output.innerHTML += '\n⚠️ PROBLEMA: API retorna 0 jogos!\n';
+                        output.innerHTML += '> Verifique se os jogos foram importados.\n';
+                    } else {
+                        output.innerHTML += '\n✅ API está funcionando!\n';
+                        output.innerHTML += '> Se os jogos não aparecem, o problema é no Vue.js\n';
+                    }
+                })
+                .catch(error => {
+                    output.innerHTML += `\n❌ ERRO: ${error.message}\n`;
+                    document.getElementById('api-status').textContent = '❌ Erro';
+                    document.getElementById('api-status').className = 'status-value error';
+                });
+            
+            // Teste 2: Vue.js
+            output.innerHTML += '\n> Verificando Vue.js...\n';
+            setTimeout(() => {
+                const vueExists = typeof Vue !== 'undefined';
+                document.getElementById('vue-status').textContent = vueExists ? '✅ Sim' : '❌ Não';
+                document.getElementById('vue-status').className = 'status-value ' + (vueExists ? 'success' : 'error');
+                output.innerHTML += vueExists ? '> Vue.js está carregado\n' : '> ❌ Vue.js NÃO está carregado\n';
+            }, 500);
+        }
+
+        // Teste automático ao carregar
+        window.onload = function() {
+            setTimeout(testarAPI, 1000);
+        };
+    </script>
+</body>
+</html>

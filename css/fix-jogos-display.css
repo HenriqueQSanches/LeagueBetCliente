@@ -1,0 +1,34 @@
+/* 🎯 CORREÇÃO: Forçar exibição dos jogos com scroll */
+
+.overflow-jogos {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    max-height: 600px !important;
+    display: block !important;
+}
+
+/* Garantir que as tabelas de jogos sejam visíveis */
+.table-jogos {
+    display: table !important;
+    width: 100% !important;
+    margin-bottom: 20px !important;
+}
+
+/* Garantir visibilidade em mobile */
+@media (max-width: 768px) {
+    .overflow-jogos {
+        max-height: calc(100vh - 300px) !important;
+        overflow-y: auto !important;
+    }
+}
+
+/* Debug: Verificar se os jogos estão sendo renderizados */
+.table-jogos tbody tr {
+    min-height: 40px !important;
+}
+
+/* Garantir que v-if="paises" não esconda nada */
+[v-if] {
+    display: block !important;
+}
+

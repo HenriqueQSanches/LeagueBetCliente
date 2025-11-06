@@ -36,6 +36,10 @@ $(document).ready(function() {
         </aside>
     `);
     
+    // **IMPORTANTE: PEGAR O BILHETE ANTES DE MOVER QUALQUER COISA**
+    let bilhete = $(appMain).find('.bilhete').first();
+    console.log('🔍 Procurando bilhete...', bilhete.length > 0 ? '✅ ENCONTRADO!' : '❌ NÃO ENCONTRADO');
+    
     // Área Central
     const content = $('<div class="riverbets-content"></div>');
     
@@ -78,28 +82,38 @@ $(document).ready(function() {
         </div>
     `);
     
-    // Mover conteúdo existente
+    // Mover conteúdo existente (SEM CLONAR para manter Vue.js)
+    // EXCETO O BILHETE que já pegamos antes!
     $(appMain).children().each(function() {
         if (!$(this).hasClass('bilhete') && !$(this).hasClass('riverbets-sidebar-right')) {
-            content.append($(this).clone());
+            content.append($(this)); // MOVE ao invés de clonar
         }
     });
     
-    // Lateral Direita (Cupom)
+    // Lateral Direita (Cupom) - MOVE o bilhete que pegamos ANTES
     const rightSidebar = $('<aside class="riverbets-sidebar-right"></aside>');
-    const bilhete = $('.bilhete').first();
+    
     if (bilhete.length) {
-        rightSidebar.append(bilhete.clone());
-        bilhete.remove(); // Remove o original
+        console.log('✅ Bilhete encontrado! Movendo para a direita...');
+        rightSidebar.append(bilhete); // MOVE o bilhete para a direita
+    } else {
+        console.warn('⚠️ Bilhete NÃO encontrado!');
     }
     
-    // Montar estrutura
-    layout.append(sidebar);
-    layout.append(content);
-    layout.append(rightSidebar);
+    // Montar estrutura NA ORDEM CORRETA: Esquerda > Centro > Direita
+    layout.append(sidebar);      // 1. Menu à ESQUERDA
+    layout.append(content);      // 2. Jogos no CENTRO
+    layout.append(rightSidebar); // 3. Cupom à DIREITA
     
     // Inserir no app-main
     $(appMain).empty().append(layout);
+    
+    // DEBUG: Verificar ordem
+    console.log('Layout montado:', {
+        sidebar: layout.find('.riverbets-sidebar').length,
+        content: layout.find('.riverbets-content').length,
+        cupom: layout.find('.riverbets-sidebar-right').length
+    });
     
     // Função de busca
     $('#search-games').on('keyup', function() {

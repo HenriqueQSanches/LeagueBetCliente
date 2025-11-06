@@ -1,0 +1,50 @@
+﻿<h1>­ƒöì VERIFICAR ESTRUTURA DAS TABELAS</h1><hr><h2>­ƒôè Estrutura da Tabela: sis_times</h2><table border='1' cellpadding='10' style='border-collapse: collapse;'><tr style='background: #ff6600;'><th>Campo</th><th>Tipo</th><th>Nulo</th><th>Chave</th><th>Padr├úo</th></tr><tr><td><strong>id</strong></td><td>int(11)</td><td>NO</td><td>PRI</td><td></td></tr><tr><td><strong>insert</strong></td><td>timestamp</td><td>YES</td><td></td><td></td></tr><tr><td><strong>update</strong></td><td>timestamp</td><td>YES</td><td></td><td></td></tr><tr><td><strong>token</strong></td><td>varchar(50)</td><td>YES</td><td></td><td></td></tr><tr><td><strong>status</strong></td><td>tinyint(2)</td><td>NO</td><td></td><td>1</td></tr><tr><td><strong>title</strong></td><td>varchar(250)</td><td>YES</td><td></td><td></td></tr></table><h3>­ƒôï Exemplo de Registro:</h3><pre>Array
+(
+    [id] => 1
+    [insert] => 2018-08-06 20:30:48
+    [update] => 2022-10-19 03:04:00
+    [token] => 215B68DA2860ED6EIG61C8OOPUBSTHOPT68F4GN6GLW8MSLLLS
+    [status] => 1
+    [title] => 07 Vestur Sorvagur
+)
+</pre><hr><h2>­ƒôè Estrutura da Tabela: sis_campeonatos</h2><table border='1' cellpadding='10' style='border-collapse: collapse;'><tr style='background: #ff6600;'><th>Campo</th><th>Tipo</th><th>Nulo</th><th>Chave</th><th>Padr├úo</th></tr><tr><td><strong>id</strong></td><td>int(11)</td><td>NO</td><td>PRI</td><td></td></tr><tr><td><strong>insert</strong></td><td>timestamp</td><td>YES</td><td></td><td></td></tr><tr><td><strong>update</strong></td><td>timestamp</td><td>YES</td><td></td><td></td></tr><tr><td><strong>token</strong></td><td>varchar(50)</td><td>YES</td><td></td><td></td></tr><tr><td><strong>status</strong></td><td>tinyint(2)</td><td>NO</td><td></td><td>1</td></tr><tr><td><strong>title</strong></td><td>varchar(250)</td><td>YES</td><td></td><td></td></tr><tr><td><strong>times</strong></td><td>text</td><td>YES</td><td></td><td></td></tr><tr><td><strong>pais</strong></td><td>int(11)</td><td>NO</td><td></td><td></td></tr></table><h3>­ƒôï Exemplo de Registro:</h3><pre>Array
+(
+    [id] => 1
+    [insert] => 2018-08-06 20:31:03
+    [update] => 2018-08-06 20:31:03
+    [token] => 215b68da37d74c19ndrhb9vw2ckh8zpp86phip8ix05xwzbla6
+    [status] => 1
+    [title] => 1. Divis├úo
+    [times] => 
+    [pais] => 0
+)
+</pre><hr><h2>­ƒÄ« Teste: Buscar Jogo com Times e Campeonato</h2><h3>Jogo encontrado (ID: 1):</h3>Time1 ID: 8150<br>Time2 ID: 7286<br>Campeonato ID: 6406<br><br><h4>Buscando Time 1 (ID: 8150):</h4><pre>Array
+(
+    [id] => 8150
+    [insert] => 
+    [update] => 
+    [token] => 126658057
+    [status] => 1
+    [title] => VfB Oldenburg
+)
+</pre><h4>Buscando Time 2 (ID: 7286):</h4><pre>Array
+(
+    [id] => 7286
+    [insert] => 
+    [update] => 
+    [token] => 126658061
+    [status] => 1
+    [title] => FC Viktoria Koln
+)
+</pre><h4>Buscando Campeonato (ID: 6406):</h4><pre>Array
+(
+    [id] => 6406
+    [insert] => 
+    [update] => 
+    [token] => 126658048
+    [status] => 1
+    [title] => Alemanha - 3.Liga Futebol
+    [times] => 
+    [pais] => 0
+)
+</pre><hr><h2 style='color: green;'>Ô£à Verifica├º├úo Conclu├¡da!</h2><p>Agora sabemos quais colunas existem nas tabelas.</p>

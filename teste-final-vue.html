@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Final - Vue.js no Site Principal</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #fff;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+        h1 {
+            text-align: center;
+            color: #ff9800;
+            margin-bottom: 30px;
+            font-size: 32px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .status-box {
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 4px solid #ff9800;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        .status-box h3 {
+            color: #ff9800;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        .status-item {
+            padding: 10px;
+            margin: 10px 0;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .status-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .success { background: #4caf50; color: white; }
+        .error { background: #f44336; color: white; }
+        .warning { background: #ff9800; color: white; }
+        .info { background: #2196f3; color: white; }
+        .btn {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 152, 0, 0.5);
+        }
+        .game-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 3px solid #ff9800;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-size: 18px;
+            color: #ff9800;
+        }
+        pre {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 12px;
+            color: #4caf50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Diagnóstico Final - Vue.js no Site Principal</h1>
+        
+        <div class="status-box">
+            <h3>📋 Status dos Testes</h3>
+            <div id="status-vue" class="status-item">
+                <div class="status-icon info">⏳</div>
+                <div>Verificando Vue.js...</div>
+            </div>
+            <div id="status-axios" class="status-item">
+                <div class="status-icon info">⏳</div>
+                <div>Verificando Axios...</div>
+            </div>
+            <div id="status-api" class="status-item">
+                <div class="status-icon info">⏳</div>
+                <div>Testando API...</div>
+            </div>
+            <div id="status-url" class="status-item">
+                <div class="status-icon info">⏳</div>
+                <div>Verificando URL...</div>
+            </div>
+        </div>
+
+        <div class="status-box">
+            <h3>🎮 Jogos Encontrados</h3>
+            <div id="jogos-resultado" class="loading">Aguardando testes...</div>
+        </div>
+
+        <div class="status-box">
+            <h3>🔧 Ações</h3>
+            <button class="btn" onclick="window.location.href='http://localhost:8000'">
+                🏠 Abrir Site Principal (localhost:8000)
+            </button>
+            <button class="btn" onclick="window.location.href='http://localhost/Cliente/LeagueBetCliente-main/'">
+                🏠 Abrir Site Principal (localhost/Cliente)
+            </button>
+            <button class="btn" onclick="testarNovamente()">
+                🔄 Testar Novamente
+            </button>
+        </div>
+
+        <div class="status-box">
+            <h3>📝 Instruções Finais</h3>
+            <div style="padding: 15px; line-height: 1.8;">
+                <p><strong>✅ Se todos os testes passarem:</strong></p>
+                <ol style="margin-left: 20px; margin-top: 10px;">
+                    <li>Clique em "Abrir Site Principal"</li>
+                    <li>Pressione <strong>Ctrl + Shift + R</strong> para limpar o cache</li>
+                    <li>Os jogos devem aparecer automaticamente!</li>
+                </ol>
+                <br>
+                <p><strong>❌ Se algum teste falhar:</strong></p>
+                <ol style="margin-left: 20px; margin-top: 10px;">
+                    <li>Pressione <strong>F12</strong> no site principal</li>
+                    <li>Vá na aba <strong>Console</strong></li>
+                    <li>Me envie os erros em vermelho</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- Carregar Vue.js e Axios -->
+    <script src="node_modules/vue/dist/vue.min.js"></script>
+    <script src="node_modules/axios/dist/axios.min.js"></script>
+
+    <script>
+        function updateStatus(id, success, message) {
+            const element = document.getElementById(id);
+            const icon = element.querySelector('.status-icon');
+            const text = element.querySelector('div:last-child');
+            
+            if (success) {
+                icon.className = 'status-icon success';
+                icon.textContent = '✓';
+            } else {
+                icon.className = 'status-icon error';
+                icon.textContent = '✗';
+            }
+            
+            text.innerHTML = message;
+        }
+
+        function testarNovamente() {
+            location.reload();
+        }
+
+        // Teste 1: Vue.js carregado?
+        setTimeout(function() {
+            if (typeof Vue !== 'undefined') {
+                updateStatus('status-vue', true, '<strong>Vue.js carregado!</strong> Versão: ' + Vue.version);
+            } else {
+                updateStatus('status-vue', false, '<strong>ERRO:</strong> Vue.js NÃO está carregado!');
+            }
+        }, 500);
+
+        // Teste 2: Axios carregado?
+        setTimeout(function() {
+            if (typeof axios !== 'undefined') {
+                updateStatus('status-axios', true, '<strong>Axios carregado!</strong>');
+            } else {
+                updateStatus('status-axios', false, '<strong>ERRO:</strong> Axios NÃO está carregado!');
+            }
+        }, 500);
+
+        // Teste 3: Verificar URL
+        setTimeout(function() {
+            const url1 = 'http://localhost:8000/apostar/jogos';
+            const url2 = 'http://localhost/Cliente/LeagueBetCliente-main/apostar/jogos';
+            updateStatus('status-url', true, 
+                '<strong>URLs para testar:</strong><br>' +
+                '1. ' + url1 + '<br>' +
+                '2. ' + url2
+            );
+        }, 500);
+
+        // Teste 4: API
+        function testarAPI() {
+            const urls = [
+                'http://localhost:8000/apostar/jogos',
+                'http://localhost/Cliente/LeagueBetCliente-main/apostar/jogos'
+            ];
+
+            let testado = false;
+
+            urls.forEach((url, index) => {
+                if (testado) return;
+
+                axios.get(url)
+                    .then(response => {
+                        testado = true;
+                        const data = response.data;
+                        
+                        updateStatus('status-api', true, 
+                            '<strong>API funcionando!</strong><br>' +
+                            'URL: ' + url + '<br>' +
+                            'Status: ' + response.status
+                        );
+
+                        // Contar jogos
+                        let totalJogos = 0;
+                        let totalPaises = 0;
+                        let totalCampeonatos = 0;
+
+                        if (data.paises) {
+                            totalPaises = data.paises.length;
+                            data.paises.forEach(pais => {
+                                if (pais.campeonatos) {
+                                    totalCampeonatos += pais.campeonatos.length;
+                                    pais.campeonatos.forEach(camp => {
+                                        if (camp.jogos) {
+                                            totalJogos += camp.jogos.length;
+                                        }
+                                    });
+                                }
+                            });
+                        }
+
+                        let html = '<div style="font-size: 18px; font-weight: bold; color: #4caf50; margin-bottom: 15px;">';
+                        html += '✅ ' + totalJogos + ' jogos encontrados!';
+                        html += '</div>';
+
+                        html += '<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px;">';
+                        html += '<div style="background: rgba(76, 175, 80, 0.2); padding: 10px; border-radius: 5px; text-align: center;">';
+                        html += '<div style="font-size: 24px; font-weight: bold; color: #4caf50;">' + totalPaises + '</div>';
+                        html += '<div style="font-size: 12px; color: #ccc;">Países</div>';
+                        html += '</div>';
+                        html += '<div style="background: rgba(33, 150, 243, 0.2); padding: 10px; border-radius: 5px; text-align: center;">';
+                        html += '<div style="font-size: 24px; font-weight: bold; color: #2196f3;">' + totalCampeonatos + '</div>';
+                        html += '<div style="font-size: 12px; color: #ccc;">Campeonatos</div>';
+                        html += '</div>';
+                        html += '<div style="background: rgba(255, 152, 0, 0.2); padding: 10px; border-radius: 5px; text-align: center;">';
+                        html += '<div style="font-size: 24px; font-weight: bold; color: #ff9800;">' + totalJogos + '</div>';
+                        html += '<div style="font-size: 12px; color: #ccc;">Jogos</div>';
+                        html += '</div>';
+                        html += '</div>';
+
+                        // Mostrar alguns jogos
+                        if (data.paises && data.paises.length > 0) {
+                            html += '<div style="margin-top: 20px;">';
+                            html += '<h4 style="color: #ff9800; margin-bottom: 10px;">📋 Primeiros Jogos:</h4>';
+                            
+                            let count = 0;
+                            data.paises.forEach(pais => {
+                                if (count >= 5) return;
+                                if (pais.campeonatos) {
+                                    pais.campeonatos.forEach(camp => {
+                                        if (count >= 5) return;
+                                        if (camp.jogos) {
+                                            camp.jogos.forEach(jogo => {
+                                                if (count >= 5) return;
+                                                html += '<div class="game-card">';
+                                                html += '<div style="font-weight: bold; margin-bottom: 5px;">' + jogo.casa + ' x ' + jogo.fora + '</div>';
+                                                html += '<div style="font-size: 12px; color: #ccc;">' + camp.nome + ' - ' + jogo.data + ' às ' + jogo.hora + '</div>';
+                                                html += '</div>';
+                                                count++;
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                            html += '</div>';
+                        }
+
+                        document.getElementById('jogos-resultado').innerHTML = html;
+                    })
+                    .catch(error => {
+                        if (!testado && index === urls.length - 1) {
+                            updateStatus('status-api', false, 
+                                '<strong>ERRO na API!</strong><br>' +
+                                'Erro: ' + error.message + '<br>' +
+                                'Testadas: ' + urls.join(', ')
+                            );
+                            document.getElementById('jogos-resultado').innerHTML = 
+                                '<div style="color: #f44336; font-weight: bold;">❌ Nenhuma URL funcionou!</div>' +
+                                '<pre>' + JSON.stringify(error, null, 2) + '</pre>';
+                        }
+                    });
+            });
+        }
+
+        // Executar teste da API após 1 segundo
+        setTimeout(testarAPI, 1000);
+    </script>
+</body>
+</html>
+
