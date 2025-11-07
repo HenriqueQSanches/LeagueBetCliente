@@ -41,9 +41,9 @@ body {
 }
 
 .riverbets-sidebar-right {
-    width: 380px !important;
-    min-width: 380px !important;
-    max-width: 380px !important;
+    width: 300px !important;
+    min-width: 300px !important;
+    max-width: 300px !important;
     flex-shrink: 0 !important;
     order: 3 !important;
     background: #fff !important;
@@ -263,9 +263,10 @@ body {
 
 /* Primeira coluna (times e data) */
 .table-jogos tbody tr:not(.campeonato) td:first-child {
-    padding: 10px 15px !important;
+    padding: 10px 12px !important;
     text-align: left !important;
-    width: 35% !important;
+    width: 32% !important;
+    max-width: 300px !important;
 }
 
 /* Colunas de cotações */
@@ -299,72 +300,106 @@ body {
 }
 
 /* ========================================
-   BOTÕES DE COTAÇÃO (Elegante e Moderno)
+   BOTÕES DE COTAÇÃO (Laranja e Verde LeagueBet)
    ======================================== */
 .btn-cotacao {
     display: inline-block !important;
     padding: 8px 12px !important;
     min-width: 55px !important;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-    color: #fff !important;
+    background: var(--leaguebet-orange) !important;
+    color: #000 !important;
     font-size: 14px !important;
     font-weight: 700 !important;
     text-align: center !important;
-    border-radius: 6px !important;
+    border-radius: 4px !important;
     cursor: pointer !important;
     transition: all 0.2s ease !important;
     border: none !important;
-    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.25) !important;
+    box-shadow: none !important;
 }
 
 .btn-cotacao:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.35) !important;
-}
-
-.btn-cotacao::before {
-    content: '' !important;
-    position: absolute !important;
-    top: 0 !important;
-    left: -100% !important;
-    width: 100% !important;
-    height: 100% !important;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent) !important;
-    transition: left 0.5s !important;
-}
-
-.btn-cotacao:hover::before {
-    left: 100% !important;
-}
-
-.btn-cotacao:hover {
-    transform: translateY(-3px) scale(1.02) !important;
-    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4) !important;
+    background: #f57c00 !important;
+    transform: translateY(-1px) !important;
 }
 
 .btn-cotacao.active {
-    background: linear-gradient(135deg, var(--leaguebet-orange) 0%, #f57c00 100%) !important;
-    color: #fff !important;
-    transform: scale(1.05) !important;
-    box-shadow: 0 6px 24px rgba(255, 152, 0, 0.5) !important;
-    animation: pulse 2s infinite !important;
-}
-
-@keyframes pulse {
-    0%, 100% { transform: scale(1.05); }
-    50% { transform: scale(1.08); }
-}
-
-.btn-cotacao.outras {
-    background: var(--leaguebet-orange) !important;
+    background: #00e676 !important;
     color: #000 !important;
     font-weight: 700 !important;
 }
 
+.btn-cotacao.outras {
+    background: #000 !important;
+    color: var(--leaguebet-orange) !important;
+    font-weight: 700 !important;
+}
+
 .btn-cotacao.outras:hover {
+    background: #1a1a1a !important;
+    color: #fff !important;
+    transform: translateY(-1px) !important;
+}
+
+.btn-cotacao.outras.active {
+    background: #00e676 !important;
+    color: #000 !important;
+}
+
+/* Garantir espaço para a coluna "Outras" */
+.table-jogos thead tr.tr-header th:last-child {
+    min-width: 85px !important;
+    width: 85px !important;
+}
+
+.table-jogos tbody tr td:last-child {
+    min-width: 85px !important;
+    width: 85px !important;
+    padding-right: 10px !important;
+}
+
+/* ========================================
+   MODAL DE MAIS COTAÇÕES - LARANJA E VERDE
+   ======================================== */
+#modal-cotacoes .btn-warning,
+#modal-cotacoes .btn-cotacao {
+    background: var(--leaguebet-orange) !important;
+    color: #000 !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 4px !important;
+    transition: all 0.2s ease !important;
+}
+
+#modal-cotacoes .btn-warning:hover,
+#modal-cotacoes .btn-cotacao:hover {
     background: #f57c00 !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: none !important;
+}
+
+#modal-cotacoes .btn-warning.active,
+#modal-cotacoes .btn-cotacao.active {
+    background: #00e676 !important;
+    color: #000 !important;
+    box-shadow: none !important;
+}
+
+#modal-cotacoes .btn-danger {
+    background: var(--leaguebet-orange) !important;
+    color: #000 !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+#modal-cotacoes .btn-danger:hover {
+    background: #f57c00 !important;
+    box-shadow: none !important;
+}
+
+#modal-cotacoes .btn-danger.active {
+    background: #00e676 !important;
+    color: #000 !important;
 }
 
 /* ========================================
@@ -378,9 +413,9 @@ body {
     top: 0 !important;
     height: 100vh !important;
     overflow-y: auto !important;
-    width: 350px !important;
-    min-width: 350px !important;
-    max-width: 350px !important;
+    width: 300px !important;
+    min-width: 300px !important;
+    max-width: 300px !important;
     flex-shrink: 0 !important;
     order: 3 !important; /* FORÇA a ficar à direita */
 }
@@ -392,13 +427,13 @@ body {
     box-shadow: none !important;
     width: 100% !important;
     min-height: 100vh !important;
-    padding: 20px !important;
+    padding: 15px 10px !important;
 }
 
 .bilhete header {
     background: var(--leaguebet-orange) !important;
-    padding: 15px 20px !important;
-    margin: -20px -20px 20px -20px !important;
+    padding: 12px 15px !important;
+    margin: -15px -10px 15px -10px !important;
 }
 
 .bilhete .title {
@@ -428,33 +463,67 @@ body {
 
 .bilhete .form-control:focus {
     border-color: var(--leaguebet-orange) !important;
-    box-shadow: 0 0 0 2px rgba(255, 152, 0, 0.1) !important;
+    box-shadow: none !important;
+    outline: none !important;
 }
 
 .bilhete .btn-danger,
 .bilhete button[type="button"] {
     background: var(--leaguebet-orange) !important;
-    border-color: var(--leaguebet-orange) !important;
+    border: 2px solid var(--leaguebet-orange) !important;
     color: #000 !important;
     font-weight: 700 !important;
     border-radius: 6px !important;
-    padding: 12px 20px !important;
-    transition: all 0.3s ease !important;
+    padding: 10px 15px !important;
+    font-size: 13px !important;
+    transition: all 0.2s ease !important;
+    box-shadow: none !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
 }
 
 .bilhete .btn-danger:hover {
     background: #f57c00 !important;
+    border-color: #f57c00 !important;
     transform: translateY(-1px) !important;
-    box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3) !important;
+    box-shadow: none !important;
 }
 
 .bilhete .btn-default {
     background: #f5f5f5 !important;
-    border-color: #e0e0e0 !important;
+    border: 2px solid #e0e0e0 !important;
     color: #666 !important;
     font-weight: 600 !important;
     border-radius: 6px !important;
-    padding: 12px 20px !important;
+    padding: 10px 15px !important;
+    font-size: 13px !important;
+    transition: all 0.2s ease !important;
+    box-shadow: none !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+}
+
+.bilhete .btn-default:hover {
+    background: #e8e8e8 !important;
+    border-color: #d0d0d0 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: none !important;
+}
+
+/* Ajuste para botões pequenos no bilhete */
+.bilhete .btn-sm {
+    padding: 10px 12px !important;
+    font-size: 12px !important;
+    min-height: 38px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* Garantir que o texto dos botões não quebre */
+.bilhete .btn-block {
+    width: 100% !important;
+    text-overflow: ellipsis !important;
 }
 
 /* ========================================
