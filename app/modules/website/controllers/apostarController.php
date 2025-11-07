@@ -88,32 +88,33 @@ SQL;
 SELECT
     a.id,
     a.campeonato AS campeonatoId,
-    d.pais,
-    d.title AS campeonato,
-    b.title AS casa,
-    c.title AS fora,
+    COALESCE(d.pais, 0) AS pais,
+    COALESCE(d.title, a.campeonato) AS campeonato,
+    COALESCE(b.title, a.timecasa) AS casa,
+    COALESCE(c.title, a.timefora) AS fora,
     a.data,
     a.hora,
-    a.cotacoes
+    a.cotacoes,
+    a.api_id
     
 FROM
     `sis_jogos` AS a
     
-INNER JOIN
+LEFT JOIN
     `sis_times` AS b ON b.id = a.timecasa AND b.status = 1
     
-INNER JOIN
+LEFT JOIN
     `sis_times` AS c ON c.id = a.timefora AND c.status = 1
     
-INNER JOIN
+LEFT JOIN
     `sis_campeonatos` AS d ON d.id = a.campeonato AND d.status = 1
     
 WHERE 
-    a.status = 1 AND a.data >= :hoje
+    a.ativo = '1' AND a.data >= :hoje
     AND (a.data > :hoje OR a.hora > :hora)
     
 ORDER BY
-    d.title ASC, a.data ASC, a.hora ASC
+    COALESCE(d.title, a.campeonato) ASC, a.data ASC, a.hora ASC
 SQL;
 
         $minutos = DadosModel::get()->getMinutosJogo() + 5;
@@ -145,8 +146,15 @@ SQL;
             $paises[] = $v['pais'];
             $registros[$i]['dateTime'] = date('c', strtotime("{$v['data']} {$v['hora']}"));
             $registros[$i]['cotacoes'] = $v['cotacoes'] = json_decode($v['cotacoes'], true);
-            if (!in_array($v['campeonatoId'], $campeonatos))
-                $campeonatos[(int)$v['campeonatoId']] = $v['campeonato'];
+            
+            // Cria chave única para o campeonato (ID ou nome)
+            $campeonatoKey = is_numeric($v['campeonatoId']) ? (int)$v['campeonatoId'] : 'api_' . md5($v['campeonato']);
+            if (!isset($campeonatos[$campeonatoKey])) {
+                $campeonatos[$campeonatoKey] = $v['campeonato'];
+                $registros[$i]['campeonatoKey'] = $campeonatoKey;
+            } else {
+                $registros[$i]['campeonatoKey'] = $campeonatoKey;
+            }
         }
 
 
@@ -157,11 +165,11 @@ SQL;
         }
 
         $i = 0;
-        foreach ($campeonatos as $id => $campeonato) {
-            $result[$i]['id'] = $id;
+        foreach ($campeonatos as $campeonatoKey => $campeonato) {
+            $result[$i]['id'] = $campeonatoKey;
             $result[$i]['title'] = $campeonato;
             foreach ($registros as $v) {
-                if ((int)$v['campeonatoId'] == $id) {
+                if ($v['campeonatoKey'] == $campeonatoKey) {
                     $result[$i]['pais'] = (int)$v['pais'];
                     $result[$i]['jogos'][] = $v;
                 }
@@ -170,6 +178,14 @@ SQL;
         }
 
         $resultPaises = [];
+        
+        // Adiciona país "Internacional" para jogos da BetsAPI sem país
+        $paisInternacional = [
+            'id' => 0,
+            'title' => 'Internacional',
+            'img' => '',
+            'campeonatos' => [],
+        ];
 
         /** @var OptionVO $pais */
         foreach ($paises as $pais) {
@@ -195,7 +211,7 @@ SQL;
 
             $dados = [
                 'id' => 0,
-                'title' => 'Outros',
+                'title' => 'Internacional / Outros',
                 'img' => source_images('default.jpg'),
                 'campeonatos' => []
             ];

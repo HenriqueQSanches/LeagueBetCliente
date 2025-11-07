@@ -1,0 +1,207 @@
+╔══════════════════════════════════════════════════════════════╗
+║                                                              ║
+║       🎯 LEAGUEBET - GUIA RÁPIDO BETSAPI 🎯                 ║
+║                                                              ║
+╚══════════════════════════════════════════════════════════════╝
+
+🔑 TOKEN DA API: 237782-BXpZQecPXZnfW9
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📋 PASSO A PASSO (5 MINUTOS)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1️⃣  ATUALIZAR BANCO DE DADOS (2 min)
+   
+   a) Abra o phpMyAdmin
+      URL: http://localhost/phpmyadmin
+   
+   b) Selecione o banco: banca_esportiva
+   
+   c) Clique em "SQL" no menu superior
+   
+   d) Abra o arquivo: database-update-betsapi.sql
+   
+   e) Copie TODO o conteúdo e cole na área SQL
+   
+   f) Clique em "Executar"
+   
+   ✅ Pronto! Banco atualizado!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+2️⃣  TESTAR CONEXÃO (1 min)
+   
+   a) Abra o navegador
+   
+   b) Acesse:
+      http://localhost/Cliente/LeagueBetCliente-main/test-betsapi.php
+   
+   c) Verifique se todos os testes passaram (✅)
+   
+   ✅ Se tudo estiver verde, está funcionando!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+3️⃣  SINCRONIZAR JOGOS (2 min)
+   
+   a) Acesse:
+      http://localhost/Cliente/LeagueBetCliente-main/sync-betsapi.php
+   
+   b) Aguarde a sincronização completar
+   
+   c) Veja as estatísticas:
+      - Total de jogos
+      - Jogos hoje
+      - Jogos ao vivo
+      - Campeonatos
+   
+   ✅ Jogos sincronizados!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+4️⃣  VERIFICAR NO SITE (30 seg)
+   
+   a) Acesse o site principal:
+      http://localhost/Cliente/LeagueBetCliente-main/
+   
+   b) Os jogos da BetsAPI devem aparecer!
+   
+   ✅ Tudo funcionando!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+5️⃣  CONFIGURAR SINCRONIZAÇÃO AUTOMÁTICA (OPCIONAL)
+
+   🪟 WINDOWS:
+   
+   a) Abra o "Agendador de Tarefas" (Task Scheduler)
+      Pressione Win+R e digite: taskschd.msc
+   
+   b) Clique em "Criar Tarefa Básica"
+   
+   c) Nome: LeagueBet Sync BetsAPI
+   
+   d) Gatilho: Repetir a cada 5 minutos
+   
+   e) Ação: Iniciar um programa
+      - Programa: C:\xampp\php\php.exe
+      - Argumentos: C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\betsapi\SyncJogos.php
+   
+   f) Finalizar
+   
+   ✅ Sincronização automática configurada!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 O QUE A BETSAPI OFERECE?
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Jogos de múltiplos esportes:
+   • Futebol ⚽
+   • Basquete 🏀
+   • Tênis 🎾
+   • E muito mais!
+
+✅ Jogos AO VIVO com:
+   • Placar em tempo real
+   • Tempo de jogo
+   • Estatísticas
+   • Odds atualizadas
+
+✅ Jogos futuros:
+   • Próximos 3 dias
+   • Todas as ligas
+   • Odds pré-jogo
+
+✅ Múltiplas casas de apostas:
+   • Bet365
+   • BWin
+   • Betfair
+   • 1xBet
+   • Sbobet
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚙️ CONFIGURAÇÕES AVANÇADAS
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📝 Alterar configurações no banco de dados:
+
+   Tabela: betsapi_config
+
+   • api_token = Token da API
+   • sync_interval = Intervalo de sincronização (segundos)
+   • sync_enabled = Habilitar sincronização (1=sim, 0=não)
+   • sport_id = ID do esporte (1=Futebol, 18=Basquete)
+   • days_ahead = Dias futuros para buscar jogos
+   • clean_old_days = Dias para manter jogos antigos
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🐛 PROBLEMAS COMUNS
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+❌ "Connection refused"
+   → Verifique sua conexão com a internet
+   → Verifique se o token está correto
+
+❌ "Token limit exceeded"
+   → Você atingiu o limite de requisições
+   → Reduza a frequência de sincronização
+   → Considere upgrade do plano
+
+❌ Nenhum jogo aparece
+   → Execute sync-betsapi.php manualmente
+   → Verifique se o banco foi atualizado
+   → Veja os logs de erro
+
+❌ Odds não atualizam
+   → Verifique se o CRON está rodando
+   → Aumente a frequência de sincronização
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📚 DOCUMENTAÇÃO
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📄 Documentação completa:
+   BETSAPI-INTEGRATION-README.md
+
+🌐 Documentação oficial BetsAPI:
+   https://betsapi.com/docs/
+
+📊 Painel BetsAPI:
+   https://betsapi.com/cp/
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📞 SUPORTE
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+👨‍💻 Desenvolvedor: Henrique Sanches
+
+📧 Email: qiwitech.sanches@gmail.com
+
+🌐 Portfolio: https://portfolio-beige-seven-18.vercel.app/
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✨ PRONTO PARA USAR! ✨
+
+Agora você tem acesso a:
+• Milhares de jogos em tempo real
+• Odds atualizadas automaticamente
+• Jogos ao vivo com placar
+• Múltiplos esportes e campeonatos
+
+Boa sorte com o LeagueBet! 🚀⚽🏀
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+

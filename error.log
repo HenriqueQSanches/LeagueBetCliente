@@ -744,3 +744,20 @@ Stack trace:
 Stack trace:
 #0 {main}
   thrown in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\fix-aposta-maxima.php on line 12
+[07-Nov-2025 17:06:17 America/Sao_Paulo] PHP Fatal error:  Uncaught Error: Call to a member function query() on null in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\check-database-structure.php:66
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\check-database-structure.php on line 66
+[07-Nov-2025 17:12:28 America/Sao_Paulo] BetsAPI Error: HTTP 404 - {"success":0,"error":"NOT_FOUND"}
+[07-Nov-2025 17:12:29 America/Sao_Paulo] BetsAPI Error: HTTP 404 - {"success":0,"error":"NOT_FOUND"}
+[07-Nov-2025 17:13:00 America/Sao_Paulo] BetsAPI Error: HTTP 0 - 
+[07-Nov-2025 17:14:56 America/Sao_Paulo] BetsAPI Error: HTTP 404 - Response: {"success":0,"error":"NOT_FOUND"}
+[07-Nov-2025 17:15:29 America/Sao_Paulo] BetsAPI Error: HTTP 0 - cURL Error: Operation timed out after 30012 milliseconds with 0 bytes received
+[07-Nov-2025 17:17:28 America/Sao_Paulo] PHP Fatal error:  Uncaught Error: Failed opening required 'C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\betsapi/../../inc.config.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\betsapi\SyncJogos.php:10
+Stack trace:
+#0 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\sync-betsapi.php(11): require_once()
+#1 {main}
+  thrown in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\betsapi\SyncJogos.php on line 10
+[07-Nov-2025 17:27:52 America/Sao_Paulo] BetsAPI Error: HTTP 0 - cURL Error: Operation timed out after 30007 milliseconds with 0 bytes received
+[07-Nov-2025 17:29:09 America/Sao_Paulo] BetsAPI Error: HTTP 0 - cURL Error: Operation timed out after 30010 milliseconds with 0 bytes received
+[07-Nov-2025 17:32:29 America/Sao_Paulo] PHP Fatal error:  Maximum execution time of 300 seconds exceeded in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\betsapi\BetsAPIClient.php on line 43
