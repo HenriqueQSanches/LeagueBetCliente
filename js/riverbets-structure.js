@@ -25,11 +25,13 @@ $(document).ready(function() {
                     <li><a href="/" class="active"><i class="fa fa-home"></i> Início</a></li>
                     <li><a href="/"><i class="fa fa-futbol-o"></i> Futebol</a></li>
                     <li><a href="/"><i class="fa fa-play-circle"></i> Ao Vivo</a></li>
-                    <li><a href="/"><i class="fa fa-list"></i> Mais Esportes</a></li>
                     <li><a href="/regras"><i class="fa fa-book"></i> Regulamento</a></li>
                     <li><a href="/bilhete"><i class="fa fa-ticket"></i> Conferir Bilhete</a></li>
                 </ul>
             </nav>
+            <div id="campeonatos-sidebar" class="campeonatos-container">
+                <!-- Campeonatos serão inseridos aqui pelo Vue.js -->
+            </div>
             <div class="riverbets-sidebar-login">
                 <button class="btn" onclick="$('#modal-login').modal('show')">LOGIN</button>
             </div>
@@ -114,6 +116,16 @@ $(document).ready(function() {
         content: layout.find('.riverbets-content').length,
         cupom: layout.find('.riverbets-sidebar-right').length
     });
+    
+    // MOVER CAMPEONATOS PARA O SIDEBAR (mantendo Vue.js)
+    setTimeout(() => {
+        const campeonatosOriginal = $('.campeonatos').first();
+        if (campeonatosOriginal.length) {
+            console.log('✅ Campeonatos encontrados! Movendo para o sidebar...');
+            // MOVE (não clona) para manter os eventos do Vue.js
+            $('#campeonatos-sidebar').append(campeonatosOriginal);
+        }
+    }, 500);
     
     // Função de busca
     $('#search-games').on('keyup', function() {
