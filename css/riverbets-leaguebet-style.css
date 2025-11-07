@@ -588,10 +588,7 @@ body {
    AJUSTES NO CUPOM
    ======================================== */
 
-/* Esconder campo Cliente (não obrigatório) */
-.bilhete .form-group:has(input[placeholder="opcional"]) {
-    display: none !important;
-}
+/* Campo Cliente removido do HTML - CSS não mais necessário */
 
 /* Ajustar espaçamento do bilhete */
 .bilhete .content {

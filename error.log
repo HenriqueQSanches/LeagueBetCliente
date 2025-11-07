@@ -740,3 +740,7 @@ Stack trace:
 #0 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\teste-api-direto.php(92): json_decode(Array, true)
 #1 {main}
   thrown in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\teste-api-direto.php on line 92
+[07-Nov-2025 00:45:09 America/Sao_Paulo] PHP Fatal error:  Uncaught Error: Call to undefined method app\core\crud\Conn::getConnection() in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\fix-aposta-maxima.php:12
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\fix-aposta-maxima.php on line 12

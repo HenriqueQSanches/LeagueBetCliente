@@ -23,7 +23,6 @@ $(document).ready(function() {
             <nav>
                 <ul class="riverbets-sidebar-menu">
                     <li><a href="/" class="active"><i class="fa fa-home"></i> Início</a></li>
-                    <li><a href="/"><i class="fa fa-futbol-o"></i> Futebol</a></li>
                     <li><a href="/"><i class="fa fa-play-circle"></i> Ao Vivo</a></li>
                     <li><a href="/regras"><i class="fa fa-book"></i> Regulamento</a></li>
                     <li><a href="/bilhete"><i class="fa fa-ticket"></i> Conferir Bilhete</a></li>

@@ -100,14 +100,6 @@
                         </div>
                     </div>
                     <div class="row align-items-center">
-                        <div class="col-auto form-group">
-                            Cliente
-                        </div>
-                        <div class="col form-group">
-                            <input type="text" v-model="cliente"
-                                   class="form-control form-control-sm"
-                                   placeholder="opcional" maxlength="50"/>
-                        </div>
                         <div class="col-12 mb-2">
                             <div class="row">
                                 <div class="col-6">
@@ -271,7 +263,7 @@
                 <div class="{{ responsive ? 'd-none d-md-block col-12 col-md-auto' : 'col-auto' }} mb-3">
                     <div style="max-height: 760px; overflow: auto">
                         <div class="campeonatos rounded">
-                            <h3 class="title">Campeonatos</h3>
+                            <h3 class="title">DATAS</h3>
                             <ul>
                                 <li>
                                     <a href="javascript:;" v-on:click="setCampeonato()"
@@ -279,26 +271,12 @@
                                         <i class="fa fa-angle-right"></i> Todos os jogos
                                     </a>
                                 </li>
-                                <li>
-                                    <a href="javascript:;" v-on:click="setData('{{ hoje }}')"
-                                       v-bind:class="{ active: findData == '{{ hoje }}' }">
-                                        Hoje {{ hoje|split('-')|reverse|join("/") }}
+                                <li v-for="(data, index) in datasProximos7Dias" v-bind:key="index">
+                                    <a href="javascript:;" v-on:click="setData(data.valor)"
+                                       v-bind:class="{ active: findData == data.valor }">
+                                        ${data.diaSemana} (${data.formatada})
                                     </a>
                                 </li>
-                                <li>
-                                    <a href="javascript:;" v-on:click="setData('{{ amanha }}')"
-                                       v-bind:class="{active: findData == '{{ amanha }}'}">
-                                        Amanhã {{ amanha|split('-')|reverse|join('/') }}
-                                    </a>
-                                </li>
-                                <div v-for="(p, i) in paises" v-bind:class="{last: i == paises.length - 1}">
-                                    <li class="campeonato pais">
-                                        <a href="javascript:;" v-on:click="setPais(p)"
-                                           v-bind:class="{active: findPais == p.id}">
-                                            ${p.title}
-                                        </a>
-                                    </li>
-                                </div>
                             </ul>
                         </div>
                     </div>
@@ -382,6 +360,9 @@
 
                 $('html').addClass('loading');
 
+                // Gerar próximos 7 dias
+                this.gerarProximos7Dias();
+
                 this.aposta.jogos.forEach((v, i) => {
                     if (!this.filterJogo(v.jogo)) {
                         this.aposta.jogos.splice(i, 1);
@@ -423,6 +404,7 @@
                         password: '',
                     },
                     datas: {},
+                    datasProximos7Dias: [],
                     mJogo: {
                         jogo: null,
                         tempo: 90,
@@ -473,6 +455,26 @@
                 },
             },
             methods: {
+                gerarProximos7Dias() {
+                    const diasSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+                    const hoje = new Date();
+                    
+                    // Apenas 3 dias: HOJE, AMANHÃ, DEPOIS DE AMANHÃ
+                    for (let i = 0; i < 3; i++) {
+                        const data = new Date(hoje);
+                        data.setDate(hoje.getDate() + i);
+                        
+                        const dia = String(data.getDate()).padStart(2, '0');
+                        const mes = String(data.getMonth() + 1).padStart(2, '0');
+                        const ano = data.getFullYear();
+                        
+                        this.datasProximos7Dias.push({
+                            diaSemana: diasSemana[data.getDay()],
+                            formatada: `${dia}/${mes}/${ano}`,
+                            valor: `${ano}-${mes}-${dia}`
+                        });
+                    }
+                },
                 onAuth() {
                     $("html").addClass('page-loading');
                     axios

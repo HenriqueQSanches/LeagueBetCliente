@@ -321,14 +321,13 @@ SQL;
             if ($user) {
                 $aposta->setUser($user->getId());
                 $aposta->setGerente($user->getUser());
-                $aposta->setApostadorNome(inputPost('cliente') ?: $user->getNome());
+                $aposta->setApostadorNome($user->getNome());
                 $aposta->setApostadorTelefone(inputPost('telefone') ?: $user->getTelefone());
                 $aposta->setApostadorRevendedor(inputPost('revendedor') ?: $user->getTelefone());
                 $aposta->setStatus(ApostasModel::STATUS_ATIVA);
             } else {
-                if (!inputPost('cliente'))
-                    throw new \Exception("Informe seu nome");
-                $aposta->setApostadorNome(inputPost('cliente'));
+                // Campo cliente removido - usar nome genérico
+                $aposta->setApostadorNome('Cliente');
                 $aposta->setApostadorTelefone(inputPost('telefone'));
                 $aposta->setApostadorRevendedor(inputPost('revendedor'));
                 $aposta->setStatus(ApostasModel::STATUS_AGUARDANDO_PAGAMENTO);
