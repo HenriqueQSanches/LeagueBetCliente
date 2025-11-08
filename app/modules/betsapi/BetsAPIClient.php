@@ -18,25 +18,7 @@ class BetsAPIClient {
      * Construtor
      */
     public function __construct() {
-        // Token deve ser configurado no banco de dados (tabela: betsapi_config)
-        // ou via variável de ambiente
-        $this->apiToken = $this->getTokenFromDatabase();
-    }
-    
-    /**
-     * Busca o token do banco de dados
-     */
-    private function getTokenFromDatabase() {
-        global $pdo;
-        try {
-            $stmt = $pdo->prepare("SELECT valor FROM betsapi_config WHERE chave = 'api_token' LIMIT 1");
-            $stmt->execute();
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            return $result ? $result['valor'] : '';
-        } catch (Exception $e) {
-            error_log("Erro ao buscar token da BetsAPI: " . $e->getMessage());
-            return '';
-        }
+        $this->apiToken = '237782-BXpZQecPXZnfW9';
     }
     
     /**

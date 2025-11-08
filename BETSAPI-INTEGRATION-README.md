@@ -14,15 +14,9 @@ Este documento descreve a integração completa da **BetsAPI** no sistema League
 
 ## 🔑 Credenciais da API
 
-**Token:** Configure seu token no banco de dados (tabela `betsapi_config`, campo `api_token`) ou em um arquivo `.env`
+**Token:** `237782-BXpZQecPXZnfW9`
 
 **Documentação Oficial:** https://betsapi.com/docs/
-
-**Como obter seu token:**
-1. Acesse: https://betsapi.com/
-2. Crie uma conta ou faça login
-3. Vá em "Dashboard" > "API Token"
-4. Copie seu token e configure no sistema
 
 ---
 
@@ -407,27 +401,14 @@ Adicione autenticação ou remova-os completamente.
 
 ### Proteger Token da API
 
-⚠️ **IMPORTANTE:** Nunca exponha o token em arquivos públicos ou no Git!
-
-**Opção 1 - Usar variáveis de ambiente (.env):**
+Nunca exponha o token em arquivos públicos. Considere usar variáveis de ambiente:
 
 ```php
-// .env (adicione este arquivo no .gitignore!)
-BETSAPI_TOKEN=seu_token_aqui
+// .env
+BETSAPI_TOKEN=237782-BXpZQecPXZnfW9
 
 // BetsAPIClient.php
 $this->apiToken = getenv('BETSAPI_TOKEN');
-```
-
-**Opção 2 - Usar banco de dados (recomendado):**
-
-O sistema já está configurado para buscar o token da tabela `betsapi_config`.
-Atualize o token diretamente no banco de dados:
-
-```sql
-UPDATE betsapi_config 
-SET valor = 'seu_token_aqui' 
-WHERE chave = 'api_token';
 ```
 
 ---
