@@ -1,0 +1,45 @@
+# ============================================
+# LEAGUEBET - Git Ignore
+# ============================================
+
+# Environment variables (IMPORTANTE!)
+.env
+.env.local
+.env.*.local
+
+# Composer
+/vendor/
+composer.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Cache
+cache/
+*.cache
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Backup files
+*.bak
+*.backup
+*.sql.backup
+
+# Node modules (se usar)
+node_modules/
+
