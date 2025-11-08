@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS `betsapi_config` (
 
 -- Insere configurações padrão
 INSERT INTO `betsapi_config` (`chave`, `valor`, `descricao`) VALUES
-('api_token', 'SEU_TOKEN_AQUI', 'Token de autenticação da BetsAPI'),
+('api_token', '237782-BXpZQecPXZnfW9', 'Token de autenticação da BetsAPI'),
 ('sync_interval', '300', 'Intervalo de sincronização em segundos (300 = 5 minutos)'),
 ('sync_enabled', '1', 'Sincronização automática habilitada (1=sim, 0=não)'),
 ('sport_id', '1', 'ID do esporte (1=Futebol, 18=Basquete)'),
