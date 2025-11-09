@@ -134,16 +134,42 @@ try {
             $hora = $dateTime->format('H:i:s');
             $campeonato = $event['league']['name'] ?? 'Campeonato';
             
-            // Odds padrão
-            $odds = [
-                '90' => [
-                    'casa' => 2.50,
-                    'empate' => 3.20,
-                    'fora' => 2.80,
-                    'mais_2_5' => 1.85,
-                    'menos_2_5' => 1.95
-                ]
-            ];
+            // Odds: buscar principais + complementares e normalizar campos
+            $odds = $api->getMainOdds($apiId);
+            $extra = $api->getExtendedOdds($apiId);
+
+            // Mescla extras por tempo
+            foreach ($extra as $tempo => $campos) {
+                if (!isset($odds[$tempo]) || !is_array($odds[$tempo])) {
+                    $odds[$tempo] = [];
+                }
+                foreach ($campos as $campo => $valor) {
+                    if ($valor > 1) {
+                        $odds[$tempo][$campo] = $valor;
+                    }
+                }
+            }
+
+            // Normalização de chaves para o admin/UI
+            foreach (['90','pt','st'] as $tempoPadrao) {
+                if (!isset($odds[$tempoPadrao]) || !is_array($odds[$tempoPadrao])) continue;
+                $t =& $odds[$tempoPadrao];
+                // Dupla Chance
+                if (isset($t['dupla_1x'])) { $t['dplcasa'] = $t['dupla_1x']; unset($t['dupla_1x']); }
+                if (isset($t['dupla_x2'])) { $t['dplfora'] = $t['dupla_x2']; unset($t['dupla_x2']); }
+                if (isset($t['dupla_12'])) { $t['cof']     = $t['dupla_12']; unset($t['dupla_12']); }
+                // Ambas marcam
+                if (isset($t['ambas_marcam_sim'])) { $t['amb']  = $t['ambas_marcam_sim']; unset($t['ambas_marcam_sim']); }
+                if (isset($t['ambas_marcam_nao'])) { $t['ambn'] = $t['ambas_marcam_nao']; unset($t['ambas_marcam_nao']); }
+            }
+
+            // Estatística rápida para log
+            $countVals = 0;
+            foreach ($odds as $seg => $campos) {
+                foreach ($campos as $k => $v) if (is_numeric($v) && $v > 1) $countVals++;
+            }
+            logMsg("   ↳ mercados capturados: {$countVals}", $countVals > 3 ? 'success' : 'warning');
+
             $cotacoesJson = json_encode($odds, JSON_UNESCAPED_UNICODE);
             
             // Verifica se já existe

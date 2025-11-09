@@ -793,3 +793,7 @@ Stack trace:
 #3 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\index.php(5): app\APP::Initialize()
 #4 {main}
   thrown in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\functions\url.php on line 53
+[09-Nov-2025 15:19:36 America/Sao_Paulo] BetsAPI Error: HTTP 0 - cURL Error: Operation timed out after 30005 milliseconds with 0 bytes received
+[09-Nov-2025 16:31:58 America/Sao_Paulo] BetsAPI Error: HTTP 502 - Response: error code: 502
+[09-Nov-2025 18:25:37 America/Sao_Paulo] BetsAPI Error: PARAM_INVALID - Detail: event_id
+[09-Nov-2025 18:26:53 America/Sao_Paulo] BetsAPI Error: PARAM_INVALID - Detail: event_id

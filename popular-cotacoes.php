@@ -74,6 +74,29 @@ SQL;
 
 try {
     $conexao->exec($sql);
+
+    // Novos mercados alinhados ao parser da BetsAPI (dupla chance e over/under genérico)
+    $sql2 = <<<SQL
+INSERT INTO `sis_cotacoes` (`titulo`, `query`, `descricao`, `status`, `ordem`, `cor`, `campo`, `sigla`, `grupo`, `principal`, `taxa`) VALUES
+('Dupla 1X', '', 'Casa ou Empate', 1, 60, '#000000', 'dupla_1x', '1X', 2, 0, 0.00),
+('Dupla 12', '', 'Casa ou Fora', 1, 61, '#000000', 'dupla_12', '12', 2, 0, 0.00),
+('Dupla X2', '', 'Empate ou Fora', 1, 62, '#000000', 'dupla_x2', 'X2', 2, 0, 0.00),
+('Mais 1.5', '', 'Over 1.5 gols', 1, 63, '#000000', 'mais_1_5', '+1.5', 6, 0, 0.00),
+('Menos 1.5', '', 'Under 1.5 gols', 1, 64, '#000000', 'menos_1_5', '-1.5', 6, 0, 0.00),
+('Mais 2.5', '', 'Over 2.5 gols', 1, 65, '#000000', 'mais_2_5', '+2.5', 6, 0, 0.00),
+('Menos 2.5', '', 'Under 2.5 gols', 1, 66, '#000000', 'menos_2_5', '-2.5', 6, 0, 0.00),
+('Mais 3.5', '', 'Over 3.5 gols', 1, 67, '#000000', 'mais_3_5', '+3.5', 6, 0, 0.00),
+('Menos 3.5', '', 'Under 3.5 gols', 1, 68, '#000000', 'menos_3_5', '-3.5', 6, 0, 0.00),
+('Ambas marcam - Sim', '', 'Both teams to score - Yes', 1, 69, '#000000', 'ambas_marcam_sim', 'AMB.S', 5, 0, 0.00),
+('Ambas marcam - Não', '', 'Both teams to score - No', 1, 70, '#000000', 'ambas_marcam_nao', 'AMB.N', 5, 0, 0.00)
+ON DUPLICATE KEY UPDATE
+    status = VALUES(status),
+    ordem = VALUES(ordem),
+    cor = VALUES(cor),
+    grupo = VALUES(grupo),
+    principal = VALUES(principal);
+SQL;
+    $conexao->exec($sql2);
     
     // Contar novamente
     $sql_check2 = "SELECT COUNT(*) as total FROM sis_cotacoes WHERE status = 1";

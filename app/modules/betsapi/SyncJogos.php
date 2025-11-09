@@ -143,8 +143,20 @@ class SyncJogos {
             // Busca ou cria campeonato
             $campeonatoDbId = $this->getOrCreateCampeonato($campeonatoId, $campeonatoNome);
             
-            // Busca odds
+            // Busca odds principais e complementares
             $odds = $this->api->getMainOdds($apiId);
+            $extraOdds = $this->api->getExtendedOdds($apiId);
+            // Mescla preservando o que já existe
+            foreach ($extraOdds as $tempo => $campos) {
+                if (!isset($odds[$tempo]) || !is_array($odds[$tempo])) {
+                    $odds[$tempo] = [];
+                }
+                foreach ($campos as $campo => $valor) {
+                    if ($valor > 1) {
+                        $odds[$tempo][$campo] = $valor;
+                    }
+                }
+            }
             $cotacoesJson = json_encode($odds, JSON_UNESCAPED_UNICODE);
             
             // Verifica se jogo já existe

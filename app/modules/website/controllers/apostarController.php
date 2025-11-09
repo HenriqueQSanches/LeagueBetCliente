@@ -78,7 +78,35 @@ WHERE a.status = 1
 ORDER BY a.ordem ASC, a.titulo ASC
 SQL;
 
-        return Model::pdoRead()->FullRead($termos)->getResult();
+        $lista = Model::pdoRead()->FullRead($termos)->getResult();
+
+        // Fallback: garantir cotações essenciais mapeadas dos mercados da API
+        // para o modal e o contador “+X” funcionarem mesmo sem cadastro no admin.
+        $essenciais = [
+            // Duplas
+            ['sigla' => '1X',   'title' => 'Casa ou Empate',        'campo' => 'dplcasa', 'cor' => '#000000', 'grupo' => 2, 'principal' => '0'],
+            ['sigla' => 'X2',   'title' => 'Empate ou Fora',        'campo' => 'dplfora', 'cor' => '#000000', 'grupo' => 2, 'principal' => '0'],
+            ['sigla' => '12',   'title' => 'Casa ou Fora',          'campo' => 'cof',     'cor' => '#000000', 'grupo' => 2, 'principal' => '0'],
+            // Ambas marcam
+            ['sigla' => 'AMB',  'title' => 'Ambas marcam - Sim',    'campo' => 'amb',     'cor' => '#000000', 'grupo' => 5, 'principal' => '0'],
+            ['sigla' => 'AMB.N','title' => 'Ambas marcam - Não',    'campo' => 'ambn',    'cor' => '#000000', 'grupo' => 5, 'principal' => '0'],
+            // Over/Under
+            ['sigla' => 'M1.5', 'title' => 'Mais de 1.5',           'campo' => 'mais_1_5','cor' => '#000000', 'grupo' => 3, 'principal' => '0'],
+            ['sigla' => 'M2.5', 'title' => 'Mais de 2.5',           'campo' => 'mais_2_5','cor' => '#000000', 'grupo' => 3, 'principal' => '0'],
+            ['sigla' => 'M3.5', 'title' => 'Mais de 3.5',           'campo' => 'mais_3_5','cor' => '#000000', 'grupo' => 3, 'principal' => '0'],
+            ['sigla' => 'N1.5', 'title' => 'Menos de 1.5',          'campo' => 'menos_1_5','cor' => '#000000','grupo' => 3, 'principal' => '0'],
+            ['sigla' => 'N2.5', 'title' => 'Menos de 2.5',          'campo' => 'menos_2_5','cor' => '#000000','grupo' => 3, 'principal' => '0'],
+            ['sigla' => 'N3.5', 'title' => 'Menos de 3.5',          'campo' => 'menos_3_5','cor' => '#000000','grupo' => 3, 'principal' => '0'],
+        ];
+
+        $camposAtuais = array_column($lista, 'campo');
+        foreach ($essenciais as $e) {
+            if (!in_array($e['campo'], $camposAtuais, true)) {
+                $lista[] = $e;
+            }
+        }
+
+        return $lista;
     }
 
     function jogos(&$datas = [])

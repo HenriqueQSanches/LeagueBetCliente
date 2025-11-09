@@ -158,6 +158,124 @@ class BetsAPIClient {
     }
     
     /**
+     * Busca odds completas do evento e extrai mercados adicionais (fallback)
+     * - Double Chance (1X, 12, X2)
+     * - Both Teams To Score (Yes/No)
+     * - Over/Under genérico (1.5, 2.5, 3.5...)
+     * 
+     * @param string $eventId
+     * @return array
+     */
+    public function getExtendedOdds($eventId) {
+        $response = $this->request('event/odds', ['event_id' => $eventId]);
+        $result = [];
+        
+        if (!$response || !isset($response['results']) || empty($response['results'])) {
+            return $result;
+        }
+        
+        foreach ($response['results'] as $market) {
+            // Normalizar lista de odds (algumas respostas vêm como 'odds', outras 'values'
+            // e em certos casos ficam dentro de 'bookmakers' => [ { odds: [...] } ])
+            $oddsList = [];
+            if (!empty($market['odds']) && is_array($market['odds'])) {
+                $oddsList = $market['odds'];
+            } elseif (!empty($market['values']) && is_array($market['values'])) {
+                $oddsList = $market['values'];
+            } elseif (!empty($market['bookmakers']) && is_array($market['bookmakers'])) {
+                // Pega o primeiro bookmaker com odds disponíveis
+                foreach ($market['bookmakers'] as $bm) {
+                    if (!empty($bm['odds']) && is_array($bm['odds'])) {
+                        $oddsList = $bm['odds'];
+                        break;
+                    }
+                    if (!empty($bm['values']) && is_array($bm['values'])) {
+                        $oddsList = $bm['values'];
+                        break;
+                    }
+                }
+            }
+            if (empty($oddsList)) continue;
+            
+            $marketName = strtolower($market['name'] ?? '');
+            // Normalizações para facilitar matching
+            $marketName = str_replace(['  ', '–', '—'], [' ', '-', '-'], $marketName);
+            
+            // Determinar tempo pela descrição do mercado
+            $tempo = '90';
+            if (strpos($marketName, '1st') !== false || strpos($marketName, '1st half') !== false) {
+                $tempo = 'pt';
+            } else if (strpos($marketName, '2nd') !== false || strpos($marketName, '2nd half') !== false) {
+                $tempo = 'st';
+            }
+            
+            foreach ($oddsList as $odd) {
+                $name = (string)($odd['name'] ?? ($odd['label'] ?? ''));
+                // Alguns retornos usam 'odds', outros 'price', 'value' etc.
+                $raw = $odd['odds'] ?? ($odd['price'] ?? ($odd['value'] ?? ($odd['decimal'] ?? null)));
+                $oddValue = is_numeric($raw) ? floatval($raw) : 0.0;
+                if ($oddValue <= 1) {
+                    continue;
+                }
+                
+                // Double chance -> mapear para campos usados no admin
+                if (stripos($marketName, 'double chance') !== false
+                    || stripos($marketName, 'double-chance') !== false
+                    || stripos($marketName, 'dupla') !== false
+                    || in_array($name, ['1X','X2','12'], true)) {
+                    if     ($name === '1X') $result[$tempo]['dplcasa'] = $oddValue;   // 1X
+                    elseif ($name === 'X2') $result[$tempo]['dplfora'] = $oddValue;   // X2
+                    elseif ($name === '12') $result[$tempo]['cof']     = $oddValue;   // 12 (casa ou fora)
+                }
+                
+                // Both Teams To Score -> mapear para 'amb' e 'ambn'
+                if (stripos($marketName, 'both teams to score') !== false
+                    || stripos($marketName, 'both team to score') !== false
+                    || stripos($marketName, 'btts') !== false
+                    || stripos($marketName, 'gg/ng') !== false
+                    || stripos($marketName, 'ambas') !== false) {
+                    if (stripos($name, 'yes') !== false)  $result[$tempo]['amb']  = $oddValue;
+                    if (stripos($name, 'no') !== false)   $result[$tempo]['ambn'] = $oddValue;
+                }
+                
+                // Over/Under - nomes diversos (Over 2.5 / Under 1.5...) ou Total Goals
+                if (stripos($marketName, 'over/under') !== false || stripos($marketName, 'total') !== false || stripos($marketName, 'goals') !== false) {
+                    // Alguns odds trazem handicap separado (e.g., handicap: "2.5")
+                    $handicap = null;
+                    if (!empty($odd['handicap']) && is_string($odd['handicap'])) {
+                        $handicap = $odd['handicap'];
+                    } elseif (!empty($odd['line'])) {
+                        $handicap = (string)$odd['line'];
+                    }
+                    
+                    $tipo = null;
+                    $numero = null;
+                    
+                    if (preg_match('/(Over|Under)\s*([0-9]+(?:\.[0-9])?)/i', $name, $m)) {
+                        $tipo = strtolower($m[1]) === 'over' ? 'mais' : 'menos';
+                        $numero = str_replace('.', '_', $m[2]);
+                    } elseif ($handicap && preg_match('/^([0-9]+(?:\.[0-9])?)$/', $handicap)) {
+                        // Quando o nome é apenas "Over" / "Under" e a linha vem em outro campo
+                        if (stripos($name, 'over') !== false)  $tipo = 'mais';
+                        if (stripos($name, 'under') !== false) $tipo = 'menos';
+                        $numero = str_replace('.', '_', $handicap);
+                    }
+                    
+                    if ($tipo && $numero) {
+                        $campo = "{$tipo}_{$numero}";
+                        // apenas grava se odds > 1
+                        if ($oddValue > 1) {
+                            $result[$tempo][$campo] = $oddValue;
+                        }
+                    }
+                }
+            }
+        }
+        
+        return $result;
+    }
+    
+    /**
      * Busca estatísticas ao vivo de um evento
      * 
      * @param string $eventId
@@ -283,32 +401,43 @@ class BetsAPIClient {
                 }
             }
             
-            // Over/Under 2.5
-            if ($marketId == '18') {
-                foreach ($market['odds'] as $odd) {
-                    $oddValue = floatval($odd['odds'] ?? 0);
-                    if ($oddValue > 1) {
-                        if (strpos($odd['name'], 'Over') !== false) {
-                            $odds['90']['mais_2_5'] = $oddValue;
-                        }
-                        if (strpos($odd['name'], 'Under') !== false) {
-                            $odds['90']['menos_2_5'] = $oddValue;
-                        }
-                    }
+            // Over/Under (genérico: tenta capturar 1.5, 2.5, 3.5, etc) no tempo de jogo correspondente
+            // Alguns provedores usam marketId diferentes; por isso fazemos parsing por nome
+            foreach ($market['odds'] as $odd) {
+                $oddValue = floatval($odd['odds'] ?? 0);
+                if ($oddValue <= 1) continue;
+
+                $name = (string)($odd['name'] ?? '');
+                $marketLabel = strtolower((string)$marketName);
+
+                // Define o "tempo" alvo: 90 (jogo), pt (1º tempo) ou st (2º tempo)
+                $tempo = '90';
+                if (strpos($marketLabel, '1st') !== false || strpos($marketLabel, '1st half') !== false || strpos($marketLabel, '1st Half') !== false) {
+                    $tempo = 'pt';
+                } else if (strpos($marketLabel, '2nd') !== false || strpos($marketLabel, '2nd half') !== false || strpos($marketLabel, '2nd Half') !== false) {
+                    $tempo = 'st';
                 }
-            }
-            
-            // Ambas Marcam
-            if ($marketId == '29') {
-                foreach ($market['odds'] as $odd) {
-                    $oddValue = floatval($odd['odds'] ?? 0);
-                    if ($oddValue > 1) {
-                        if (strpos($odd['name'], 'Yes') !== false) {
-                            $odds['90']['ambas_marcam_sim'] = $oddValue;
-                        }
-                        if (strpos($odd['name'], 'No') !== false) {
-                            $odds['90']['ambas_marcam_nao'] = $oddValue;
-                        }
+
+                // Ambas marcam (sim/não)
+                if ($marketId == '29' || stripos($marketLabel, 'both teams to score') !== false) {
+                    if (stripos($name, 'Yes') !== false)  $odds[$tempo]['ambas_marcam_sim'] = $oddValue;
+                    if (stripos($name, 'No') !== false)   $odds[$tempo]['ambas_marcam_nao'] = $oddValue;
+                }
+
+                // Dupla chance (1X, 12, X2) - alguns providers usam market id próprio
+                if (in_array($name, ['1X','X2','12'], true)) {
+                    if     ($name === '1X') $odds[$tempo]['dupla_1x'] = $oddValue;
+                    elseif ($name === 'X2') $odds[$tempo]['dupla_x2'] = $oddValue;
+                    elseif ($name === '12') $odds[$tempo]['dupla_12'] = $oddValue;
+                }
+
+                // Over/Under com valor variável (ex.: Over 1.5, Under 3.5)
+                if (stripos($name, 'Over') === 0 || stripos($name, 'Under') === 0) {
+                    if (preg_match('/(Over|Under)\s*([0-9]+(?:\.[0-9])?)/i', $name, $m)) {
+                        $tipo = strtolower($m[1]) === 'over' ? 'mais' : 'menos';
+                        $numero = str_replace('.', '_', $m[2]);
+                        $campo = "{$tipo}_{$numero}";
+                        $odds[$tempo][$campo] = $oddValue;
                     }
                 }
             }

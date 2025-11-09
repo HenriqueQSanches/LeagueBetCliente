@@ -12,7 +12,7 @@ class indexController extends Controller
     function indexAction()
     {
         // Redirecionar para página de login do admin
-        header('Location: /admin-login.php');
+        header('Location: admin-login.php');
         exit;
     }
 
