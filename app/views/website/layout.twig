@@ -198,9 +198,9 @@
                 <div class="riverbets-sidebar-logo">{{ dados.getBanca() }}</div>
                 <nav>
                     <ul class="riverbets-sidebar-menu">
-                        <li><a href="{{ url() }}" class="active"><i class="fa fa-home"></i> Início</a></li>
+                        <li><a href="{{ url() }}"><i class="fa fa-home"></i> Início</a></li>
                         <li><a href="{{ url() }}"><i class="fa fa-futbol-o"></i> Futebol</a></li>
-                        <li><a href="{{ url() }}"><i class="fa fa-play-circle"></i> Ao Vivo</a></li>
+                        <li><a href="{{ url('aovivo') }}"><i class="fa fa-play-circle"></i> Ao Vivo</a></li>
                         <li><a href="{{ url() }}"><i class="fa fa-list"></i> Mais Esportes</a></li>
                         <li><a href="{{ url('regras') }}"><i class="fa fa-book"></i> Regulamento</a></li>
                         <li><a href="{{ url('bilhete') }}"><i class="fa fa-ticket"></i> Conferir Bilhete</a></li>
@@ -218,6 +218,16 @@
                 </div>
             </aside>
         `);
+        
+        // Definir item ativo conforme a rota atual
+        (function() {
+            const path = (window.location.pathname || '').toLowerCase();
+            const isLive = /\/aovivo(\/|$)/.test(path);
+            const linkInicio = sidebar.find('a:contains("Início")').first();
+            const linkAoVivo = sidebar.find('a:contains("Ao Vivo")').first();
+            sidebar.find('a').removeClass('active');
+            (isLive ? linkAoVivo : linkInicio).addClass('active');
+        })();
         
         // Área Central
         const content = $('<div class="riverbets-content"></div>');

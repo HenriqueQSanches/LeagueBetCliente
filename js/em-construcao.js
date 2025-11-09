@@ -19,7 +19,8 @@ $(document).ready(function() {
     setTimeout(function() {
         // Ao Vivo
         $('.riverbets-sidebar-menu a[href*="Ao Vivo"], .riverbets-sidebar-menu a:contains("Ao Vivo")').on('click', function(e) {
-            if (!$(this).attr('href').includes('apostar')) {
+            const href = ($(this).attr('href') || '').toLowerCase();
+            if (!(href.includes('apostar') || href.includes('aovivo'))) {
                 mostrarEmConstrucao(e, 'Ao Vivo');
             }
         });

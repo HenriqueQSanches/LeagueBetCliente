@@ -1,0 +1,105 @@
+{% extends layout %}
+
+{% set selector = '#pg-aovivo' %}
+
+{% block main %}
+
+    <div class="page-title">
+        <h3 class="title">Jogos Ao Vivo</h3>
+    </div>
+
+    <div id="pg-aovivo">
+        <div class="container-fluid pt-3">
+            <div class="row">
+                <div class="col">
+                    <div class="mb-3">
+                        {% include 'website/inc/slideshow.twig' with {ref: 'site-slideshow'} %}
+                    </div>
+                    <div class="live-list" v-if="dadosCarregados">
+                        <div v-if="!paises || !paises.length" class="alert alert-info">
+                            Nenhum jogo ao vivo no momento.
+                        </div>
+
+                        <div v-for="pais in paises" class="mb-4" v-if="pais.campeonatos && pais.campeonatos.length">
+                            <div class="d-flex align-items-center mb-2">
+                                <img v-bind:src="pais.img" alt="" style="height: 18px; width: auto; margin-right: 8px;">
+                                <strong>${pais.title}</strong>
+                            </div>
+                            <div v-for="campeonato in pais.campeonatos" class="card mb-3">
+                                <div class="card-header py-2">
+                                    <strong>${campeonato.title}</strong>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-sm mb-0">
+                                        <tbody>
+                                        <tr v-for="jogo in campeonato.jogos">
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <span class="badge badge-danger mr-2">AO VIVO</span>
+                                                    <div>
+                                                        <div><b>${jogo.casa}</b> x <b>${jogo.fora}</b></div>
+                                                        <small class="text-muted">${jogo.data.split('-').reverse().join('/')} ${jogo.hora.replace(/:00$/, '')}</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td width="1">
+                                                <div class="h5 m-0">
+                                                    ${(jogo.placar && jogo.placar.casa != null) ? jogo.placar.casa : '-'}
+                                                    :
+                                                    ${(jogo.placar && jogo.placar.fora != null) ? jogo.placar.fora : '-'}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block script %}
+
+    <script src="node_modules/vue/dist/vue.min.js"></script>
+    <script src="node_modules/axios/dist/axios.js"></script>
+
+    <script type="text/javascript">
+        window.appLive = new Vue({
+            el: '{{ selector }}',
+            delimiters: ['${', '}'],
+            created() {
+                $('html').addClass('loading');
+                axios
+                    .get('{{ url("aovivo/jogos") }}')
+                    .then(({data}) => {
+                        this.paises = data.paises || [];
+                        this.grupos = data.grupos || {};
+                        this.cotacoes = data.cotacoes || [];
+                        this.dadosCarregados = true;
+                    })
+                    .catch(() => {
+                        this.dadosCarregados = true;
+                    })
+                    .then(() => {
+                        $('html').removeClass('loading');
+                    });
+            },
+            data() {
+                return {
+                    dadosCarregados: false,
+                    paises: [],
+                    grupos: {},
+                    cotacoes: [],
+                }
+            }
+        });
+    </script>
+
+{% endblock %}
+
+

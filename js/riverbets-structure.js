@@ -22,10 +22,10 @@ $(document).ready(function() {
             </div>
             <nav>
                 <ul class="riverbets-sidebar-menu">
-                    <li><a href="/" class="active"><i class="fa fa-home"></i> Início</a></li>
-                    <li><a href="/"><i class="fa fa-play-circle"></i> Ao Vivo</a></li>
-                    <li><a href="/regras"><i class="fa fa-book"></i> Regulamento</a></li>
-                    <li><a href="/bilhete"><i class="fa fa-ticket"></i> Conferir Bilhete</a></li>
+                    <li><a href="./"><i class="fa fa-home"></i> Início</a></li>
+                    <li><a href="aovivo"><i class="fa fa-play-circle"></i> Ao Vivo</a></li>
+                    <li><a href="regras"><i class="fa fa-book"></i> Regulamento</a></li>
+                    <li><a href="bilhete"><i class="fa fa-ticket"></i> Conferir Bilhete</a></li>
                 </ul>
             </nav>
             <div id="campeonatos-sidebar" class="campeonatos-container">
@@ -108,6 +108,23 @@ $(document).ready(function() {
     
     // Inserir no app-main
     $(appMain).empty().append(layout);
+    
+    // Ajustar links e estado ativo conforme rota atual
+    (function() {
+        const path = (window.location.pathname || '').toLowerCase();
+        const basePath = path.endsWith('/') ? path : path.replace(/\/[^\/]*$/, '/');
+        const isLive = /\/aovivo(\/|$)/i.test(path);
+        
+        const linkInicio = layout.find('.riverbets-sidebar-menu a:contains("Início")').first();
+        const linkAoVivo = layout.find('.riverbets-sidebar-menu a[href$="aovivo"]').first();
+        
+        // Garantir que 'Início' volte para a raiz do projeto atual
+        linkInicio.attr('href', basePath);
+        
+        // Marcar ativo
+        layout.find('.riverbets-sidebar-menu a').removeClass('active');
+        (isLive ? linkAoVivo : linkInicio).addClass('active');
+    })();
     
     // DEBUG: Verificar ordem
     console.log('Layout montado:', {
