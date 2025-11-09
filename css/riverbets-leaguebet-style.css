@@ -167,6 +167,22 @@ body {
    TABELA DE JOGOS (Estilo RIVERBETS)
    ======================================== */
 
+/* Remover margens/paddings externos no contexto da página de aposta
+   para a tabela ocupar o MÁXIMO de largura possível do layout */
+#pg-aposta .container-fluid {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+#pg-aposta .row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+#pg-aposta .col, 
+#pg-aposta [class*="col-"] {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
 /* Container dos jogos - TELA INTEIRA COM CABEÇALHOS */
 .overflow-jogos {
     padding: 0 56px 0 0 !important; /* folga dedicada para a barra de rolagem sem afetar a tabela */
@@ -362,7 +378,7 @@ body {
 .table-jogos tbody tr td:last-child {
     min-width: 95px !important;
     width: 95px !important;
-    padding-right: 16px !important;
+    /*padding-right: 16px !important; */
     text-align: right !important;
     white-space: nowrap !important;
 }
