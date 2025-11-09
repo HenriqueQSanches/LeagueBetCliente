@@ -354,18 +354,17 @@ body {
 
 /* Garantir espaço para a coluna "Outras" */
 .table-jogos thead tr.tr-header th:last-child {
-    min-width: 180px !important;
-    width: 180px !important;
-    padding-right: 20px !important; /* afasta texto da barra de rolagem */
+    min-width: 95px !important;
+    width: 95px !important;
+    padding-right: 16px !important; /* afasta texto da barra de rolagem */
 }
 
 .table-jogos tbody tr td:last-child {
-    min-width: 180px !important;
-    width: 180px !important;
-    padding-right: 20px !important;
-    display: flex !important;
-    justify-content: flex-end !important;
-    align-items: center !important;
+    min-width: 95px !important;
+    width: 95px !important;
+    padding-right: 16px !important;
+    text-align: right !important;
+    white-space: nowrap !important;
 }
 
 /* Coluna fixa para o bilhete no desktop (abre espaço para a tabela) */
