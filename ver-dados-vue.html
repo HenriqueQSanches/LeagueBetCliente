@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Ver Dados do Vue</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #1e1e1e; color: #d4d4d4; }
+        pre { background: #2d2d2d; padding: 20px; border-radius: 5px; overflow: auto; }
+        .error { color: #f48771; }
+        .success { color: #89d185; }
+        button { background: #0e639c; color: white; border: none; padding: 10px 20px; margin: 10px 0; cursor: pointer; border-radius: 3px; }
+        button:hover { background: #1177bb; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Dados do Vue.js</h1>
+    <button onclick="carregarDados()">🔄 Carregar Dados</button>
+    <div id="status"></div>
+    <pre id="dados"></pre>
+    
+    <script>
+        function carregarDados() {
+            document.getElementById('status').innerHTML = '<p class="success">⏳ Carregando...</p>';
+            
+            fetch('/Cliente/LeagueBetCliente-main/apostar/jogos')
+                .then(r => r.json())
+                .then(data => {
+                    document.getElementById('status').innerHTML = '<p class="success">✅ Dados carregados!</p>';
+                    
+                    // Mostrar estrutura resumida
+                    let resumo = {
+                        total_paises: data.paises?.length || 0,
+                        total_cotacoes: data.cotacoes?.length || 0,
+                        grupos: Object.keys(data.grupos || {}).length,
+                        datas: data.datas?.length || 0
+                    };
+                    
+                    if (data.paises && data.paises.length > 0) {
+                        resumo.primeiro_pais = {
+                            id: data.paises[0].id,
+                            title: data.paises[0].title,
+                            img: data.paises[0].img,
+                            total_campeonatos: data.paises[0].campeonatos?.length || 0
+                        };
+                        
+                        if (data.paises[0].campeonatos && data.paises[0].campeonatos.length > 0) {
+                            resumo.primeiro_campeonato = {
+                                id: data.paises[0].campeonatos[0].id,
+                                title: data.paises[0].campeonatos[0].title,
+                                total_jogos: data.paises[0].campeonatos[0].jogos?.length || 0
+                            };
+                            
+                            if (data.paises[0].campeonatos[0].jogos && data.paises[0].campeonatos[0].jogos.length > 0) {
+                                const jogo = data.paises[0].campeonatos[0].jogos[0];
+                                resumo.primeiro_jogo = {
+                                    id: jogo.id,
+                                    casa: jogo.casa,
+                                    fora: jogo.fora,
+                                    data: jogo.data,
+                                    hora: jogo.hora,
+                                    dateTime: jogo.dateTime,
+                                    tem_cotacoes: !!jogo.cotacoes,
+                                    tem_casa: !!jogo.casa,
+                                    tem_fora: !!jogo.fora
+                                };
+                            }
+                        }
+                    }
+                    
+                    document.getElementById('dados').textContent = JSON.stringify(resumo, null, 2);
+                })
+                .catch(err => {
+                    document.getElementById('status').innerHTML = '<p class="error">❌ Erro: ' + err.message + '</p>';
+                });
+        }
+        
+        // Carregar automaticamente
+        carregarDados();
+    </script>
+</body>
+</html>
+

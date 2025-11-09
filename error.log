@@ -761,3 +761,35 @@ Stack trace:
 [07-Nov-2025 17:27:52 America/Sao_Paulo] BetsAPI Error: HTTP 0 - cURL Error: Operation timed out after 30007 milliseconds with 0 bytes received
 [07-Nov-2025 17:29:09 America/Sao_Paulo] BetsAPI Error: HTTP 0 - cURL Error: Operation timed out after 30010 milliseconds with 0 bytes received
 [07-Nov-2025 17:32:29 America/Sao_Paulo] PHP Fatal error:  Maximum execution time of 300 seconds exceeded in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\betsapi\BetsAPIClient.php on line 43
+[08-Nov-2025 17:23:59 America/Sao_Paulo] PHP Fatal error:  Uncaught TypeError: url(): Argument #2 ($vars) must be of type ?array, bool given, called in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\controllers\apostarController.php on line 186 and defined in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\functions\url.php:53
+Stack trace:
+#0 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\controllers\apostarController.php(186): url('imagens/default...', true)
+#1 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\controllers\apostarController.php(61): app\modules\website\controllers\apostarController->jogos(Array)
+#2 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\APP.php(183): app\modules\website\controllers\apostarController->jogosAction()
+#3 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\index.php(5): app\APP::Initialize()
+#4 {main}
+  thrown in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\functions\url.php on line 53
+[08-Nov-2025 17:24:02 America/Sao_Paulo] PHP Fatal error:  Uncaught TypeError: url(): Argument #2 ($vars) must be of type ?array, bool given, called in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\controllers\apostarController.php on line 186 and defined in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\functions\url.php:53
+Stack trace:
+#0 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\controllers\apostarController.php(186): url('imagens/default...', true)
+#1 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\controllers\apostarController.php(61): app\modules\website\controllers\apostarController->jogos(Array)
+#2 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\APP.php(183): app\modules\website\controllers\apostarController->jogosAction()
+#3 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\index.php(5): app\APP::Initialize()
+#4 {main}
+  thrown in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\functions\url.php on line 53
+[08-Nov-2025 17:24:13 America/Sao_Paulo] PHP Fatal error:  Uncaught TypeError: url(): Argument #2 ($vars) must be of type ?array, bool given, called in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\controllers\apostarController.php on line 186 and defined in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\functions\url.php:53
+Stack trace:
+#0 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\controllers\apostarController.php(186): url('imagens/default...', true)
+#1 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\controllers\apostarController.php(61): app\modules\website\controllers\apostarController->jogos(Array)
+#2 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\APP.php(183): app\modules\website\controllers\apostarController->jogosAction()
+#3 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\index.php(5): app\APP::Initialize()
+#4 {main}
+  thrown in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\functions\url.php on line 53
+[08-Nov-2025 17:26:05 America/Sao_Paulo] PHP Fatal error:  Uncaught TypeError: url(): Argument #2 ($vars) must be of type ?array, bool given, called in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\controllers\apostarController.php on line 186 and defined in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\functions\url.php:53
+Stack trace:
+#0 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\controllers\apostarController.php(186): url('imagens/default...', true)
+#1 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\controllers\apostarController.php(61): app\modules\website\controllers\apostarController->jogos(Array)
+#2 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\APP.php(183): app\modules\website\controllers\apostarController->jogosAction()
+#3 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\index.php(5): app\APP::Initialize()
+#4 {main}
+  thrown in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\functions\url.php on line 53

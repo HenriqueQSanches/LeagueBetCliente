@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Debug Vue.js</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #f5f5f5; }
+        .box { background: white; padding: 20px; margin: 10px 0; border-radius: 5px; }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
+        pre { background: #f0f0f0; padding: 10px; overflow: auto; max-height: 400px; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Debug Vue.js - Estado da Aplicação</h1>
+    
+    <div class="box">
+        <h2>Instruções:</h2>
+        <ol>
+            <li>Abra o site principal: <a href="http://localhost/Cliente/LeagueBetCliente-main/" target="_blank">http://localhost/Cliente/LeagueBetCliente-main/</a></li>
+            <li>Pressione <strong>F12</strong></li>
+            <li>Vá na aba <strong>Console</strong></li>
+            <li>Digite: <code>app</code> e pressione Enter</li>
+            <li>Depois digite: <code>app.paises</code> e pressione Enter</li>
+            <li>Copie o resultado e cole aqui embaixo</li>
+        </ol>
+    </div>
+    
+    <div class="box">
+        <h2>Ou execute este script no Console:</h2>
+        <pre>console.log('=== DEBUG VUE ===');
+console.log('app existe?', typeof app !== 'undefined');
+if (typeof app !== 'undefined') {
+    console.log('app.paises:', app.paises);
+    console.log('Total de países:', app.paises?.length);
+    console.log('app.cotacoes:', app.cotacoes?.length);
+    console.log('app.grupos:', Object.keys(app.grupos || {}).length);
+    
+    if (app.paises && app.paises.length > 0) {
+        console.log('Primeiro país:', app.paises[0]);
+        console.log('Campeonatos do primeiro país:', app.paises[0].campeonatos?.length);
+        if (app.paises[0].campeonatos && app.paises[0].campeonatos.length > 0) {
+            console.log('Primeiro campeonato:', app.paises[0].campeonatos[0]);
+            console.log('Jogos do primeiro campeonato:', app.paises[0].campeonatos[0].jogos?.length);
+        }
+    }
+}</pre>
+    </div>
+    
+    <div class="box">
+        <h2>Teste Alternativo - Injetar dados manualmente:</h2>
+        <p>Se o Vue não está recebendo os dados, execute isto no Console do site:</p>
+        <pre>fetch('/Cliente/LeagueBetCliente-main/apostar/jogos')
+    .then(r => r.json())
+    .then(data => {
+        console.log('Forçando dados no Vue...');
+        app.paises = data.paises;
+        app.cotacoes = data.cotacoes;
+        app.grupos = data.grupos;
+        app.datas = data.datas;
+        console.log('Dados injetados! Total de países:', app.paises.length);
+    });</pre>
+    </div>
+    
+    <div class="box">
+        <h2>📋 Checklist de Problemas Comuns:</h2>
+        <ul>
+            <li>✅ Endpoint retorna 398 jogos</li>
+            <li>✅ Filtro JavaScript passa todos os jogos</li>
+            <li>✅ Estrutura do JSON está correta</li>
+            <li>❓ Vue.js está recebendo os dados?</li>
+            <li>❓ Há erros no Console do navegador?</li>
+            <li>❓ O Vue está renderizando a tabela?</li>
+        </ul>
+    </div>
+</body>
+</html>
+

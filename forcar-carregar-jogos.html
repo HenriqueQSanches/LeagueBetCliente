@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Forçar Carregamento de Jogos</title>
+    <style>
+        body {
+            font-family: Arial;
+            padding: 40px;
+            background: #f5f5f5;
+            text-align: center;
+        }
+        .box {
+            background: white;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 600px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #ff6600;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background: #ff8833;
+        }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
+        #resultado {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0f0f0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>🚀 Forçar Carregamento de Jogos</h1>
+        <p>Clique no botão abaixo para forçar o carregamento dos jogos no site:</p>
+        
+        <button onclick="forcarCarregamento()">🔄 CARREGAR JOGOS AGORA</button>
+        
+        <div id="resultado"></div>
+    </div>
+    
+    <script>
+        function forcarCarregamento() {
+            const resultado = document.getElementById('resultado');
+            resultado.innerHTML = '<p>⏳ Carregando dados...</p>';
+            
+            // Abre o site em uma nova aba
+            const janela = window.open('http://localhost/Cliente/LeagueBetCliente-main/', '_blank');
+            
+            // Aguarda 2 segundos para o site carregar
+            setTimeout(() => {
+                try {
+                    // Tenta injetar os dados
+                    janela.fetch('/Cliente/LeagueBetCliente-main/apostar/jogos')
+                        .then(r => r.json())
+                        .then(data => {
+                            if (janela.app) {
+                                janela.app.paises = data.paises;
+                                janela.app.cotacoes = data.cotacoes;
+                                janela.app.grupos = data.grupos;
+                                janela.app.datas = data.datas;
+                                
+                                resultado.innerHTML = `
+                                    <p class="success">✅ DADOS CARREGADOS COM SUCESSO!</p>
+                                    <p>Total de países: ${data.paises?.length || 0}</p>
+                                    <p>Total de jogos: ${contarJogos(data.paises)}</p>
+                                    <p><strong>Verifique a aba do site!</strong></p>
+                                `;
+                            } else {
+                                resultado.innerHTML = '<p class="error">❌ Objeto "app" não encontrado. Aguarde o site carregar completamente.</p>';
+                            }
+                        })
+                        .catch(err => {
+                            resultado.innerHTML = '<p class="error">❌ Erro: ' + err.message + '</p>';
+                        });
+                } catch (err) {
+                    resultado.innerHTML = '<p class="error">❌ Erro ao acessar a janela: ' + err.message + '</p><p>Tente executar manualmente no Console do site.</p>';
+                }
+            }, 3000);
+        }
+        
+        function contarJogos(paises) {
+            let total = 0;
+            if (paises) {
+                paises.forEach(p => {
+                    if (p.campeonatos) {
+                        p.campeonatos.forEach(c => {
+                            total += c.jogos?.length || 0;
+                        });
+                    }
+                });
+            }
+            return total;
+        }
+    </script>
+</body>
+</html>
+

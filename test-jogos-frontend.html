@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Teste de Jogos - Frontend</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .box {
+            background: white;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
+        .warning { color: orange; font-weight: bold; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background: #333;
+            color: white;
+        }
+        pre {
+            background: #f0f0f0;
+            padding: 10px;
+            overflow: auto;
+            max-height: 300px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Teste de Jogos - Diagnóstico Frontend</h1>
+    
+    <div class="box">
+        <h2>1️⃣ Status da Requisição</h2>
+        <div id="status">⏳ Carregando...</div>
+    </div>
+    
+    <div class="box">
+        <h2>2️⃣ Resumo dos Dados</h2>
+        <div id="resumo"></div>
+    </div>
+    
+    <div class="box">
+        <h2>3️⃣ Teste do Filtro JavaScript</h2>
+        <div id="filtro"></div>
+    </div>
+    
+    <div class="box">
+        <h2>4️⃣ Primeiros Jogos</h2>
+        <div id="jogos"></div>
+    </div>
+    
+    <div class="box">
+        <h2>5️⃣ JSON Completo (primeiros 50 jogos)</h2>
+        <pre id="json"></pre>
+    </div>
+
+    <script>
+        // Configuração do sistema (mesmo valor do Twig)
+        const MINUTOS_JOGO = 5;
+        
+        // Função filterJogo EXATAMENTE como está no apostar.twig
+        function filterJogo(jogo) {
+            var dt = new Date();
+            var dtJogo = new Date(jogo.dateTime);
+            dt.setMinutes(dt.getMinutes() + MINUTOS_JOGO);
+            
+            if (dt.getTime() < dtJogo.getTime()) {
+                return true;
+            }
+            return false;
+        }
+        
+        fetch('/Cliente/LeagueBetCliente-main/apostar/jogos')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('HTTP ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('status').innerHTML = '<span class="success">✅ Endpoint respondeu com sucesso!</span>';
+                
+                // Resumo
+                let totalPaises = data.paises?.length || 0;
+                let totalCampeonatos = 0;
+                let totalJogos = 0;
+                let jogosValidos = 0;
+                let jogosBloqueados = 0;
+                let todosJogos = [];
+                
+                if (data.paises) {
+                    data.paises.forEach(pais => {
+                        if (pais.campeonatos) {
+                            totalCampeonatos += pais.campeonatos.length;
+                            pais.campeonatos.forEach(camp => {
+                                if (camp.jogos) {
+                                    camp.jogos.forEach(jogo => {
+                                        totalJogos++;
+                                        todosJogos.push(jogo);
+                                        
+                                        if (filterJogo(jogo)) {
+                                            jogosValidos++;
+                                        } else {
+                                            jogosBloqueados++;
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+                
+                let resumoHtml = '<table>';
+                resumoHtml += '<tr><th>Métrica</th><th>Valor</th></tr>';
+                resumoHtml += '<tr><td>Total de países</td><td>' + totalPaises + '</td></tr>';
+                resumoHtml += '<tr><td>Total de campeonatos</td><td>' + totalCampeonatos + '</td></tr>';
+                resumoHtml += '<tr><td>Total de jogos no JSON</td><td>' + totalJogos + '</td></tr>';
+                resumoHtml += '<tr><td><span class="success">Jogos que PASSAM no filtro</span></td><td><strong>' + jogosValidos + '</strong></td></tr>';
+                resumoHtml += '<tr><td><span class="error">Jogos BLOQUEADOS pelo filtro</span></td><td><strong>' + jogosBloqueados + '</strong></td></tr>';
+                resumoHtml += '</table>';
+                
+                document.getElementById('resumo').innerHTML = resumoHtml;
+                
+                // Teste do filtro
+                const agora = new Date();
+                const agoraMaisMinutos = new Date();
+                agoraMaisMinutos.setMinutes(agora.getMinutes() + MINUTOS_JOGO);
+                
+                let filtroHtml = '<table>';
+                filtroHtml += '<tr><th>Informação</th><th>Valor</th></tr>';
+                filtroHtml += '<tr><td>Hora atual</td><td>' + agora.toLocaleString('pt-BR') + '</td></tr>';
+                filtroHtml += '<tr><td>Hora atual + ' + MINUTOS_JOGO + ' minutos</td><td>' + agoraMaisMinutos.toLocaleString('pt-BR') + '</td></tr>';
+                filtroHtml += '<tr><td>Jogos que começam DEPOIS de</td><td>' + agoraMaisMinutos.toLocaleString('pt-BR') + '</td></tr>';
+                filtroHtml += '</table>';
+                
+                if (jogosValidos === 0 && totalJogos > 0) {
+                    filtroHtml += '<p class="error">❌ PROBLEMA: Todos os ' + totalJogos + ' jogos foram bloqueados!</p>';
+                    filtroHtml += '<p>Motivo: Todos começam em menos de ' + MINUTOS_JOGO + ' minutos ou já começaram.</p>';
+                } else if (jogosValidos > 0) {
+                    filtroHtml += '<p class="success">✅ ' + jogosValidos + ' jogos devem aparecer no site!</p>';
+                }
+                
+                document.getElementById('filtro').innerHTML = filtroHtml;
+                
+                // Mostrar primeiros jogos
+                if (todosJogos.length > 0) {
+                    let jogosHtml = '<table>';
+                    jogosHtml += '<tr><th>Casa</th><th>Fora</th><th>Data/Hora</th><th>dateTime</th><th>Filtro</th></tr>';
+                    
+                    todosJogos.slice(0, 10).forEach(jogo => {
+                        const passa = filterJogo(jogo) ? '✅ PASSA' : '❌ BLOQUEADO';
+                        const classe = filterJogo(jogo) ? 'success' : 'error';
+                        
+                        jogosHtml += '<tr>';
+                        jogosHtml += '<td>' + (jogo.casa || 'N/A') + '</td>';
+                        jogosHtml += '<td>' + (jogo.fora || 'N/A') + '</td>';
+                        jogosHtml += '<td>' + (jogo.data || 'N/A') + ' ' + (jogo.hora || 'N/A') + '</td>';
+                        jogosHtml += '<td>' + (jogo.dateTime || 'N/A') + '</td>';
+                        jogosHtml += '<td class="' + classe + '">' + passa + '</td>';
+                        jogosHtml += '</tr>';
+                    });
+                    
+                    jogosHtml += '</table>';
+                    document.getElementById('jogos').innerHTML = jogosHtml;
+                } else {
+                    document.getElementById('jogos').innerHTML = '<p class="error">❌ Nenhum jogo encontrado!</p>';
+                }
+                
+                // JSON completo (limitado)
+                const jsonLimitado = {
+                    paises: data.paises?.slice(0, 2).map(p => ({
+                        ...p,
+                        campeonatos: p.campeonatos?.slice(0, 2).map(c => ({
+                            ...c,
+                            jogos: c.jogos?.slice(0, 5)
+                        }))
+                    }))
+                };
+                document.getElementById('json').textContent = JSON.stringify(jsonLimitado, null, 2);
+            })
+            .catch(error => {
+                document.getElementById('status').innerHTML = '<span class="error">❌ Erro: ' + error.message + '</span>';
+                document.getElementById('resumo').innerHTML = '<p class="error">Não foi possível carregar os dados.</p>';
+            });
+    </script>
+</body>
+</html>
+
