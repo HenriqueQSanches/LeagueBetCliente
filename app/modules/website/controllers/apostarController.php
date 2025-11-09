@@ -322,8 +322,16 @@ SQL;
                     throw new \Exception("Cotação inválida");
                 } else if ($cotacao->getStatus() != 1) {
                     throw new \Exception("Cotação foi desativada");
-                } else if ($jogo->jaComecou() or $jogo->getStatus() != 1) {
-                    throw new \Exception("Jogo `{$jogo->getDescricao()}` não está mais recebendo apostas");
+                } else {
+                    // Permitir apostas em jogos AO VIVO
+                    $resultAoVivo = Model::pdoRead()->FullRead('SELECT ao_vivo FROM `sis_jogos` WHERE id = :id LIMIT 1', [
+                        'id' => $jogo->getId(),
+                    ])->getResult();
+                    $aoVivo = (int)($resultAoVivo[0]['ao_vivo'] ?? 0);
+
+                    if ((($jogo->jaComecou() && !$aoVivo)) || $jogo->getStatus() != 1) {
+                        throw new \Exception("Jogo `{$jogo->getDescricao()}` não está mais recebendo apostas");
+                    }
                 }
 
                 $valorCotacao = (float)$jogo->getCotacoes(true)[$v['tempo']][$cotacao->getCampo()] ?? 1;

@@ -7,6 +7,7 @@ use app\core\Model;
 use app\models\CotacoesModel;
 use app\models\DadosModel;
 use app\models\helpers\OptionsModel;
+use app\modules\admin\Admin;
 
 class aovivoController extends Controller
 {
@@ -17,9 +18,26 @@ class aovivoController extends Controller
     {
         $config = DadosModel::get();
 
+        $user = Admin::getLogged();
+        $graduacao = $user ? $user->voGraduacao() : null;
+
+        $cotacaoMaxima = ($graduacao ? $graduacao->getCotacaoMaxima() : 0) ?: $config->getCotacaoMaxima();
+        $cotacaoMinima = ($graduacao ? $graduacao->getCotacaoMinima() : 0) ?: $config->getCotacaoMinima();
+        $apostaMinima = ($user ? $user->getApostaMinima() : 0) ?: ($graduacao ? $graduacao->getApostaMinima() : 0) ?: $config->getApostaMinima();
+        $apostaMaxima = ($user ? $user->getApostaMaxima() : 0) ?: ($graduacao ? $graduacao->getApostaMaxima() : 0) ?: $config->getApostaMaxima();
+        $retornoMaximo = $config->getRetornoMaximo();
+        $minJogos = ($user ? $user->getMinJogos() : 0) ?: ($graduacao ? $graduacao->getMinJogos() : 0) ?: $config->getMinJogos();
+
         $this->view($this->tpl, [
             'pageAoVivo' => true,
             'premioRevenda' => $config->getRevendaPaga(),
+            'cotacaoMaxima' => $cotacaoMaxima ?: 999,
+            'cotacaoMinima' => $cotacaoMinima,
+            'apostaMinima' => $apostaMinima,
+            'apostaMaxima' => $apostaMaxima ?: 9999,
+            'retornoMaximo' => $retornoMaximo ?: 9999,
+            'condicaoCotacao' => $config->getCondicaoCotacao(true),
+            'minJogos' => $minJogos,
         ]);
     }
 
@@ -97,6 +115,7 @@ LEFT JOIN
     `sis_campeonatos` AS d ON d.id = a.campeonato AND d.status = 1
 WHERE 
     a.ativo = '1' AND a.ao_vivo = 1
+    AND CONCAT(a.data, ' ', a.hora) >= DATE_SUB(NOW(), INTERVAL 8 HOUR)
 ORDER BY
     COALESCE(d.title, a.campeonato) ASC, a.data DESC, a.hora DESC
 SQL;
