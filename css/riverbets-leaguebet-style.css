@@ -169,7 +169,8 @@ body {
 
 /* Container dos jogos - TELA INTEIRA COM CABEÇALHOS */
 .overflow-jogos {
-    padding: 0 !important;
+    padding: 0 56px 0 0 !important; /* folga dedicada para a barra de rolagem sem afetar a tabela */
+    scrollbar-gutter: stable both-edges !important; /* reserva espaço fixo para a barra de rolagem */
     background: #fff !important;
     min-height: calc(100vh - 150px) !important;
     max-height: calc(100vh - 150px) !important;
@@ -180,6 +181,7 @@ body {
 .table-jogos {
     width: 100% !important;
     margin-bottom: 0 !important;
+    margin-right: 0 !important;
     background: #fff !important;
     border: none !important;
     border-collapse: collapse !important;
@@ -212,12 +214,13 @@ body {
 }
 
 .table-jogos thead tr.tr-header th {
-    padding: 8px 12px !important;
+    padding: 8px 10px !important;
     font-size: 11px !important;
     font-weight: 700 !important;
     color: #fff !important;
     text-transform: uppercase !important;
     letter-spacing: 0.5px !important;
+    white-space: nowrap !important;
 }
 
 /* Primeiro TH alinhado à esquerda */
@@ -229,6 +232,9 @@ body {
 .table-jogos thead tr.tr-header th:not(:first-child) {
     text-align: center !important;
 }
+
+/* Fixar larguras previsíveis das colunas de cotações e da coluna final (Outras) */
+
 
 /* Linha do Campeonato */
 .table-jogos tbody tr.campeonato {
@@ -265,8 +271,8 @@ body {
 .table-jogos tbody tr:not(.campeonato) td:first-child {
     padding: 10px 12px !important;
     text-align: left !important;
-    width: 32% !important;
-    max-width: 300px !important;
+    width: 24% !important;
+    max-width: 240px !important;
 }
 
 /* Colunas de cotações */
@@ -348,14 +354,33 @@ body {
 
 /* Garantir espaço para a coluna "Outras" */
 .table-jogos thead tr.tr-header th:last-child {
-    min-width: 85px !important;
-    width: 85px !important;
+    min-width: 180px !important;
+    width: 180px !important;
+    padding-right: 20px !important; /* afasta texto da barra de rolagem */
 }
 
 .table-jogos tbody tr td:last-child {
-    min-width: 85px !important;
-    width: 85px !important;
-    padding-right: 10px !important;
+    min-width: 180px !important;
+    width: 180px !important;
+    padding-right: 20px !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+}
+
+/* Coluna fixa para o bilhete no desktop (abre espaço para a tabela) */
+@media (min-width: 992px) {
+    .bilhete-col {
+        flex: 0 0 100px !important;
+        max-width: 100px !important;
+    }
+}
+
+/* Botões mais compactos para caber sem cortar */
+.btn-cotacao {
+    min-width: 50px !important;
+    padding: 7px 10px !important;
+    font-size: 13px !important;
 }
 
 /* ========================================
