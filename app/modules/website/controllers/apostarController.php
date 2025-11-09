@@ -178,14 +178,6 @@ SQL;
         }
 
         $resultPaises = [];
-        
-        // Adiciona país "Internacional" para jogos da BetsAPI sem país
-        $paisInternacional = [
-            'id' => 0,
-            'title' => 'Internacional',
-            'img' => '',
-            'campeonatos' => [],
-        ];
 
         /** @var OptionVO $pais */
         foreach ($paises as $pais) {

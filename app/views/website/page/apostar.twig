@@ -30,7 +30,7 @@
                             <td>Jogos</td>
                             <td width="1px"></td>
                         </tr>
-                        <tr v-for="(v, i) in aposta.jogos">
+                        <tr v-for="(v, i) in aposta.jogos" v-if="v.jogo && v.jogo.casa && v.jogo.fora">
                             <td>
                                 <div>
                                     <b>${v.jogo.casa}</b> x <b>${v.jogo.fora}</b>
@@ -127,7 +127,7 @@
 
 {% block jogos %}
 
-    <div class="table-responsive overflow-jogos" v-if="paises">
+    <div class="table-responsive overflow-jogos" v-if="dadosCarregados && paises && paises.length">
         <table class="table table-jogos table-striped table-hover" v-for="pais in paises"
                v-if="filterPais(pais)">
             <thead>
@@ -155,13 +155,11 @@
                 </td>
             </tr>
 
-            <tr v-for="jogo in getJogos(campeonato)">
+            <tr v-for="jogo in getJogos(campeonato)" v-if="jogo && jogo.casa && jogo.fora">
                 <td>
                     <div v-on:click="maisCotacoes(jogo)" class="pointer">
                         <div class="text-truncate">
-                            <b>${jogo.casa} x
-                                <div>${jogo.fora}</div>
-                            </b>
+                            <b>${jogo.casa} x ${jogo.fora}</b>
                         </div>
                         <small>${jogo.data.split('-').reverse().join('/')} às ${jogo.hora.replace(/:00$/, '')}</small>
                     </div>
@@ -353,7 +351,7 @@
 
     <script type="text/javascript">
 
-        var app = new Vue({
+        window.app = new Vue({
             el: '{{ selector|default('#pg-aposta') }}',
             delimiters: ['${', '}'],
             created() {
@@ -363,23 +361,22 @@
                 // Gerar próximos 7 dias
                 this.gerarProximos7Dias();
 
-                this.aposta.jogos.forEach((v, i) => {
-                    if (!this.filterJogo(v.jogo)) {
-                        this.aposta.jogos.splice(i, 1);
-                    }
+                this.aposta.jogos = this.aposta.jogos.filter((v) => {
+                    return v && v.jogo && this.filterJogo(v.jogo);
                 });
 
                 axios
                     .get(url('apostar/jogos'))
                     .then((response) => {
-                        this.grupos = response.data.grupos;
-                        this.cotacoes = response.data.cotacoes;
-                        this.paises = response.data.paises;
-                        this.datas = response.data.datas;
-                        
+                        this.grupos = response.data.grupos || {};
+                        this.cotacoes = response.data.cotacoes || [];
+                        this.paises = response.data.paises || [];
+                        this.datas = response.data.datas || {};
+                        this.dadosCarregados = true;
                     })
                     .catch((error) => {
-                        console.log(error);
+                        console.error('Erro ao carregar jogos:', error);
+                        this.dadosCarregados = true;
                     })
                     .then(() => {
                         $('html').removeClass('loading');
@@ -389,6 +386,7 @@
             },
             data() {
                 return {
+                    dadosCarregados: false,
                     valorAposta: {{ apostaMinima }},
                     findCampeonato: '*',
                     search: '',
@@ -580,13 +578,13 @@
                 },
                 getJogos(campeonato) {
                     var jogos = [];
-                    campeonato
-                        .jogos
-                        .forEach((jogo) => {
-                            if (this.filterJogo(jogo)) {
+                    if (campeonato && campeonato.jogos && Array.isArray(campeonato.jogos)) {
+                        campeonato.jogos.forEach((jogo) => {
+                            if (jogo && this.filterJogo(jogo)) {
                                 jogos.push(jogo);
                             }
-                        })
+                        });
+                    }
                     return jogos;
                 },
                 checkFiltros() {
@@ -614,6 +612,9 @@
                     return false;
                 },
                 filterJogo(jogo) {
+                    if (!jogo || !jogo.casa || !jogo.fora || !jogo.dateTime) {
+                        return false;
+                    }
                     var dt = new Date;
                     var dtJogo = new Date(jogo.dateTime);
                     dt.setMinutes(dt.getMinutes() + {{ dados.getMinutosJogo() }});

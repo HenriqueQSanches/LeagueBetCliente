@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Forçar Jogos a Aparecer</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #f5f5f5; text-align: center; }
+        .box { background: white; padding: 30px; margin: 20px auto; max-width: 800px; border-radius: 10px; }
+        button { background: #ff6600; color: white; border: none; padding: 20px 40px; font-size: 20px; border-radius: 5px; cursor: pointer; margin: 10px; }
+        button:hover { background: #ff8833; }
+        pre { background: #f0f0f0; padding: 15px; text-align: left; overflow: auto; max-height: 400px; }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>🚀 FORÇAR JOGOS A APARECER</h1>
+        <p>Este script vai injetar os dados diretamente no Vue.js</p>
+        
+        <button onclick="window.open('http://localhost/Cliente/LeagueBetCliente-main/', 'siteTab')">1️⃣ ABRIR SITE</button>
+        <button onclick="injetarDados()">2️⃣ INJETAR JOGOS</button>
+        
+        <div id="resultado"></div>
+        <pre id="log"></pre>
+    </div>
+    
+    <script>
+        let siteWindow = null;
+        
+        function injetarDados() {
+            const resultado = document.getElementById('resultado');
+            const log = document.getElementById('log');
+            
+            resultado.innerHTML = '<p>⏳ Processando...</p>';
+            log.textContent = '';
+            
+            // Busca os dados
+            fetch('/Cliente/LeagueBetCliente-main/apostar/jogos')
+                .then(r => r.json())
+                .then(data => {
+                    log.textContent += '✅ Dados carregados do endpoint\n';
+                    log.textContent += `📊 Total de países: ${data.paises?.length || 0}\n`;
+                    
+                    let totalJogos = 0;
+                    if (data.paises) {
+                        data.paises.forEach(p => {
+                            if (p.campeonatos) {
+                                p.campeonatos.forEach(c => {
+                                    totalJogos += c.jogos?.length || 0;
+                                });
+                            }
+                        });
+                    }
+                    log.textContent += `⚽ Total de jogos: ${totalJogos}\n\n`;
+                    
+                    // Tenta acessar a janela do site
+                    siteWindow = window.open('', 'siteTab');
+                    
+                    if (!siteWindow || siteWindow.closed) {
+                        resultado.innerHTML = '<p class="error">❌ Abra o site primeiro (botão 1)</p>';
+                        return;
+                    }
+                    
+                    // Aguarda o Vue carregar
+                    setTimeout(() => {
+                        if (siteWindow.app) {
+                            log.textContent += '🎯 Vue.js encontrado!\n';
+                            log.textContent += `Países antes: ${siteWindow.app.paises?.length || 0}\n`;
+                            
+                            // Injeta os dados
+                            siteWindow.app.paises = data.paises;
+                            siteWindow.app.cotacoes = data.cotacoes;
+                            siteWindow.app.grupos = data.grupos;
+                            siteWindow.app.datas = data.datas;
+                            
+                            // Força o Vue a atualizar
+                            siteWindow.app.$forceUpdate();
+                            
+                            log.textContent += `Países depois: ${siteWindow.app.paises?.length || 0}\n`;
+                            log.textContent += `\n✅ DADOS INJETADOS!\n`;
+                            log.textContent += `\n🔄 Forçando atualização do Vue...\n`;
+                            
+                            resultado.innerHTML = '<p class="success">✅ SUCESSO! Verifique o site agora!</p>';
+                        } else {
+                            log.textContent += '❌ Vue.js não encontrado na janela\n';
+                            log.textContent += 'Objetos disponíveis: ' + Object.keys(siteWindow).slice(0, 20).join(', ') + '\n';
+                            resultado.innerHTML = '<p class="error">❌ Vue não encontrado. Aguarde o site carregar.</p>';
+                        }
+                    }, 2000);
+                })
+                .catch(err => {
+                    resultado.innerHTML = '<p class="error">❌ Erro: ' + err.message + '</p>';
+                    log.textContent += 'ERRO: ' + err.stack;
+                });
+        }
+    </script>
+</body>
+</html>
+

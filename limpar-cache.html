@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Limpar Cache</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #1e1e1e; color: white; text-align: center; }
+        .box { background: #2d2d2d; padding: 40px; margin: 40px auto; max-width: 600px; border-radius: 10px; }
+        button { background: #ff6600; color: white; border: none; padding: 20px 40px; font-size: 20px; border-radius: 5px; cursor: pointer; margin: 20px; }
+        button:hover { background: #ff8833; }
+        .success { color: #4caf50; font-size: 24px; margin: 20px 0; }
+        .info { color: #ffc107; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>🧹 LIMPAR CACHE E RESOLVER PROBLEMA</h1>
+        <p class="info">Este script vai limpar todos os dados antigos e recarregar o site</p>
+        
+        <button onclick="limparEAbrir()">🚀 LIMPAR E ABRIR SITE</button>
+        
+        <div id="status"></div>
+    </div>
+    
+    <script>
+        function limparEAbrir() {
+            const status = document.getElementById('status');
+            
+            // Limpa localStorage
+            localStorage.clear();
+            status.innerHTML = '<p class="success">✅ LocalStorage limpo!</p>';
+            
+            // Limpa sessionStorage
+            sessionStorage.clear();
+            status.innerHTML += '<p class="success">✅ SessionStorage limpo!</p>';
+            
+            // Aguarda 1 segundo e abre o site
+            setTimeout(() => {
+                status.innerHTML += '<p class="info">🔄 Abrindo site limpo...</p>';
+                window.location.href = '/Cliente/LeagueBetCliente-main/';
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
+
