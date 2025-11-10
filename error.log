@@ -949,3 +949,19 @@ Stack trace:
 [10-Nov-2025 13:05:04 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
 [10-Nov-2025 13:05:05 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
 [10-Nov-2025 13:05:08 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 18:21:17 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 18:21:28 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 18:58:38 America/Sao_Paulo] BetsAPI Error: PARAM_INVALID - Detail: event_id
+[10-Nov-2025 19:00:30 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 19:03:41 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 19:05:40 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 19:05:57 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 19:25:31 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 19:30:02 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 19:30:43 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 19:30:50 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 19:31:17 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 19:31:20 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 19:31:36 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 19:32:19 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 19:35:36 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}

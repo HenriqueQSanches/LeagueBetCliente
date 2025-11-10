@@ -80,6 +80,8 @@ class apostarController extends Controller
     {
         try {
             $apiId = (int)inputGet('api_id');
+            $debugFlag = (int)inputGet('debug');
+            $debug = [];
             if (!$apiId) {
                 $jogoId = (int)inputGet('jogo');
                 if ($jogoId > 0) {
@@ -87,6 +89,10 @@ class apostarController extends Controller
                         'id' => $jogoId,
                     ])->getResult();
                     $apiId = (int)($row[0]['api_id'] ?? 0);
+                    if ($debugFlag) {
+                        $debug['from_jogo_id'] = $jogoId;
+                        $debug['api_id_db'] = $apiId;
+                    }
                 }
             }
 
@@ -95,17 +101,51 @@ class apostarController extends Controller
             }
 
             $client = new \BetsAPIClient();
+
+            if ($debugFlag) {
+                // Inspeciona event/view para tentar descobrir o FI
+                try {
+                    $view = $client->getEvent($apiId);
+                    $debug['event_view_success'] = $view && isset($view['results']) && !empty($view['results']);
+                    $fi = null;
+                    if (!empty($view['results'][0])) {
+                        $r = $view['results'][0];
+                        $fi = $r['bet365_id'] ?? ($r['FI'] ?? null);
+                        if (!$fi && isset($r['bet365']) && is_array($r['bet365'])) {
+                            $fi = $r['bet365']['id'] ?? null;
+                        }
+                    }
+                    $debug['fi'] = $fi ?: null;
+                } catch (\Throwable $t) {
+                    $debug['event_view_error'] = $t->getMessage();
+                }
+            }
             // 1) Tenta Bet365 Prematch (v4) para +cotações
-            $mapped = $client->getBet365PrematchMappedOdds($apiId) ?: [];
+            if (isset($fi) && $fi) {
+                $mapped = $client->getBet365PrematchMappedOdds($apiId, $fi) ?: [];
+            } else {
+                $mapped = $client->getBet365PrematchMappedOdds($apiId) ?: [];
+            }
+            if ($debugFlag) {
+                $debug['prematch_count'] = array_sum(array_map('count', $mapped ?: []));
+            }
             // 2) Fallback: odds completas do evento (v1) caso não haja FI no mapeamento
             if (empty($mapped)) {
-                $mapped = $client->getExtendedOdds($apiId) ?: [];
+                $fallback = $client->getExtendedOdds($apiId) ?: [];
+                $mapped = $fallback;
+                if ($debugFlag) {
+                    $debug['fallback_count'] = array_sum(array_map('count', $fallback ?: []));
+                }
             }
 
-            return [
+            $response = [
                 'result' => 1,
                 'cotacoes' => $mapped,
             ];
+            if ($debugFlag) {
+                $response['debug'] = $debug;
+            }
+            return $response;
         } catch (\Exception $e) {
             return [
                 'result' => 0,
@@ -136,6 +176,9 @@ SQL;
             // Ambas marcam
             ['sigla' => 'AMB',  'title' => 'Ambas marcam - Sim',    'campo' => 'amb',     'cor' => '#000000', 'grupo' => 5, 'principal' => '0'],
             ['sigla' => 'AMB.N','title' => 'Ambas marcam - Não',    'campo' => 'ambn',    'cor' => '#000000', 'grupo' => 5, 'principal' => '0'],
+            // Empate Anula Aposta (Draw No Bet)
+            ['sigla' => 'EA1',  'title' => 'Empate anula - Casa',   'campo' => 'empateanulacasa', 'cor' => '#000000', 'grupo' => 2, 'principal' => '0'],
+            ['sigla' => 'EA2',  'title' => 'Empate anula - Fora',   'campo' => 'empateanulafora', 'cor' => '#000000', 'grupo' => 2, 'principal' => '0'],
             // Over/Under
             ['sigla' => 'M1.5', 'title' => 'Mais de 1.5',           'campo' => 'mais_1_5','cor' => '#000000', 'grupo' => 3, 'principal' => '0'],
             ['sigla' => 'M2.5', 'title' => 'Mais de 2.5',           'campo' => 'mais_2_5','cor' => '#000000', 'grupo' => 3, 'principal' => '0'],

@@ -203,8 +203,77 @@ class BetsAPIClient {
         if (!$response || !isset($response['results']) || empty($response['results'])) {
             return $result;
         }
-        
-        foreach ($response['results'] as $market) {
+
+        // A API pode retornar em 2 formatos:
+        // A) Lista de mercados [{ id, name, odds:[...] }, ...]
+        // B) Objeto indexado por market_ids (ex.: "1_1", "1_3") => [ { ... }, ... ]
+        $resultsNode = $response['results'];
+
+        // Formato B) – quando a chave é um market code (ex.: "1_1")
+        if (is_array($resultsNode) && isset($resultsNode['1_1']) || array_keys($resultsNode) !== range(0, count($resultsNode) - 1)) {
+            // 1_1: Full Time Result (1X2)
+            if (!empty($resultsNode['1_1']) && is_array($resultsNode['1_1'])) {
+                // Usa o último registro (odds mais recentes)
+                $last = end($resultsNode['1_1']);
+                $home = isset($last['home_od']) ? floatval($last['home_od']) : 0;
+                $draw = isset($last['draw_od']) ? floatval($last['draw_od']) : 0;
+                $away = isset($last['away_od']) ? floatval($last['away_od']) : 0;
+                if ($home > 1) $result['90']['casa'] = $home;
+                if ($draw > 1) $result['90']['empate'] = $draw;
+                if ($away > 1) $result['90']['fora'] = $away;
+            }
+
+            // 1_3: Total Goals Over/Under
+            if (!empty($resultsNode['1_3']) && is_array($resultsNode['1_3'])) {
+                foreach ($resultsNode['1_3'] as $row) {
+                    $line = (string)($row['handicap'] ?? '');
+                    // Normaliza linhas "3.0,3.5" => usa a maior (3.5)
+                    if (strpos($line, ',') !== false) {
+                        $parts = array_map('trim', explode(',', $line));
+                        $line = end($parts);
+                    }
+                    if ($line !== '' && preg_match('/^\d+(?:\.\d+)?$/', $line)) {
+                        $key = str_replace('.', '_', $line);
+                        $over = isset($row['over_od']) ? floatval($row['over_od']) : 0;
+                        $under = isset($row['under_od']) ? floatval($row['under_od']) : 0;
+                        if ($over > 1)  $result['90']["mais_{$key}"]  = $over;
+                        if ($under > 1) $result['90']["menos_{$key}"] = $under;
+                    }
+                }
+            }
+
+            // 1_8: Half Time Result (assumido) -> mapeia para 'pt'
+            if (!empty($resultsNode['1_8']) && is_array($resultsNode['1_8'])) {
+                $last = end($resultsNode['1_8']);
+                $home = isset($last['home_od']) ? floatval($last['home_od']) : 0;
+                $draw = isset($last['draw_od']) ? floatval($last['draw_od']) : 0;
+                $away = isset($last['away_od']) ? floatval($last['away_od']) : 0;
+                if ($home > 1) $result['pt']['casa'] = $home;
+                if ($draw > 1) $result['pt']['empate'] = $draw;
+                if ($away > 1) $result['pt']['fora'] = $away;
+            }
+
+            // 1_6: Over/Under 1st Half (assumido) -> mapeia para 'pt'
+            if (!empty($resultsNode['1_6']) && is_array($resultsNode['1_6'])) {
+                foreach ($resultsNode['1_6'] as $row) {
+                    $line = (string)($row['handicap'] ?? '');
+                    if ($line !== '' && preg_match('/^\d+(?:\.\d+)?$/', $line)) {
+                        $key = str_replace('.', '_', $line);
+                        $over = isset($row['over_od']) ? floatval($row['over_od']) : 0;
+                        $under = isset($row['under_od']) ? floatval($row['under_od']) : 0;
+                        if ($over > 1)  $result['pt']["mais_{$key}"]  = $over;
+                        if ($under > 1) $result['pt']["menos_{$key}"] = $under;
+                    }
+                }
+            }
+
+            // 1_2: Asian Handicap FT (assumido) – ainda não mapeamos para campos AH; por ora, ignoramos
+
+            return $result;
+        }
+
+        // Formato A) – lista de mercados com 'name'/'odds'
+        foreach ($resultsNode as $market) {
             // Normalizar lista de odds (algumas respostas vêm como 'odds', outras 'values'
             // e em certos casos ficam dentro de 'bookmakers' => [ { odds: [...] } ])
             $oddsList = [];
@@ -263,6 +332,20 @@ class BetsAPIClient {
                     } elseif ($name === '12') {
                         $result[$tempo]['cof']      = $oddValue;   // casa ou fora (legado)
                         $result[$tempo]['dupla_12'] = $oddValue;
+                    }
+                }
+                
+                // Draw No Bet (Empate Anula Aposta)
+                if (stripos($marketName, 'draw no bet') !== false
+                    || stripos($marketName, 'dnb') !== false
+                    || stripos($marketName, 'empate anula') !== false
+                    || stripos($marketName, 'no draw') !== false) {
+                    // Nomes mais comuns para as seleções: "1" / "2", "home" / "away"
+                    $nameLower = strtolower($name);
+                    if ($name === '1' || $nameLower === 'home' || $nameLower === 'team1' || $nameLower === 'casa') {
+                        $result[$tempo]['empateanulacasa'] = $oddValue;
+                    } elseif ($name === '2' || $nameLower === 'away' || $nameLower === 'team2' || $nameLower === 'fora') {
+                        $result[$tempo]['empateanulafora'] = $oddValue;
                     }
                 }
                 
@@ -367,16 +450,18 @@ class BetsAPIClient {
      * Busca e mapeia odds pré-jogo via Bet365 Prematch (V4).
      * Tenta descobrir o FI (Bet365 Event ID) a partir de event/view.
      */
-    public function getBet365PrematchMappedOdds($eventId) {
-        // Descobre o FI via event/view
-        $view = $this->getEvent($eventId);
-        $fi = null;
-        if ($view && isset($view['results'][0])) {
-            $r = $view['results'][0];
-            // Tentativas comuns de onde o FI aparece
-            $fi = $r['bet365_id'] ?? ($r['FI'] ?? null);
-            if (!$fi && isset($r['bet365']) && is_array($r['bet365'])) {
-                $fi = $r['bet365']['id'] ?? null;
+    public function getBet365PrematchMappedOdds($eventId, $fiOverride = null) {
+        // Descobre o FI via event/view (a menos que seja fornecido)
+        $fi = $fiOverride;
+        if (!$fi) {
+            $view = $this->getEvent($eventId);
+            if ($view && isset($view['results'][0])) {
+                $r = $view['results'][0];
+                // Tentativas comuns de onde o FI aparece
+                $fi = $r['bet365_id'] ?? ($r['FI'] ?? null);
+                if (!$fi && isset($r['bet365']) && is_array($r['bet365'])) {
+                    $fi = $r['bet365']['id'] ?? null;
+                }
             }
         }
         if (!$fi) {
@@ -391,18 +476,53 @@ class BetsAPIClient {
         // A resposta v4 pode trazer estrutura com 'main' e 'others'.
         // Vamos normalizar para uma lista de mercados com 'name' e 'odds'/‘values’ similar ao parser anterior.
         $markets = [];
-        foreach ($data['results'] as $block) {
-            // Alguns retornos são arrays de mercados diretamente
-            if (isset($block['name']) || isset($block['odds']) || isset($block['values'])) {
-                $markets[] = $block;
-                continue;
+        // 1) Caso comum: results[0] é um objeto com seções (main, goals, half, asian_lines, minutes, specials, others)
+        if (count($data['results']) === 1 && is_array($data['results'][0])) {
+            $root = $data['results'][0];
+
+            // Função para coletar mercados a partir de um nó com 'sp' (onde ficam os mercados)
+            $collectFromSp = function($node) use (&$markets) {
+                if (!is_array($node)) return;
+                // Alguns nós têm 'sp' => { market_key: { id, name, odds: [] }, ... }
+                if (isset($node['sp']) && is_array($node['sp'])) {
+                    foreach ($node['sp'] as $m) {
+                        if (is_array($m) && (isset($m['odds']) || isset($m['values']))) {
+                            $markets[] = $m;
+                        }
+                    }
+                } else {
+                    // Em casos raros pode vir como lista direta
+                    if (isset($node['name']) || isset($node['odds']) || isset($node['values'])) {
+                        $markets[] = $node;
+                    }
+                }
+            };
+
+            // Seções principais
+            foreach (['main','goals','half','asian_lines','minutes','specials','schedule'] as $sec) {
+                if (isset($root[$sec])) {
+                    $collectFromSp($root[$sec]);
+                }
             }
-            // Estrutura main/others
-            if (isset($block['main']) && is_array($block['main'])) {
-                foreach ($block['main'] as $m) $markets[] = $m;
+            // 'others' é uma lista de blocos, cada um com 'sp'
+            if (isset($root['others']) && is_array($root['others'])) {
+                foreach ($root['others'] as $other) {
+                    $collectFromSp($other);
+                }
             }
-            if (isset($block['others']) && is_array($block['others'])) {
-                foreach ($block['others'] as $m) $markets[] = $m;
+        } else {
+            // 2) Alternativo: results é uma lista de mercados já "achatados"
+            foreach ($data['results'] as $block) {
+                if (isset($block['name']) || isset($block['odds']) || isset($block['values'])) {
+                    $markets[] = $block;
+                    continue;
+                }
+                if (isset($block['main']) && is_array($block['main'])) {
+                    foreach ($block['main'] as $m) $markets[] = $m;
+                }
+                if (isset($block['others']) && is_array($block['others'])) {
+                    foreach ($block['others'] as $m) $markets[] = $m;
+                }
             }
         }
 
@@ -431,6 +551,19 @@ class BetsAPIClient {
                     if ($name === '1X') { $result[$tempo]['dplcasa'] = $oddValue; $result[$tempo]['dupla_1x'] = $oddValue; }
                     if ($name === 'X2') { $result[$tempo]['dplfora'] = $oddValue; $result[$tempo]['dupla_x2'] = $oddValue; }
                     if ($name === '12') { $result[$tempo]['cof'] = $oddValue; $result[$tempo]['dupla_12'] = $oddValue; }
+                }
+
+                // Draw No Bet (Empate Anula Aposta) - presente em 'main.sp.draw_no_bet' etc.
+                if (stripos($marketName, 'draw no bet') !== false
+                    || stripos($marketName, 'dnb') !== false
+                    || stripos($marketName, 'empate anula') !== false
+                    || stripos($marketName, 'no draw') !== false) {
+                    $nameLower = strtolower($name);
+                    if ($name === '1' || $nameLower === 'home' || $nameLower === 'team1' || $nameLower === 'casa') {
+                        $result[$tempo]['empateanulacasa'] = $oddValue;
+                    } elseif ($name === '2' || $nameLower === 'away' || $nameLower === 'team2' || $nameLower === 'fora') {
+                        $result[$tempo]['empateanulafora'] = $oddValue;
+                    }
                 }
 
                 // BTTS
