@@ -218,7 +218,8 @@ SQL;
                 }
 
                 $jogoCotacoes = $jogo->getCotacoes(true);
-                $valorCotacao = (float)$jogoCotacoes[$v['tempo']][$cotacao->getCampo()] ?? 1;
+                $tempoKey = (string)$v['tempo'];
+                $valorCotacao = (float)($jogoCotacoes[$tempoKey][$cotacao->getCampo()] ?? 1);
 
                 if ($valorCotacao <= 1) {
                     throw new \Exception("Cotação inválida");

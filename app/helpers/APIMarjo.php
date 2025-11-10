@@ -6,22 +6,16 @@ use app\core\crud\Conn;
 use app\models\DadosModel;
 use app\models\JogosModel;
 use app\vo\JogoVO;
-use GuzzleHttp\Client;
 
 class APIMarjo
 {
 
-    /**
-     * @var Client
-     */
-    private $client;
+    /** @var string */
+    private $baseUrl = 'https://apijogos.com/betsports3.php';
 
     public function __construct()
     {
-        $this->client = new Client([
-            'base_url' => 'https://apijogos.com/betsports3.php',
-            'verify' => false,
-        ]);
+        // Sem dependência de Guzzle: usaremos curl nativo (curl_get)
     }
 
     public function importarJogos()
@@ -33,8 +27,9 @@ class APIMarjo
 
             $response = $this->getJogos();
 
-            if ($response['result'] != 1) {
-                throw new \Exception($response['message']);
+            if (!is_array($response) || ($response['result'] ?? 0) != 1) {
+                $msg = $response['message'] ?? 'Resposta inválida da API';
+                throw new \Exception($msg);
             }
 
             $this->atualizaTimes($response['times']);
@@ -98,7 +93,10 @@ SQL;
                 'result' => 1,
             ];
         } catch (\Exception $exception) {
-            return $exception;
+            return [
+                'result' => 0,
+                'message' => $exception->getMessage() ?: 'Erro ao importar jogos',
+            ];
         }
     }
 
@@ -107,18 +105,73 @@ SQL;
      */
     public function getJogos()
     {
-        $response = json_decode($this->client->get('/jogos')->getBody()->getContents(), true);
-        if (!$response) {
-            throw new \Exception("Não foi possível decodificar o retorno da API");
+        $base = rtrim($this->baseUrl, '/');
+        $candidates = [
+            "{$base}/jogos",
+            "{$base}",
+            "{$base}?action=jogos",
+            "{$base}?jogos=1",
+        ];
+        $lastBody = null;
+        $lastHttp = null;
+        $lastErr  = null;
+        $response = null;
+        
+        foreach ($candidates as $url) {
+            $ch = \curl_init($url);
+            \curl_setopt_array($ch, [
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_SSL_VERIFYPEER => false,
+                CURLOPT_CONNECTTIMEOUT => 20,
+                CURLOPT_TIMEOUT => 45,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTPHEADER => ['Accept: application/json'],
+            ]);
+            $body = \curl_exec($ch);
+            $http = \curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $err  = \curl_error($ch);
+            \curl_close($ch);
+            $lastBody = $body;
+            $lastHttp = $http;
+            $lastErr  = $err;
+            
+            if ($body !== false && $http === 200) {
+                $decoded = json_decode($body, true);
+                if (is_array($decoded)) {
+                    $response = $decoded;
+                    break;
+                }
+            }
+        }
+        
+        if (!is_array($response)) {
+            $snippet = substr((string)$lastBody, 0, 200);
+            $hint = $lastErr ?: "HTTP {$lastHttp}";
+            throw new \Exception("Não foi possível decodificar o retorno da API ({$hint}): {$snippet}");
+        }
+        
+        // Normaliza estrutura caso a API não envie 'result'
+        if (!isset($response['result'])) {
+            // tenta mapear listas conhecidas
+            $jogos = $response['jogos'] ?? (isset($response[0]) ? $response : []);
+            $response = [
+                'result' => 1,
+                'message' => 'OK',
+                'jogos' => is_array($jogos) ? $jogos : [],
+                'times' => $response['times'] ?? [],
+                'campeonatos' => $response['campeonatos'] ?? [],
+            ];
         }
 
         $limiteCotacao = DadosModel::get()->getLimiteCotacao();
 
-        if ($limiteCotacao > 0) {
+        if ($limiteCotacao > 0 && isset($response['jogos']) && is_array($response['jogos'])) {
             foreach ($response['jogos'] as $index => $jogo) {
-                foreach ($jogo['cotacoes'] as $tempo => $cotacoes) {
-                    foreach ($cotacoes as $campo => $valor) {
-                        $response['jogos'][$index]['cotacoes'][$tempo][$campo] = min($limiteCotacao, Number::float($valor));
+                if (!empty($jogo['cotacoes']) && is_array($jogo['cotacoes'])) {
+                    foreach ($jogo['cotacoes'] as $tempo => $cotacoes) {
+                        foreach ((array)$cotacoes as $campo => $valor) {
+                            $response['jogos'][$index]['cotacoes'][$tempo][$campo] = min($limiteCotacao, Number::float($valor));
+                        }
                     }
                 }
             }

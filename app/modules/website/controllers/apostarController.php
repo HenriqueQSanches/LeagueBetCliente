@@ -21,6 +21,9 @@ use app\vo\CotacaoVO;
 use app\vo\helpers\OptionVO;
 use app\vo\JogoVO;
 
+// Carrega cliente da BetsAPI (classe global)
+require_once __DIR__ . '/../../betsapi/BetsAPIClient.php';
+
 class apostarController extends Controller
 {
 
@@ -68,6 +71,49 @@ class apostarController extends Controller
         ];
     }
 
+    /**
+     * Odds em tempo real (Bet365 Prematch v4) para o jogo solicitado.
+     * Entrada: GET ?jogo={id} ou ?api_id={betsapi_event_id}
+     * Saída: ['result'=>1,'cotacoes'=>{ '90': {campo: valor, ...} }]
+     */
+    function oddsAction()
+    {
+        try {
+            $apiId = (int)inputGet('api_id');
+            if (!$apiId) {
+                $jogoId = (int)inputGet('jogo');
+                if ($jogoId > 0) {
+                    $row = Model::pdoRead()->FullRead('SELECT api_id FROM `sis_jogos` WHERE id = :id LIMIT 1', [
+                        'id' => $jogoId,
+                    ])->getResult();
+                    $apiId = (int)($row[0]['api_id'] ?? 0);
+                }
+            }
+
+            if (!$apiId) {
+                throw new \Exception('Jogo sem referência de API.');
+            }
+
+            $client = new \BetsAPIClient();
+            // 1) Tenta Bet365 Prematch (v4) para +cotações
+            $mapped = $client->getBet365PrematchMappedOdds($apiId) ?: [];
+            // 2) Fallback: odds completas do evento (v1) caso não haja FI no mapeamento
+            if (empty($mapped)) {
+                $mapped = $client->getExtendedOdds($apiId) ?: [];
+            }
+
+            return [
+                'result' => 1,
+                'cotacoes' => $mapped,
+            ];
+        } catch (\Exception $e) {
+            return [
+                'result' => 0,
+                'message' => $e->getMessage(),
+            ];
+        }
+    }
+
     function cotacoes()
     {
 
@@ -98,6 +144,22 @@ SQL;
             ['sigla' => 'N2.5', 'title' => 'Menos de 2.5',          'campo' => 'menos_2_5','cor' => '#000000','grupo' => 3, 'principal' => '0'],
             ['sigla' => 'N3.5', 'title' => 'Menos de 3.5',          'campo' => 'menos_3_5','cor' => '#000000','grupo' => 3, 'principal' => '0'],
         ];
+
+        // Fallback: Escanteios e Cartões (linhas padrão)
+        // chaves compatíveis com o import (esc_{linha}_{tipo}, cart_{linha}_{tipo})
+        $linhasEsc = ['8_5','9_5','10_5','11_5','12_5'];
+        foreach ($linhasEsc as $ln) {
+            $v = str_replace('_', '.', $ln);
+            $essenciais[] = ['sigla' => "ESC+$v", 'title' => "Escanteios - Mais de {$v}",  'campo' => "esc_{$ln}_mais",  'cor' => '#000000', 'grupo' => 10, 'principal' => '0'];
+            $essenciais[] = ['sigla' => "ESC-$v", 'title' => "Escanteios - Menos de {$v}", 'campo' => "esc_{$ln}_menos", 'cor' => '#000000', 'grupo' => 10, 'principal' => '0'];
+        }
+
+        $linhasCart = ['3_5','4_5','5_5'];
+        foreach ($linhasCart as $ln) {
+            $v = str_replace('_', '.', $ln);
+            $essenciais[] = ['sigla' => "CAR+$v", 'title' => "Cartões - Mais de {$v}",  'campo' => "cart_{$ln}_mais",  'cor' => '#000000', 'grupo' => 11, 'principal' => '0'];
+            $essenciais[] = ['sigla' => "CAR-$v", 'title' => "Cartões - Menos de {$v}", 'campo' => "cart_{$ln}_menos", 'cor' => '#000000', 'grupo' => 11, 'principal' => '0'];
+        }
 
         $camposAtuais = array_column($lista, 'campo');
         foreach ($essenciais as $e) {
@@ -334,7 +396,31 @@ SQL;
                     }
                 }
 
-                $valorCotacao = (float)$jogo->getCotacoes(true)[$v['tempo']][$cotacao->getCampo()] ?? 1;
+                // Chave do tempo no JSON é string ("90","pt","st"); normalizar
+                $tempoKey = (string)$v['tempo'];
+                $valorCotacao = (float)($jogo->getCotacoes(true)[$tempoKey][$cotacao->getCampo()] ?? 1);
+
+                if ($valorCotacao <= 1) {
+                    // Fallback: buscar valor da API em tempo real
+                    try {
+                        // Carrega cliente e busca mapeamento
+                        require_once __DIR__ . '/../../betsapi/BetsAPIClient.php';
+                        $row = Model::pdoRead()->FullRead('SELECT api_id FROM `sis_jogos` WHERE id = :id LIMIT 1', [
+                            'id' => $jogo->getId(),
+                        ])->getResult();
+                        $apiId = (int)($row[0]['api_id'] ?? 0);
+                        if ($apiId) {
+                            $client = new \BetsAPIClient();
+                            $mapped = $client->getBet365PrematchMappedOdds($apiId) ?: [];
+                            if (empty($mapped)) {
+                                $mapped = $client->getExtendedOdds($apiId) ?: [];
+                            }
+                            $valorCotacao = (float)($mapped[$tempoKey][$cotacao->getCampo()] ?? 1);
+                        }
+                    } catch (\Throwable $t) {
+                        // silencioso; se continuar inválido, cai no erro abaixo
+                    }
+                }
 
                 if ($valorCotacao <= 1) {
                     throw new \Exception("Cotação inválida");
