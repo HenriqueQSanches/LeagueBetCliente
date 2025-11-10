@@ -12,6 +12,7 @@ class BetsAPIClient {
     
     private $apiToken;
     private $baseUrl = 'https://api.b365api.com/v1/';
+    private $baseUrlV4 = 'https://api.b365api.com/v4/';
     private $timeout = 30;
     
     /**
@@ -73,6 +74,35 @@ class BetsAPIClient {
             return false;
         }
         
+        return $data;
+    }
+    
+    /**
+     * Faz requisição V4 (bet365/*)
+     */
+    private function requestV4($endpoint, $params = []) {
+        $params['token'] = $this->apiToken;
+        $url = $this->baseUrlV4 . ltrim($endpoint, '/') . '?' . http_build_query($params);
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
+        curl_close($ch);
+        
+        if ($httpCode !== 200) {
+            error_log("BetsAPI V4 Error {$httpCode} {$curlError} {$response}");
+            return false;
+        }
+        $data = json_decode($response, true);
+        if (!$data || (isset($data['success']) && (int)$data['success'] !== 1)) {
+            error_log("BetsAPI V4 decode error: " . substr($response ?? '', 0, 200));
+            return false;
+        }
         return $data;
     }
     
@@ -330,6 +360,115 @@ class BetsAPIClient {
             }
         }
         
+        return $result;
+    }
+
+    /**
+     * Busca e mapeia odds pré-jogo via Bet365 Prematch (V4).
+     * Tenta descobrir o FI (Bet365 Event ID) a partir de event/view.
+     */
+    public function getBet365PrematchMappedOdds($eventId) {
+        // Descobre o FI via event/view
+        $view = $this->getEvent($eventId);
+        $fi = null;
+        if ($view && isset($view['results'][0])) {
+            $r = $view['results'][0];
+            // Tentativas comuns de onde o FI aparece
+            $fi = $r['bet365_id'] ?? ($r['FI'] ?? null);
+            if (!$fi && isset($r['bet365']) && is_array($r['bet365'])) {
+                $fi = $r['bet365']['id'] ?? null;
+            }
+        }
+        if (!$fi) {
+            // Sem FI não dá para consumir v4 prematch
+            return [];
+        }
+        $data = $this->requestV4('bet365/prematch', ['FI' => $fi]);
+        if (!$data || empty($data['results'])) {
+            return [];
+        }
+
+        // A resposta v4 pode trazer estrutura com 'main' e 'others'.
+        // Vamos normalizar para uma lista de mercados com 'name' e 'odds'/‘values’ similar ao parser anterior.
+        $markets = [];
+        foreach ($data['results'] as $block) {
+            // Alguns retornos são arrays de mercados diretamente
+            if (isset($block['name']) || isset($block['odds']) || isset($block['values'])) {
+                $markets[] = $block;
+                continue;
+            }
+            // Estrutura main/others
+            if (isset($block['main']) && is_array($block['main'])) {
+                foreach ($block['main'] as $m) $markets[] = $m;
+            }
+            if (isset($block['others']) && is_array($block['others'])) {
+                foreach ($block['others'] as $m) $markets[] = $m;
+            }
+        }
+
+        // Reutiliza lógica do getExtendedOdds: mesmo mapeamento por nome.
+        $result = [];
+        foreach ($markets as $market) {
+            $oddsList = [];
+            if (!empty($market['odds']) && is_array($market['odds'])) {
+                $oddsList = $market['odds'];
+            } elseif (!empty($market['values']) && is_array($market['values'])) {
+                $oddsList = $market['values'];
+            }
+            if (empty($oddsList)) continue;
+            $marketName = strtolower($market['name'] ?? '');
+            $marketName = str_replace(['  ', '–', '—'], [' ', '-', '-'], $marketName);
+            $tempo = '90'; // prematch padrão tempo de jogo inteiro
+
+            foreach ($oddsList as $odd) {
+                $name = (string)($odd['name'] ?? ($odd['label'] ?? ''));
+                $raw = $odd['odds'] ?? ($odd['price'] ?? ($odd['value'] ?? ($odd['decimal'] ?? null)));
+                $oddValue = is_numeric($raw) ? floatval($raw) : 0.0;
+                if ($oddValue <= 1) continue;
+
+                // Double Chance
+                if (stripos($marketName, 'double chance') !== false || in_array($name, ['1X','X2','12'], true)) {
+                    if ($name === '1X') { $result[$tempo]['dplcasa'] = $oddValue; $result[$tempo]['dupla_1x'] = $oddValue; }
+                    if ($name === 'X2') { $result[$tempo]['dplfora'] = $oddValue; $result[$tempo]['dupla_x2'] = $oddValue; }
+                    if ($name === '12') { $result[$tempo]['cof'] = $oddValue; $result[$tempo]['dupla_12'] = $oddValue; }
+                }
+
+                // BTTS
+                if (stripos($marketName, 'both teams to score') !== false || stripos($marketName, 'ambas') !== false) {
+                    if (stripos($name, 'yes') !== false)  $result[$tempo]['amb']  = $oddValue;
+                    if (stripos($name, 'no') !== false)   $result[$tempo]['ambn'] = $oddValue;
+                }
+
+                // Over/Under (inclui Corners/Cards com nomes distintos)
+                $handicap = null;
+                if (!empty($odd['handicap']) && is_string($odd['handicap'])) $handicap = $odd['handicap'];
+                if (!empty($odd['line'])) $handicap = (string)$odd['line'];
+
+                $isCorners = (stripos($marketName, 'corner') !== false || stripos($marketName, 'escanteio') !== false);
+                $isCards   = (stripos($marketName, 'card') !== false   || stripos($marketName, 'booking') !== false || stripos($marketName, 'cart') !== false);
+
+                $tipo = null; $numero = null;
+                if (preg_match('/(over|under)\s*([0-9]+(?:\.[0-9])?)/i', $name, $m)) {
+                    $tipo = strtolower($m[1]) === 'over' ? 'mais' : 'menos';
+                    $numero = str_replace('.', '_', $m[2]);
+                } elseif ($handicap && preg_match('/^([0-9]+(?:\.[0-9])?)$/', $handicap)) {
+                    if (stripos($name, 'over') !== false)  $tipo = 'mais';
+                    if (stripos($name, 'under') !== false) $tipo = 'menos';
+                    $numero = str_replace('.', '_', $handicap);
+                }
+
+                if ($tipo && $numero) {
+                    if ($isCorners) {
+                        $campo = "esc_{$numero}_{$tipo}";
+                    } elseif ($isCards) {
+                        $campo = "cart_{$numero}_{$tipo}";
+                    } else {
+                        $campo = "{$tipo}_{$numero}";
+                    }
+                    $result[$tempo][$campo] = $oddValue;
+                }
+            }
+        }
         return $result;
     }
     

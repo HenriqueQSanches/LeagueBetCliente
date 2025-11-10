@@ -458,6 +458,8 @@
                     return false;
                 },
             },
+            watch: {
+            },
             methods: {
                 gerarProximos7Dias() {
                     const diasSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
@@ -674,7 +676,26 @@
                 maisCotacoes(jogo) {
                     this.mJogo.jogo = jogo;
                     this.mJogo.tempo = 90;
-                    $('#modal-cotacoes').modal("show");
+
+                    // Buscar odds em tempo real na API e mesclar nas cotações do jogo
+                    const params = new URLSearchParams({ jogo: jogo.id });
+                    axios
+                        .get(url('apostar/odds') + '?' + params.toString())
+                        .then((response) => {
+                            const data = response.data || {};
+                            const live = data.cotacoes || {};
+                            if (!this.mJogo.jogo.cotacoes) this.mJogo.jogo.cotacoes = {};
+                            Object.keys(live).forEach((tempo) => {
+                                if (!this.mJogo.jogo.cotacoes[tempo] || typeof this.mJogo.jogo.cotacoes[tempo] !== 'object') {
+                                    this.mJogo.jogo.cotacoes[tempo] = {};
+                                }
+                                Object.assign(this.mJogo.jogo.cotacoes[tempo], live[tempo]);
+                            });
+                        })
+                        .catch(() => {})
+                        .then(() => {
+                            $('#modal-cotacoes').modal("show");
+                        });
                 },
                 apostar(jogo, tempo, cotacao) {
 

@@ -98,6 +98,67 @@ ON DUPLICATE KEY UPDATE
 SQL;
     $conexao->exec($sql2);
     
+    // Inserir mercados de Escanteios e Cartões diretamente em sis_cotacoes
+    // Grupos: 10 (Escanteios), 11 (Cartões)
+    $escLinhas = ['8_5','9_5','10_5','11_5','12_5'];
+    $cartLinhas = ['3_5','4_5','5_5'];
+
+    $ins = $conexao->prepare("
+        INSERT INTO sis_cotacoes (titulo, query, descricao, status, ordem, cor, campo, sigla, grupo, principal, taxa)
+        SELECT :titulo, '', :descricao, 1, :ordem, '#000000', :campo, :sigla, :grupo, 0, 0.00
+        WHERE NOT EXISTS (SELECT 1 FROM sis_cotacoes WHERE campo = :campoCheck)
+    ");
+
+    $ordemBaseEsc = 300;
+    foreach ($escLinhas as $i => $ln) {
+        $v = str_replace('_', '.', $ln);
+        // Mais
+        $ins->execute([
+            'titulo' => "Escanteios - Mais de {$v}",
+            'descricao' => "Total de escanteios no jogo acima de {$v}.",
+            'ordem' => $ordemBaseEsc + ($i * 2) + 1,
+            'campo' => "esc_{$ln}_mais",
+            'sigla' => "ESC+{$v}",
+            'grupo' => 10,
+            'campoCheck' => "esc_{$ln}_mais",
+        ]);
+        // Menos
+        $ins->execute([
+            'titulo' => "Escanteios - Menos de {$v}",
+            'descricao' => "Total de escanteios no jogo abaixo de {$v}.",
+            'ordem' => $ordemBaseEsc + ($i * 2) + 2,
+            'campo' => "esc_{$ln}_menos",
+            'sigla' => "ESC-{$v}",
+            'grupo' => 10,
+            'campoCheck' => "esc_{$ln}_menos",
+        ]);
+    }
+
+    $ordemBaseCart = 350;
+    foreach ($cartLinhas as $i => $ln) {
+        $v = str_replace('_', '.', $ln);
+        // Mais
+        $ins->execute([
+            'titulo' => "Cartões - Mais de {$v}",
+            'descricao' => "Total de cartões no jogo acima de {$v}.",
+            'ordem' => $ordemBaseCart + ($i * 2) + 1,
+            'campo' => "cart_{$ln}_mais",
+            'sigla' => "CAR+{$v}",
+            'grupo' => 11,
+            'campoCheck' => "cart_{$ln}_mais",
+        ]);
+        // Menos
+        $ins->execute([
+            'titulo' => "Cartões - Menos de {$v}",
+            'descricao' => "Total de cartões no jogo abaixo de {$v}.",
+            'ordem' => $ordemBaseCart + ($i * 2) + 2,
+            'campo' => "cart_{$ln}_menos",
+            'sigla' => "CAR-{$v}",
+            'grupo' => 11,
+            'campoCheck' => "cart_{$ln}_menos",
+        ]);
+    }
+    
     // Contar novamente
     $sql_check2 = "SELECT COUNT(*) as total FROM sis_cotacoes WHERE status = 1";
     $result_check2 = $conexao->query($sql_check2)->fetch(PDO::FETCH_ASSOC);

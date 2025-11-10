@@ -146,8 +146,21 @@ class SyncJogos {
             // Busca odds principais e complementares
             $odds = $this->api->getMainOdds($apiId);
             $extraOdds = $this->api->getExtendedOdds($apiId);
+            // Odds Bet365 Prematch (v4) – tenta enriquecer se possível
+            $prematchOdds = $this->api->getBet365PrematchMappedOdds($apiId);
             // Mescla preservando o que já existe
             foreach ($extraOdds as $tempo => $campos) {
+                if (!isset($odds[$tempo]) || !is_array($odds[$tempo])) {
+                    $odds[$tempo] = [];
+                }
+                foreach ($campos as $campo => $valor) {
+                    if ($valor > 1) {
+                        $odds[$tempo][$campo] = $valor;
+                    }
+                }
+            }
+            // Mescla prematch por último (pode trazer mais mercados)
+            foreach ($prematchOdds as $tempo => $campos) {
                 if (!isset($odds[$tempo]) || !is_array($odds[$tempo])) {
                     $odds[$tempo] = [];
                 }

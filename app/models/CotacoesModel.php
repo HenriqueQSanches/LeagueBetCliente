@@ -18,6 +18,8 @@ class CotacoesModel extends Model
         7 => 'Paridade',
         8 => 'Condições',
         9 => 'Intervalo / Final',
+        10 => 'Escanteios',
+        11 => 'Cartões',
     ];
 
     public function __construct()
