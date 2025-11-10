@@ -277,6 +277,56 @@ class BetsAPIClient {
                         }
                     }
                 }
+
+                // Escanteios (Corners) Over/Under
+                if (stripos($marketName, 'corner') !== false || stripos($marketName, 'escanteio') !== false) {
+                    $handicap = null;
+                    if (!empty($odd['handicap']) && is_string($odd['handicap'])) {
+                        $handicap = $odd['handicap'];
+                    } elseif (!empty($odd['line'])) {
+                        $handicap = (string)$odd['line'];
+                    }
+                    $tipo = null;
+                    $numero = null;
+                    if (preg_match('/(Over|Under)\s*([0-9]+(?:\.[0-9])?)/i', $name, $m)) {
+                        $tipo = strtolower($m[1]) === 'over' ? 'mais' : 'menos';
+                        $numero = str_replace('.', '_', $m[2]);
+                    } elseif ($handicap && preg_match('/^([0-9]+(?:\.[0-9])?)$/', $handicap)) {
+                        if (stripos($name, 'over') !== false)  $tipo = 'mais';
+                        if (stripos($name, 'under') !== false) $tipo = 'menos';
+                        $numero = str_replace('.', '_', $handicap);
+                    }
+                    if ($tipo && $numero && $oddValue > 1) {
+                        // padrão: esc_{linha}_{tipo}  ex: esc_9_5_mais
+                        $campo = "esc_{$numero}_{$tipo}";
+                        $result[$tempo][$campo] = $oddValue;
+                    }
+                }
+
+                // Cartões (Cards/Bookings) Over/Under
+                if (stripos($marketName, 'card') !== false || stripos($marketName, 'booking') !== false || stripos($marketName, 'cart') !== false) {
+                    $handicap = null;
+                    if (!empty($odd['handicap']) && is_string($odd['handicap'])) {
+                        $handicap = $odd['handicap'];
+                    } elseif (!empty($odd['line'])) {
+                        $handicap = (string)$odd['line'];
+                    }
+                    $tipo = null;
+                    $numero = null;
+                    if (preg_match('/(Over|Under)\s*([0-9]+(?:\.[0-9])?)/i', $name, $m)) {
+                        $tipo = strtolower($m[1]) === 'over' ? 'mais' : 'menos';
+                        $numero = str_replace('.', '_', $m[2]);
+                    } elseif ($handicap && preg_match('/^([0-9]+(?:\.[0-9])?)$/', $handicap)) {
+                        if (stripos($name, 'over') !== false)  $tipo = 'mais';
+                        if (stripos($name, 'under') !== false) $tipo = 'menos';
+                        $numero = str_replace('.', '_', $handicap);
+                    }
+                    if ($tipo && $numero && $oddValue > 1) {
+                        // padrão: cart_{linha}_{tipo}  ex: cart_4_5_menos
+                        $campo = "cart_{$numero}_{$tipo}";
+                        $result[$tempo][$campo] = $oddValue;
+                    }
+                }
             }
         }
         

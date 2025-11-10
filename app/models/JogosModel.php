@@ -26,9 +26,9 @@ class JogosModel extends Model
         $this->table = 'sis_jogos';
         $this->valueObject = JogoVO::class;
         $this->query = (new BuildQuery($this->table, 'a'))
-            ->addInnerJoin(CampeonatosModel::getTable(), 'campeonato', 'campeonato.id = a.campeonato')
-            ->addInnerJoin(TimesModel::getTable(), 'casa', 'casa.id = a.timecasa')
-            ->addInnerJoin(TimesModel::getTable(), 'fora', 'fora.id = a.timefora');
+            ->addLeftJoin(CampeonatosModel::getTable(), 'campeonato', 'campeonato.id = a.campeonato')
+            ->addLeftJoin(TimesModel::getTable(), 'casa', 'casa.id = a.timecasa')
+            ->addLeftJoin(TimesModel::getTable(), 'fora', 'fora.id = a.timefora');
     }
 
     /**
