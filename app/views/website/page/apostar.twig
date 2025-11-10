@@ -165,17 +165,23 @@
                     </div>
                 </td>
                 <td class="text-center" v-for="c in getCotacoesPrincipais()">
-                    <div class="btn-cotacao" v-bind:class="{active: jogo.apostaEm == '90' + c.campo}"
+                    <div v-if="jogo.cotacoes && jogo.cotacoes['90'] && jogo.cotacoes['90'][c.campo] > 1"
+                         class="btn-cotacao"
+                         v-bind:class="{active: jogo.apostaEm == '90' + c.campo}"
                          v-bind:title="c.title"
                          data-toggle="tooltip"
                          v-on:click="apostar(jogo, '90', c)">
                         ${jogo.cotacoes['90'][c.campo]|maskReal}
                     </div>
+                    <div v-else class="btn-cotacao outras" title="Outras cotações"
+                         v-on:click="maisCotacoes(jogo)">
+                        +
+                    </div>
                 </td>
                 <td>
                     <div class="btn-cotacao outras" data-toggle="tooltip" title="Outras cotações"
                          v-bind:class="{active: jogo.outras}" v-on:click="maisCotacoes(jogo)">
-                        +${totalCotacoes(jogo.cotacoes)-getCotacoesPrincipais().length}
+                        +${outrosCount(jogo)}
                     </div>
                 </td>
             </tr>
@@ -547,6 +553,16 @@
                     });
 
                     return total;
+                },
+                outrosCount(jogo) {
+                    try {
+                        const total = this.totalCotacoes(jogo.cotacoes || {});
+                        const principais = this.getCotacoesPrincipais().length;
+                        const count = total - principais;
+                        return count > 0 ? count : '';
+                    } catch (e) {
+                        return '';
+                    }
                 },
                 getPaises() {
                     var paises = [];

@@ -218,14 +218,22 @@ class BetsAPIClient {
                     continue;
                 }
                 
-                // Double chance -> mapear para campos usados no admin
+                // Double chance -> mapear para campos usados no admin e aliases usados no site
                 if (stripos($marketName, 'double chance') !== false
                     || stripos($marketName, 'double-chance') !== false
                     || stripos($marketName, 'dupla') !== false
                     || in_array($name, ['1X','X2','12'], true)) {
-                    if     ($name === '1X') $result[$tempo]['dplcasa'] = $oddValue;   // 1X
-                    elseif ($name === 'X2') $result[$tempo]['dplfora'] = $oddValue;   // X2
-                    elseif ($name === '12') $result[$tempo]['cof']     = $oddValue;   // 12 (casa ou fora)
+                    if ($name === '1X') {
+                        // Aliases: dplcasa (legado) e dupla_1x (novo)
+                        $result[$tempo]['dplcasa']  = $oddValue;
+                        $result[$tempo]['dupla_1x'] = $oddValue;
+                    } elseif ($name === 'X2') {
+                        $result[$tempo]['dplfora']  = $oddValue;
+                        $result[$tempo]['dupla_x2'] = $oddValue;
+                    } elseif ($name === '12') {
+                        $result[$tempo]['cof']      = $oddValue;   // casa ou fora (legado)
+                        $result[$tempo]['dupla_12'] = $oddValue;
+                    }
                 }
                 
                 // Both Teams To Score -> mapear para 'amb' e 'ambn'
@@ -420,15 +428,33 @@ class BetsAPIClient {
 
                 // Ambas marcam (sim/não)
                 if ($marketId == '29' || stripos($marketLabel, 'both teams to score') !== false) {
-                    if (stripos($name, 'Yes') !== false)  $odds[$tempo]['ambas_marcam_sim'] = $oddValue;
-                    if (stripos($name, 'No') !== false)   $odds[$tempo]['ambas_marcam_nao'] = $oddValue;
+                    if (stripos($name, 'Yes') !== false)  {
+                        $odds[$tempo]['ambas_marcam_sim'] = $oddValue;
+                        // Alias utilizado no site
+                        $odds[$tempo]['amb'] = $oddValue;
+                    }
+                    if (stripos($name, 'No') !== false)   {
+                        $odds[$tempo]['ambas_marcam_nao'] = $oddValue;
+                        $odds[$tempo]['ambn'] = $oddValue;
+                    }
                 }
 
                 // Dupla chance (1X, 12, X2) - alguns providers usam market id próprio
                 if (in_array($name, ['1X','X2','12'], true)) {
-                    if     ($name === '1X') $odds[$tempo]['dupla_1x'] = $oddValue;
-                    elseif ($name === 'X2') $odds[$tempo]['dupla_x2'] = $oddValue;
-                    elseif ($name === '12') $odds[$tempo]['dupla_12'] = $oddValue;
+                    if ($name === '1X') {
+                        $odds[$tempo]['dupla_1x'] = $oddValue;
+                        // Aliases legados
+                        $odds[$tempo]['casa_empate'] = $oddValue;
+                        $odds[$tempo]['dplcasa'] = $oddValue;
+                    } elseif ($name === 'X2') {
+                        $odds[$tempo]['dupla_x2'] = $oddValue;
+                        $odds[$tempo]['empate_fora'] = $oddValue;
+                        $odds[$tempo]['dplfora'] = $oddValue;
+                    } elseif ($name === '12') {
+                        $odds[$tempo]['dupla_12'] = $oddValue;
+                        $odds[$tempo]['casa_fora'] = $oddValue;
+                        $odds[$tempo]['cof'] = $oddValue;
+                    }
                 }
 
                 // Over/Under com valor variável (ex.: Over 1.5, Under 3.5)
@@ -443,6 +469,28 @@ class BetsAPIClient {
             }
         }
         
+        // Normalização final de aliases para compatibilidade com a tela e com cadastros antigos
+        foreach (['90','pt','st'] as $t) {
+            if (!isset($odds[$t])) continue;
+            // Ambas marcam
+            if (!isset($odds[$t]['amb']) && isset($odds[$t]['ambas_marcam_sim']) && $odds[$t]['ambas_marcam_sim'] > 1) {
+                $odds[$t]['amb'] = $odds[$t]['ambas_marcam_sim'];
+            }
+            if (!isset($odds[$t]['ambn']) && isset($odds[$t]['ambas_marcam_nao']) && $odds[$t]['ambas_marcam_nao'] > 1) {
+                $odds[$t]['ambn'] = $odds[$t]['ambas_marcam_nao'];
+            }
+            // Dupla chance: criar aliases quando possível
+            if (!isset($odds[$t]['dupla_1x']) && isset($odds[$t]['casa_empate']) && $odds[$t]['casa_empate'] > 1) {
+                $odds[$t]['dupla_1x'] = $odds[$t]['casa_empate'];
+            }
+            if (!isset($odds[$t]['dupla_x2']) && isset($odds[$t]['empate_fora']) && $odds[$t]['empate_fora'] > 1) {
+                $odds[$t]['dupla_x2'] = $odds[$t]['empate_fora'];
+            }
+            if (!isset($odds[$t]['dupla_12']) && isset($odds[$t]['casa_fora']) && $odds[$t]['casa_fora'] > 1) {
+                $odds[$t]['dupla_12'] = $odds[$t]['casa_fora'];
+            }
+        }
+
         return $odds;
     }
     

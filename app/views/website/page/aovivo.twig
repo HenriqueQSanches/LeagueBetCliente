@@ -49,6 +49,13 @@
                                                     ${(jogo.placar && jogo.placar.fora != null) ? jogo.placar.fora : '-'}
                                                 </div>
                                             </td>
+                                            <td width="1" class="text-center">
+                                                <div class="btn-cotacao outras"
+                                                     title="Outras cotações"
+                                                     v-on:click="maisCotacoes(jogo)">
+                                                    +${outrosCount(jogo)}
+                                                </div>
+                                            </td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -95,11 +102,100 @@
                     paises: [],
                     grupos: {},
                     cotacoes: [],
+                    tempos: {90: 'Jogo completo', pt: 'Primeiro tempo', st: 'Segundo tempo'},
+                    mJogo: { jogo: null, tempo: 90 },
                 }
+            },
+            filters: {
+                maskReal(value) {
+                    if (!value) {
+                        return '0,00';
+                    } else {
+                        return value.toString().toReal();
+                    }
+                }
+            },
+            methods: {
+                totalCotacoes(cotacoes) {
+                    let total = 0;
+                    try {
+                        Object.values(cotacoes || {}).forEach((c) => {
+                            Object.values(c || {}).forEach((v) => {
+                                if (v > 1) total++;
+                            });
+                        });
+                    } catch(e){}
+                    return total;
+                },
+                outrosCount(jogo) {
+                    const total = this.totalCotacoes(jogo.cotacoes || {});
+                    return total > 0 ? total : '';
+                },
+                maisCotacoes(jogo) {
+                    this.mJogo.jogo = jogo;
+                    this.mJogo.tempo = 90;
+                    $('#modal-cotacoes-live').modal('show');
+                },
             }
         });
     </script>
 
 {% endblock %}
 
+{% block modal %}
+    <div id="modal-cotacoes-live" class="modal fade">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-uppercase">Mais cotações</h5>
+                    <div class="close" data-dismiss="modal">&times;</div>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="p-3">
+                        <button type="button" class="btn btn-danger btn-sm mr-1"
+                                v-bind:class="{active: key == mJogo.tempo || null}"
+                                v-for="(tempo, key) in tempos" v-on:click="mJogo.tempo = key">
+                            <span class="d-md-block d-none">${tempo}</span>
+                            <span class="text-uppercase d-block d-md-none">${key}</span>
+                        </button>
+                    </div>
 
+                    <table class="table table-minified table-striped table-bordered m-0">
+                        <thead>
+                        <tr class="bg-danger text-white">
+                            <th>Descrição</th>
+                            <th width="75">Taxa</th>
+                        </tr>
+                        </thead>
+                    </table>
+
+                    <div class="table-responsive m-0" v-if="mJogo.jogo"
+                         style="max-height: calc(100vh - 63px - 63px - 70px); border-radius: 0 0 4px 4px;">
+
+                        <table class="table table-minified table-striped table-bordered table-hover m-0"
+                               v-for="(grupo, id) in grupos">
+                            <thead>
+                            <tr style="background-color: #bbb">
+                                <th colspan="2">${grupo}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="c in cotacoes"
+                                v-if="c.grupo == id && mJogo.jogo.cotacoes[mJogo.tempo] && mJogo.jogo.cotacoes[mJogo.tempo][c.campo] > 1">
+                                <td>${c.title}</td>
+                                <td class="text-center py-1 px-2" width="5">
+                                    <span class="btn btn-warning btn-cotacao disabled">
+                                        ${mJogo.jogo.cotacoes[mJogo.tempo][c.campo]|maskReal}
+                                    </span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
