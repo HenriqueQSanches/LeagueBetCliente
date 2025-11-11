@@ -138,6 +138,22 @@ class apostarController extends Controller
                 }
             }
 
+            // 3) Enriquecimento a partir do summary (BTTS, Dupla, etc.) quando disponível
+            try {
+                $sumMapped = $client->getSummaryMappedOdds($apiId) ?: [];
+                foreach ($sumMapped as $tempo => $campos) {
+                    if (!isset($mapped[$tempo]) || !is_array($mapped[$tempo])) $mapped[$tempo] = [];
+                    foreach ($campos as $campo => $valor) {
+                        if ($valor > 1) $mapped[$tempo][$campo] = $valor;
+                    }
+                }
+                if ($debugFlag) {
+                    $debug['summary_count'] = array_sum(array_map('count', $sumMapped ?: []));
+                }
+            } catch (\Throwable $t) {
+                if ($debugFlag) $debug['summary_error'] = $t->getMessage();
+            }
+
             $response = [
                 'result' => 1,
                 'cotacoes' => $mapped,
@@ -245,6 +261,7 @@ LEFT JOIN
 WHERE 
     a.ativo = '1' AND a.data >= :hoje
     AND (a.data > :hoje OR a.hora > :hora)
+    AND (:pais IS NULL OR d.pais = :pais)
     
 ORDER BY
     COALESCE(d.title, a.campeonato) ASC, a.data ASC, a.hora ASC
@@ -256,7 +273,16 @@ SQL;
         $places = [
             'hoje' => date('Y-m-d', $time),
             'hora' => date("H:i:s", $time),
+            'pais' => null,
         ];
+
+        // Filtro opcional por país – somente ID numérico é aceito (ignora 'BR'/'Brasil')
+        $paisParam = trim((string)inputGet('pais'));
+        if ($paisParam !== '') {
+            if (is_numeric($paisParam)) {
+                $places['pais'] = (int)$paisParam;
+            } // caso contrário, ignora o filtro
+        }
 
         $hoje = date('Y-m-d');
         $amanha = date('Y-m-d', strtotime('+1day'));

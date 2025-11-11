@@ -965,3 +965,124 @@ Stack trace:
 [10-Nov-2025 19:31:36 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
 [10-Nov-2025 19:32:19 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
 [10-Nov-2025 19:35:36 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 19:41:58 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 19:42:19 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 19:47:21 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:39:39 America/Sao_Paulo] PHP Fatal error:  Uncaught Exception: Não foi possível conectar a base de dados. in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\core\crud\Conn.php:98
+Stack trace:
+#0 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\core\crud\Conn.php(70): app\core\crud\Conn::pdoConnect()
+#1 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\betsapi\SyncJogos.php(379): app\core\crud\Conn::getConn()
+#2 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\betsapi\SyncJogos.php(44): SyncJogos->cleanOldEvents()
+#3 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\betsapi\SyncJogos.php(420): SyncJogos->sync()
+#4 {main}
+  thrown in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\core\crud\Conn.php on line 98
+[10-Nov-2025 20:39:46 America/Sao_Paulo] PHP Fatal error:  Uncaught Exception: Não foi possível conectar a base de dados. in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\core\crud\Conn.php:98
+Stack trace:
+#0 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\core\crud\Conn.php(70): app\core\crud\Conn::pdoConnect()
+#1 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\betsapi\SyncJogos.php(379): app\core\crud\Conn::getConn()
+#2 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\betsapi\SyncJogos.php(44): SyncJogos->cleanOldEvents()
+#3 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\betsapi\SyncJogos.php(420): SyncJogos->sync()
+#4 {main}
+  thrown in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\core\crud\Conn.php on line 98
+[10-Nov-2025 20:41:25 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:41:29 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:41:32 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:41:34 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:41:36 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:41:38 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:41:39 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:41:40 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:41:42 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:41:43 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:41:44 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:41:47 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:41:48 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:41:51 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:41:52 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:41:54 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:45:22 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:45:24 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:45:27 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:45:41 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:45:47 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:45:48 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:45:50 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:45:51 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:45:53 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:45:54 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:45:55 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:45:57 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:46:02 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:46:03 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:46:04 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:46:08 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:46:12 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:46:14 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:46:15 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:46:16 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:46:17 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:46:19 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:46:20 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:46:24 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:46:25 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:46:37 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:46:38 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:46:40 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:46:41 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:46:41 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:46:44 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:46:45 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:46:46 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:46:48 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:46:49 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:46:50 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:46:51 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:46:52 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:46:54 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:46:55 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:46:56 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 20:46:57 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 21:04:31 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 21:04:35 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 21:04:45 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[10-Nov-2025 21:31:25 America/Sao_Paulo] PHP Fatal error:  Uncaught TypeError: ksort(): Argument #1 ($array) must be of type array, null given in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\controllers\apostarController.php:388
+Stack trace:
+#0 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\controllers\apostarController.php(388): ksort(NULL)
+#1 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\controllers\apostarController.php(64): app\modules\website\controllers\apostarController->jogos(NULL)
+#2 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\APP.php(183): app\modules\website\controllers\apostarController->jogosAction()
+#3 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\index.php(5): app\APP::Initialize()
+#4 {main}
+  thrown in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\controllers\apostarController.php on line 388
+[10-Nov-2025 21:31:35 America/Sao_Paulo] PHP Fatal error:  Uncaught TypeError: ksort(): Argument #1 ($array) must be of type array, null given in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\controllers\apostarController.php:388
+Stack trace:
+#0 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\controllers\apostarController.php(388): ksort(NULL)
+#1 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\controllers\apostarController.php(64): app\modules\website\controllers\apostarController->jogos(NULL)
+#2 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\APP.php(183): app\modules\website\controllers\apostarController->jogosAction()
+#3 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\index.php(5): app\APP::Initialize()
+#4 {main}
+  thrown in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\controllers\apostarController.php on line 388
+[10-Nov-2025 21:35:55 America/Sao_Paulo] PHP Fatal error:  Uncaught TypeError: ksort(): Argument #1 ($array) must be of type array, null given in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\controllers\apostarController.php:388
+Stack trace:
+#0 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\controllers\apostarController.php(388): ksort(NULL)
+#1 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\controllers\apostarController.php(64): app\modules\website\controllers\apostarController->jogos(NULL)
+#2 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\APP.php(183): app\modules\website\controllers\apostarController->jogosAction()
+#3 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\index.php(5): app\APP::Initialize()
+#4 {main}
+  thrown in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\controllers\apostarController.php on line 388
+[10-Nov-2025 21:36:02 America/Sao_Paulo] PHP Fatal error:  Uncaught TypeError: ksort(): Argument #1 ($array) must be of type array, null given in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\controllers\apostarController.php:388
+Stack trace:
+#0 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\controllers\apostarController.php(388): ksort(NULL)
+#1 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\controllers\apostarController.php(64): app\modules\website\controllers\apostarController->jogos(NULL)
+#2 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\APP.php(183): app\modules\website\controllers\apostarController->jogosAction()
+#3 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\index.php(5): app\APP::Initialize()
+#4 {main}
+  thrown in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\controllers\apostarController.php on line 388
+[10-Nov-2025 21:41:42 America/Sao_Paulo] PHP Fatal error:  Uncaught TypeError: ksort(): Argument #1 ($array) must be of type array, null given in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\controllers\apostarController.php:388
+Stack trace:
+#0 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\controllers\apostarController.php(388): ksort(NULL)
+#1 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\controllers\apostarController.php(64): app\modules\website\controllers\apostarController->jogos(NULL)
+#2 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\APP.php(183): app\modules\website\controllers\apostarController->jogosAction()
+#3 C:\xampp\htdocs\Cliente\LeagueBetCliente-main\index.php(5): app\APP::Initialize()
+#4 {main}
+  thrown in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\controllers\apostarController.php on line 388
+[10-Nov-2025 21:50:12 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}

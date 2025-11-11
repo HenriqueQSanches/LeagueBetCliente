@@ -95,9 +95,9 @@ abstract class Conn
                 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             } catch (PDOException $e) {
-                throw new Exception('Não foi possível conectar a base de dados.');
+                throw new Exception('Não foi possível conectar a base de dados. ' . $e->getMessage());
             } catch (Exception $e) {
-                throw new Exception('Não foi possível conectar a base de dados.');
+                throw new Exception('Não foi possível conectar a base de dados. ' . $e->getMessage());
             }
         }
 

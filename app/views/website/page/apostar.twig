@@ -331,9 +331,25 @@
                                                 </optgroup>
                                             </select>
                                         </li>
+                                        <li>
+                                            <label>País</label>
+                                            <select v-model="findPais" class="form-control" v-on:change="onPaisChange">
+                                                <option value="*">Todos</option>
+                                                <option v-for="p in paises" v-bind:value="p.id">${p.title}</option>
+                                            </select>
+                                        </li>
+                                        <li>
+                                            <label style="display:block;">Filtro rápido</label>
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" id="chkBrasil" v-model="somenteBrasil" v-on:change="onToggleBrasil">
+                                                <label class="form-check-label" for="chkBrasil">Somente Brasil</label>
+                                            </div>
+                                        </li>
                                     </ul>
                                 </div>
                             {% endif %}
+
+                            
 
                             {{ block('jogos') }}
 
@@ -371,8 +387,24 @@
                     return v && v.jogo && this.filterJogo(v.jogo);
                 });
 
+                const baseUrl = url('apostar/jogos');
+                const qs = new URLSearchParams(window.location.search || '');
+                const paisParam = qs.get('pais');
+                // Ignora filtros não numéricos vindos da URL (ex.: ?pais=BR)
+                if (paisParam && /^[0-9]+$/.test(paisParam)) {
+                    this.findPais = parseInt(paisParam);
+                } else {
+                    this.findPais = '*';
+                    this.somenteBrasil = false;
+                }
+
+                let fetchUrl = baseUrl;
+                if (paisParam && paisParam !== '*') {
+                    fetchUrl = baseUrl + '?pais=' + encodeURIComponent(paisParam);
+                }
+
                 axios
-                    .get(url('apostar/jogos'))
+                    .get(fetchUrl)
                     .then((response) => {
                         this.grupos = response.data.grupos || {};
                         this.cotacoes = response.data.cotacoes || [];
@@ -425,6 +457,7 @@
                     apostaMaxima: {{ apostaMaxima ?: 999999 }},
                     retornoMaximo: {{ retornoMaximo ?: 99999999 }},
                     minJogos: {{ minJogos ?: 1 }},
+                    somenteBrasil: false,
                 };
             },
             filters: {
@@ -461,6 +494,32 @@
             watch: {
             },
             methods: {
+                onPaisChange() {
+                    const qs = new URLSearchParams(window.location.search || '');
+                    if (this.findPais && this.findPais !== '*') {
+                        qs.set('pais', this.findPais);
+                        this.somenteBrasil = (this.findPais + '').toUpperCase() === 'BR';
+                    } else {
+                        qs.delete('pais');
+                        this.somenteBrasil = false;
+                    }
+                    const newQuery = qs.toString();
+                    const newUrl = window.location.pathname + (newQuery ? '?' + newQuery : '');
+                    window.location.assign(newUrl);
+                },
+                onToggleBrasil() {
+                    const qs = new URLSearchParams(window.location.search || '');
+                    if (this.somenteBrasil) {
+                        this.findPais = 'BR';
+                        qs.set('pais', 'BR');
+                    } else {
+                        this.findPais = '*';
+                        qs.delete('pais');
+                    }
+                    const newQuery = qs.toString();
+                    const newUrl = window.location.pathname + (newQuery ? '?' + newQuery : '');
+                    window.location.assign(newUrl);
+                },
                 gerarProximos7Dias() {
                     const diasSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
                     const hoje = new Date();

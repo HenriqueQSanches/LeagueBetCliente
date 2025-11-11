@@ -7,8 +7,17 @@
  * Executar via CRON a cada 5-10 minutos
  */
 
-// Não precisa incluir inc.config.php aqui, pois já é incluído pelo arquivo que chama esta classe
-// require_once __DIR__ . '/../../../inc.config.php';
+// Bootstrap da aplicação para habilitar autoload, DB, helpers, etc (execução via CLI)
+// Em modo CLI, alguns scripts dependem de HTTP_HOST para escolher o ambiente.
+if (php_sapi_name() === 'cli') {
+    if (empty($_SERVER['HTTP_HOST'])) {
+        $_SERVER['HTTP_HOST'] = 'localhost';
+    }
+    if (empty($_SERVER['SERVER_NAME'])) {
+        $_SERVER['SERVER_NAME'] = $_SERVER['HTTP_HOST'];
+    }
+}
+require_once __DIR__ . '/../../../inc.config.php';
 require_once __DIR__ . '/BetsAPIClient.php';
 
 class SyncJogos {
@@ -128,6 +137,7 @@ class SyncJogos {
             // Campeonato
             $campeonatoId = $event['league']['id'] ?? 0;
             $campeonatoNome = $event['league']['name'] ?? '';
+            $campeonatoCC = isset($event['league']['cc']) ? strtoupper((string)$event['league']['cc']) : null;
             
             // Status ao vivo
             $aoVivo = $isLive ? 1 : 0;
@@ -140,8 +150,8 @@ class SyncJogos {
                 $placarFora = isset($placar[1]) ? (int)$placar[1] : null;
             }
             
-            // Busca ou cria campeonato
-            $campeonatoDbId = $this->getOrCreateCampeonato($campeonatoId, $campeonatoNome);
+            // Busca ou cria campeonato (ajustando país quando possível)
+            $campeonatoDbId = $this->getOrCreateCampeonato($campeonatoId, $campeonatoNome, $campeonatoCC);
             
             // Busca odds principais e complementares
             $odds = $this->api->getMainOdds($apiId);
@@ -261,7 +271,7 @@ class SyncJogos {
     /**
      * Busca ou cria campeonato
      */
-    private function getOrCreateCampeonato($apiId, $nome) {
+    private function getOrCreateCampeonato($apiId, $nome, $countryCode = null) {
         $pdo = \app\core\crud\Conn::getConn();
         
         // Busca por api_id
@@ -270,6 +280,8 @@ class SyncJogos {
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         
         if ($result) {
+            // Se não tem país, tenta preencher
+            $this->ensurePaisOnCampeonato((int)$result['id'], $countryCode);
             return $result['id'];
         }
         
@@ -282,13 +294,89 @@ class SyncJogos {
             // Atualiza com o api_id
             $stmt = $pdo->prepare("UPDATE sis_campeonatos SET api_id = :api_id WHERE id = :id");
             $stmt->execute(['api_id' => $apiId, 'id' => $result['id']]);
+            // Garante país
+            $this->ensurePaisOnCampeonato((int)$result['id'], $countryCode);
             return $result['id'];
         }
         
         // Cria novo campeonato
-        $stmt = $pdo->prepare("INSERT INTO sis_campeonatos (api_id, title) VALUES (:api_id, :nome)");
-        $stmt->execute(['api_id' => $apiId, 'nome' => $nome]);
-        return $pdo->lastInsertId();
+        $paisId = $this->resolvePaisIdByCode($countryCode);
+        if ($paisId) {
+            $stmt = $pdo->prepare("INSERT INTO sis_campeonatos (api_id, title, pais) VALUES (:api_id, :nome, :pais)");
+            $stmt->execute(['api_id' => $apiId, 'nome' => $nome, 'pais' => $paisId]);
+        } else {
+            $stmt = $pdo->prepare("INSERT INTO sis_campeonatos (api_id, title) VALUES (:api_id, :nome)");
+            $stmt->execute(['api_id' => $apiId, 'nome' => $nome]);
+        }
+        return (int)$pdo->lastInsertId();
+    }
+
+    /**
+     * Caso o campeonato esteja sem país, tenta preencher usando o código do país da BetsAPI.
+     */
+    private function ensurePaisOnCampeonato(int $campeonatoId, ?string $countryCode): void {
+        if (!$countryCode) return;
+        $pdo = \app\core\crud\Conn::getConn();
+        // Verifica se já tem país
+        $stmt = $pdo->prepare("SELECT pais FROM sis_campeonatos WHERE id = :id LIMIT 1");
+        $stmt->execute(['id' => $campeonatoId]);
+        $pais = (int)($stmt->fetchColumn() ?: 0);
+        if ($pais > 0) return;
+        $paisId = $this->resolvePaisIdByCode($countryCode);
+        if ($paisId) {
+            $stmt = $pdo->prepare("UPDATE sis_campeonatos SET pais = :pais WHERE id = :id");
+            $stmt->execute(['pais' => $paisId, 'id' => $campeonatoId]);
+        }
+    }
+
+    /**
+     * Resolve o ID em `sis_options` para o país a partir do código da BetsAPI (ex.: BR, GB-ENG).
+     * Retorna 0 se não encontrado.
+     */
+    private function resolvePaisIdByCode(?string $countryCode): int {
+        if (!$countryCode) return 0;
+        $name = $this->countryNameFromCode($countryCode);
+        if (!$name) return 0;
+        $pdo = \app\core\crud\Conn::getConn();
+        // Busca por título (case-insensitive)
+        $stmt = $pdo->prepare("SELECT id FROM sis_options WHERE LOWER(title) = LOWER(:title) LIMIT 1");
+        $stmt->execute(['title' => $name]);
+        $id = (int)($stmt->fetchColumn() ?: 0);
+        if ($id) return $id;
+        // Fallback: tenta variantes
+        $variants = [$name, str_replace('Inglaterra', 'Reino Unido', $name), str_replace('Estados Unidos', 'USA', $name)];
+        foreach ($variants as $v) {
+            $stmt = $pdo->prepare("SELECT id FROM sis_options WHERE LOWER(title) LIKE LOWER(:title) LIMIT 1");
+            $stmt->execute(['title' => "%{$v}%"]);
+            $id = (int)($stmt->fetchColumn() ?: 0);
+            if ($id) return $id;
+        }
+        return 0;
+    }
+
+    /**
+     * Nome do país (português) a partir do código cc da BetsAPI.
+     * Mantém um subconjunto dos mais comuns; expande conforme necessário.
+     */
+    private function countryNameFromCode(string $code): ?string {
+        $map = [
+            'BR' => 'Brasil',
+            'GB-ENG' => 'Inglaterra',
+            'ES' => 'Espanha',
+            'IT' => 'Itália',
+            'DE' => 'Alemanha',
+            'FR' => 'França',
+            'AR' => 'Argentina',
+            'CL' => 'Chile',
+            'CO' => 'Colômbia',
+            'PE' => 'Peru',
+            'UY' => 'Uruguai',
+            'MX' => 'México',
+            'US' => 'Estados Unidos',
+            'PT' => 'Portugal',
+        ];
+        $code = strtoupper($code);
+        return $map[$code] ?? null;
     }
     
     /**

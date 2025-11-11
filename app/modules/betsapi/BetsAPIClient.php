@@ -188,6 +188,74 @@ class BetsAPIClient {
     }
     
     /**
+     * Mapeia mercados úteis a partir do summary v1, sem valores padrão.
+     * - 1X2 (marketId == '1')
+     * - Ambas marcam (marketId == '29' ou nome contém 'Both Teams to Score')
+     * - Dupla chance (pelas seleções '1X','X2','12')
+     * - Over/Under por nome (se presente no summary)
+     */
+    public function getSummaryMappedOdds($eventId) {
+        $out = [];
+        $summary = $this->getEventOddsSummary($eventId);
+        if (!$summary || empty($summary['results'])) {
+            return $out;
+        }
+        foreach ($summary['results'] as $market) {
+            if (empty($market['odds']) || !is_array($market['odds'])) {
+                continue;
+            }
+            $marketName = (string)($market['name'] ?? '');
+            $marketId = (string)($market['id'] ?? '');
+            $tempo = '90';
+            $marketLabel = strtolower($marketName);
+            if (strpos($marketLabel, '1st') !== false || strpos($marketLabel, '1st half') !== false) {
+                $tempo = 'pt';
+            } elseif (strpos($marketLabel, '2nd') !== false || strpos($marketLabel, '2nd half') !== false) {
+                $tempo = 'st';
+            }
+            foreach ($market['odds'] as $odd) {
+                $name = (string)($odd['name'] ?? '');
+                $oddValue = isset($odd['odds']) ? floatval($odd['odds']) : 0.0;
+                if ($oddValue <= 1) continue;
+                
+                // 1X2
+                if ($marketId === '1') {
+                    if ($name === '1') $out[$tempo]['casa'] = $oddValue;
+                    if ($name === 'X') $out[$tempo]['empate'] = $oddValue;
+                    if ($name === '2') $out[$tempo]['fora'] = $oddValue;
+                }
+                // Ambas marcam
+                if ($marketId === '29' || stripos($marketLabel, 'both teams to score') !== false) {
+                    if (stripos($name, 'Yes') !== false || stripos($name, 'yes') !== false) {
+                        $out[$tempo]['amb'] = $oddValue;
+                        $out[$tempo]['ambas_marcam_sim'] = $oddValue;
+                    }
+                    if (stripos($name, 'No') !== false || stripos($name, 'no') !== false) {
+                        $out[$tempo]['ambn'] = $oddValue;
+                        $out[$tempo]['ambas_marcam_nao'] = $oddValue;
+                    }
+                }
+                // Dupla chance
+                if (in_array($name, ['1X','X2','12'], true)) {
+                    if ($name === '1X') { $out[$tempo]['dupla_1x'] = $oddValue; $out[$tempo]['dplcasa'] = $oddValue; $out[$tempo]['casa_empate'] = $oddValue; }
+                    if ($name === 'X2') { $out[$tempo]['dupla_x2'] = $oddValue; $out[$tempo]['dplfora'] = $oddValue; $out[$tempo]['empate_fora'] = $oddValue; }
+                    if ($name === '12') { $out[$tempo]['dupla_12'] = $oddValue; $out[$tempo]['cof'] = $oddValue; $out[$tempo]['casa_fora'] = $oddValue; }
+                }
+                // Over/Under por nome (se vier no summary)
+                if (stripos($name, 'Over') === 0 || stripos($name, 'Under') === 0) {
+                    if (preg_match('/(Over|Under)\s*([0-9]+(?:\.[0-9])?)/i', $name, $m)) {
+                        $tipo = strtolower($m[1]) === 'over' ? 'mais' : 'menos';
+                        $numero = str_replace('.', '_', $m[2]);
+                        $campo = "{$tipo}_{$numero}";
+                        $out[$tempo][$campo] = $oddValue;
+                    }
+                }
+            }
+        }
+        return $out;
+    }
+    
+    /**
      * Busca odds completas do evento e extrai mercados adicionais (fallback)
      * - Double Chance (1X, 12, X2)
      * - Both Teams To Score (Yes/No)
