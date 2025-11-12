@@ -521,6 +521,8 @@ class BetsAPIClient {
     public function getBet365PrematchMappedOdds($eventId, $fiOverride = null) {
         // Descobre o FI via event/view (a menos que seja fornecido)
         $fi = $fiOverride;
+        $homeNameLower = null;
+        $awayNameLower = null;
         if (!$fi) {
             $view = $this->getEvent($eventId);
             if ($view && isset($view['results'][0])) {
@@ -530,6 +532,9 @@ class BetsAPIClient {
                 if (!$fi && isset($r['bet365']) && is_array($r['bet365'])) {
                     $fi = $r['bet365']['id'] ?? null;
                 }
+                // captura nomes dos times para mapear mercados com nomes (ex.: HT/FT)
+                if (isset($r['home']['name'])) $homeNameLower = strtolower($r['home']['name']);
+                if (isset($r['away']['name'])) $awayNameLower = strtolower($r['away']['name']);
             }
         }
         if (!$fi) {
@@ -607,6 +612,11 @@ class BetsAPIClient {
             $marketName = strtolower($market['name'] ?? '');
             $marketName = str_replace(['  ', '–', '—'], [' ', '-', '-'], $marketName);
             $tempo = '90'; // prematch padrão tempo de jogo inteiro
+            if (strpos($marketName, '1st') !== false || strpos($marketName, '1st half') !== false) {
+                $tempo = 'pt';
+            } elseif (strpos($marketName, '2nd') !== false || strpos($marketName, '2nd half') !== false) {
+                $tempo = 'st';
+            }
 
             foreach ($oddsList as $odd) {
                 $name = (string)($odd['name'] ?? ($odd['label'] ?? ''));
@@ -644,6 +654,7 @@ class BetsAPIClient {
                 $handicap = null;
                 if (!empty($odd['handicap']) && is_string($odd['handicap'])) $handicap = $odd['handicap'];
                 if (!empty($odd['line'])) $handicap = (string)$odd['line'];
+                $headerLower = strtolower($odd['header'] ?? '');
 
                 $isCorners = (stripos($marketName, 'corner') !== false || stripos($marketName, 'escanteio') !== false);
                 $isCards   = (stripos($marketName, 'card') !== false   || stripos($marketName, 'booking') !== false || stripos($marketName, 'cart') !== false);
@@ -655,6 +666,10 @@ class BetsAPIClient {
                 } elseif ($handicap && preg_match('/^([0-9]+(?:\.[0-9])?)$/', $handicap)) {
                     if (stripos($name, 'over') !== false)  $tipo = 'mais';
                     if (stripos($name, 'under') !== false) $tipo = 'menos';
+                    if (!$tipo && $headerLower) {
+                        if (strpos($headerLower, 'over') !== false) $tipo = 'mais';
+                        if (strpos($headerLower, 'under') !== false) $tipo = 'menos';
+                    }
                     $numero = str_replace('.', '_', $handicap);
                 }
 
@@ -667,6 +682,79 @@ class BetsAPIClient {
                         $campo = "{$tipo}_{$numero}";
                     }
                     $result[$tempo][$campo] = $oddValue;
+                }
+
+                // Goals Odd/Even (paridade)
+                if (strpos($marketName, 'goals odd/even') !== false || strpos($marketName, 'goals odd even') !== false) {
+                    $n = strtolower($name);
+                    if (strpos($n, 'odd') !== false || strpos($n, 'impar') !== false || strpos($n, 'ímpar') !== false) {
+                        $key = ($tempo === '90') ? 'impar' : "impar_{$tempo}";
+                        $result[$tempo][$key] = $oddValue;
+                    }
+                    if (strpos($n, 'even') !== false || strpos($n, 'par') !== false) {
+                        $key = ($tempo === '90') ? 'par' : "par_{$tempo}";
+                        $result[$tempo][$key] = $oddValue;
+                    }
+                }
+
+                // First Team to Score
+                if (strpos($marketName, 'first team to score') !== false) {
+                    $n = strtolower($name);
+                    if ($name === '1' || strpos($n, 'home') !== false || strpos($n, 'team 1') !== false) {
+                        $result[$tempo]['fts_casa'] = $oddValue;
+                    } elseif ($name === '2' || strpos($n, 'away') !== false || strpos($n, 'team 2') !== false) {
+                        $result[$tempo]['fts_fora'] = $oddValue;
+                    } elseif (strpos($n, 'no goals') !== false || strpos($n, 'sem gols') !== false) {
+                        $result[$tempo]['fts_ng'] = $oddValue;
+                    }
+                }
+
+                // Half Time / Full Time (HT/FT)
+                if (strpos($marketName, 'half time/full time') !== false || strpos($marketName, 'half time - full time') !== false) {
+                    $n = strtolower($name);
+                    // tenta mapear 'home/draw/away' com base nos nomes e 'draw'
+                    $parts = array_map('trim', explode('-', $n));
+                    if (count($parts) === 2) {
+                        $mapSide = function($side) use ($homeNameLower, $awayNameLower) {
+                            if (strpos($side, 'draw') !== false) return 'x';
+                            if ($homeNameLower && strpos($side, $homeNameLower) !== false) return '1';
+                            if ($awayNameLower && strpos($side, $awayNameLower) !== false) return '2';
+                            // fallback por palavras-chave
+                            if (strpos($side, 'home') !== false || strpos($side, 'team 1') !== false) return '1';
+                            if (strpos($side, 'away') !== false || strpos($side, 'team 2') !== false) return '2';
+                            return null;
+                        };
+                        $left = $mapSide($parts[0]);
+                        $right = $mapSide($parts[1]);
+                        if ($left && $right) {
+                            $key = "htft_{$left}_{$right}";
+                            $result['90'][$key] = $oddValue;
+                        }
+                    }
+                }
+
+                // Asian Handicap (90, 1st half, 2nd half)
+                if (strpos($marketName, 'asian handicap') !== false) {
+                    // linha pode vir em 'handicap' ou 'line' (ex.: "-2.0, -2.5")
+                    $lineRaw = '';
+                    if (!empty($odd['handicap']) && is_string($odd['handicap'])) $lineRaw = $odd['handicap'];
+                    if (!$lineRaw && !empty($odd['line'])) $lineRaw = (string)$odd['line'];
+                    if ($lineRaw !== '') {
+                        $line = str_replace(['.', ', ', ',', ' '], ['_', '_', '_', ''], $lineRaw);
+                        $sel = strtolower((string)($odd['header'] ?? $name ?? ''));
+                        $isHome = ($sel === '1' || strpos($sel, 'home') !== false || strpos($sel, 'team 1') !== false);
+                        $isAway = ($sel === '2' || strpos($sel, 'away') !== false || strpos($sel, 'team 2') !== false);
+                        $prefix = 'ah';
+                        if ($tempo === 'pt') $prefix = 'ah_pt';
+                        if ($tempo === 'st') $prefix = 'ah_st';
+                        if ($isHome) {
+                            $key = "{$prefix}_home_{$line}";
+                            $result[$tempo][$key] = $oddValue;
+                        } elseif ($isAway) {
+                            $key = "{$prefix}_away_{$line}";
+                            $result[$tempo][$key] = $oddValue;
+                        }
+                    }
                 }
             }
         }

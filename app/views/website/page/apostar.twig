@@ -351,6 +351,14 @@
 
                             
 
+                            <div class="mb-2">
+                                <button type="button" class="btn btn-sm btn-warning"
+                                        v-on:click="toggleSomenteOdds"
+                                        v-bind:disabled="loadingOddsFilter">
+                                    ${ somenteComOdds ? 'Mostrar todos' : (loadingOddsFilter ? 'Carregando...' : 'Mostrar apenas com odds') }
+                                </button>
+                            </div>
+
                             {{ block('jogos') }}
 
                         </div>
@@ -458,6 +466,8 @@
                     retornoMaximo: {{ retornoMaximo ?: 99999999 }},
                     minJogos: {{ minJogos ?: 1 }},
                     somenteBrasil: false,
+                    somenteComOdds: false,
+                    loadingOddsFilter: false,
                 };
             },
             filters: {
@@ -699,11 +709,44 @@
                         if (!this.findData || jogo.data == this.findData) {
                             var exp = new RegExp(this.search, 'i');
                             if (!this.search || jogo.casa.search(exp) !== -1 || jogo.fora.search(exp) !== -1) {
+                                if (this.somenteComOdds && !jogo._temOdds) {
+                                    return false;
+                                }
                                 return true;
                             }
                         }
                     }
                     return false;
+                },
+                toggleSomenteOdds() {
+                    if (this.somenteComOdds) {
+                        this.somenteComOdds = false;
+                        return;
+                    }
+                    this.loadingOddsFilter = true;
+                    const jogos = this.coletarJogos();
+                    const base = url('apostar/odds') + '?debug=1&jogo=';
+                    Promise.all(jogos.map((j) => {
+                        return fetch(base + j.id)
+                            .then(r => r.json())
+                            .then(jresp => {
+                                const d = jresp && jresp.debug ? jresp.debug : {};
+                                j._temOdds = (d && ((d.prematch_count > 0) || (d.fallback_count > 0) || (d.summary_count > 0)));
+                            })
+                            .catch(() => { j._temOdds = false; });
+                    })).then(() => {
+                        this.somenteComOdds = true;
+                        this.loadingOddsFilter = false;
+                    });
+                },
+                coletarJogos() {
+                    const jogos = [];
+                    (this.paises || []).forEach(p => {
+                        (p.campeonatos || []).forEach(c => {
+                            (c.jogos || []).forEach(j => jogos.push(j));
+                        });
+                    });
+                    return jogos;
                 },
                 setPais(pais) {
                     if (pais) {
@@ -745,10 +788,15 @@
                             const live = data.cotacoes || {};
                             if (!this.mJogo.jogo.cotacoes) this.mJogo.jogo.cotacoes = {};
                             Object.keys(live).forEach((tempo) => {
+                                // Garante reatividade ao criar o período
                                 if (!this.mJogo.jogo.cotacoes[tempo] || typeof this.mJogo.jogo.cotacoes[tempo] !== 'object') {
-                                    this.mJogo.jogo.cotacoes[tempo] = {};
+                                    this.$set(this.mJogo.jogo.cotacoes, tempo, {});
                                 }
-                                Object.assign(this.mJogo.jogo.cotacoes[tempo], live[tempo]);
+                                // Garante reatividade ao incluir cada mercado
+                                const mercados = live[tempo] || {};
+                                Object.keys(mercados).forEach((campo) => {
+                                    this.$set(this.mJogo.jogo.cotacoes[tempo], campo, mercados[campo]);
+                                });
                             });
                         })
                         .catch(() => {})

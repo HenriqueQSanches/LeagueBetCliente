@@ -1086,3 +1086,8 @@ Stack trace:
 #4 {main}
   thrown in C:\xampp\htdocs\Cliente\LeagueBetCliente-main\app\modules\website\controllers\apostarController.php on line 388
 [10-Nov-2025 21:50:12 America/Sao_Paulo] BetsAPI V4 Error 403  {"success":0,"error":"PERMISSION_DENIED","error_detail":"Check Coverage on https:\/\/betsapi.com\/mm\/pricing_table"}
+[11-Nov-2025 23:47:25 America/Sao_Paulo] BetsAPI Error: PARAM_INVALID - Detail: event_id
+[12-Nov-2025 00:18:08 America/Sao_Paulo] BetsAPI Error: PARAM_INVALID - Detail: event_id
+[12-Nov-2025 12:55:41 America/Sao_Paulo] BetsAPI Error: PARAM_INVALID - Detail: event_id
+[12-Nov-2025 13:19:41 America/Sao_Paulo] BetsAPI Error: PARAM_INVALID - Detail: event_id
+[12-Nov-2025 13:19:51 America/Sao_Paulo] BetsAPI Error: PARAM_INVALID - Detail: event_id

@@ -195,6 +195,27 @@ SQL;
             // Empate Anula Aposta (Draw No Bet)
             ['sigla' => 'EA1',  'title' => 'Empate anula - Casa',   'campo' => 'empateanulacasa', 'cor' => '#000000', 'grupo' => 2, 'principal' => '0'],
             ['sigla' => 'EA2',  'title' => 'Empate anula - Fora',   'campo' => 'empateanulafora', 'cor' => '#000000', 'grupo' => 2, 'principal' => '0'],
+            // Paridade (Odd/Even)
+            ['sigla' => 'IMPAR', 'title' => 'Ímpar',                 'campo' => 'impar',     'cor' => '#000000', 'grupo' => 7, 'principal' => '0'],
+            ['sigla' => 'PAR',   'title' => 'Par',                   'campo' => 'par',       'cor' => '#000000', 'grupo' => 7, 'principal' => '0'],
+            ['sigla' => 'IMPAR.PT', 'title' => 'Ímpar - 1º tempo',   'campo' => 'impar_pt',  'cor' => '#000000', 'grupo' => 7, 'principal' => '0'],
+            ['sigla' => 'PAR.PT',   'title' => 'Par - 1º tempo',     'campo' => 'par_pt',    'cor' => '#000000', 'grupo' => 7, 'principal' => '0'],
+            ['sigla' => 'IMPAR.ST', 'title' => 'Ímpar - 2º tempo',   'campo' => 'impar_st',  'cor' => '#000000', 'grupo' => 7, 'principal' => '0'],
+            ['sigla' => 'PAR.ST',   'title' => 'Par - 2º tempo',     'campo' => 'par_st',    'cor' => '#000000', 'grupo' => 7, 'principal' => '0'],
+            // First Team to Score
+            ['sigla' => 'FTS1',  'title' => 'Primeiro a marcar - Casa', 'campo' => 'fts_casa', 'cor' => '#000000', 'grupo' => 8, 'principal' => '0'],
+            ['sigla' => 'FTS2',  'title' => 'Primeiro a marcar - Fora', 'campo' => 'fts_fora', 'cor' => '#000000', 'grupo' => 8, 'principal' => '0'],
+            ['sigla' => 'FTSNG', 'title' => 'Sem gols',                 'campo' => 'fts_ng',   'cor' => '#000000', 'grupo' => 8, 'principal' => '0'],
+            // Intervalo / Final (HT/FT)
+            ['sigla' => '1-1', 'title' => 'HT/FT Casa-Casa',           'campo' => 'htft_1_1', 'cor' => '#000000', 'grupo' => 9, 'principal' => '0'],
+            ['sigla' => '1-X', 'title' => 'HT/FT Casa-Empate',         'campo' => 'htft_1_x', 'cor' => '#000000', 'grupo' => 9, 'principal' => '0'],
+            ['sigla' => '1-2', 'title' => 'HT/FT Casa-Fora',           'campo' => 'htft_1_2', 'cor' => '#000000', 'grupo' => 9, 'principal' => '0'],
+            ['sigla' => 'X-1', 'title' => 'HT/FT Empate-Casa',         'campo' => 'htft_x_1', 'cor' => '#000000', 'grupo' => 9, 'principal' => '0'],
+            ['sigla' => 'X-X', 'title' => 'HT/FT Empate-Empate',       'campo' => 'htft_x_x', 'cor' => '#000000', 'grupo' => 9, 'principal' => '0'],
+            ['sigla' => 'X-2', 'title' => 'HT/FT Empate-Fora',         'campo' => 'htft_x_2', 'cor' => '#000000', 'grupo' => 9, 'principal' => '0'],
+            ['sigla' => '2-1', 'title' => 'HT/FT Fora-Casa',           'campo' => 'htft_2_1', 'cor' => '#000000', 'grupo' => 9, 'principal' => '0'],
+            ['sigla' => '2-X', 'title' => 'HT/FT Fora-Empate',         'campo' => 'htft_2_x', 'cor' => '#000000', 'grupo' => 9, 'principal' => '0'],
+            ['sigla' => '2-2', 'title' => 'HT/FT Fora-Fora',           'campo' => 'htft_2_2', 'cor' => '#000000', 'grupo' => 9, 'principal' => '0'],
             // Over/Under
             ['sigla' => 'M1.5', 'title' => 'Mais de 1.5',           'campo' => 'mais_1_5','cor' => '#000000', 'grupo' => 3, 'principal' => '0'],
             ['sigla' => 'M2.5', 'title' => 'Mais de 2.5',           'campo' => 'mais_2_5','cor' => '#000000', 'grupo' => 3, 'principal' => '0'],
