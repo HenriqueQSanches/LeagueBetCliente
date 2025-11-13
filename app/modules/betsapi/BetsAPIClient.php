@@ -484,6 +484,24 @@ class BetsAPIClient {
                     }
                 }
 
+                // Correct Score (Placar exato)
+                if (strpos($marketName, 'correct score') !== false || strpos($marketName, 'placar exato') !== false || strpos($marketName, 'resultado exato') !== false) {
+                    $n = strtolower(trim($name));
+                    // ignora seleções genéricas como "other"
+                    if (strpos($n, 'other') !== false || strpos($n, 'outro') !== false) {
+                        // skip
+                    } else {
+                        // aceita formatos "1-0" "0:0" "2 – 1"
+                        $n = str_replace(['–','—'], ['-','-'], $n);
+                        if (preg_match('/^(\d+)\s*[:\-]\s*(\d+)$/', $n, $m)) {
+                            $h = (int)$m[1];
+                            $a = (int)$m[2];
+                            $key = "cs_{$h}_{$a}";
+                            $result[$tempo][$key] = $oddValue;
+                        }
+                    }
+                }
+
                 // Cartões (Cards/Bookings) Over/Under
                 if (stripos($marketName, 'card') !== false || stripos($marketName, 'booking') !== false || stripos($marketName, 'cart') !== false) {
                     $handicap = null;
@@ -682,6 +700,20 @@ class BetsAPIClient {
                         $campo = "{$tipo}_{$numero}";
                     }
                     $result[$tempo][$campo] = $oddValue;
+                }
+
+                // Correct Score (Placar exato) — FT/PT/ST conforme nome do mercado
+                if (strpos($marketName, 'correct score') !== false || strpos($marketName, 'placar exato') !== false || strpos($marketName, 'resultado exato') !== false) {
+                    $n = strtolower(trim($name));
+                    if (strpos($n, 'other') === false && strpos($n, 'outro') === false) {
+                        $n = str_replace(['–','—'], ['-','-'], $n);
+                        if (preg_match('/^(\d+)\s*[:\-]\s*(\d+)$/', $n, $m)) {
+                            $h = (int)$m[1];
+                            $a = (int)$m[2];
+                            $key = "cs_{$h}_{$a}";
+                            $result[$tempo][$key] = $oddValue;
+                        }
+                    }
                 }
 
                 // Goals Odd/Even (paridade)

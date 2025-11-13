@@ -247,6 +247,27 @@
                             </tbody>
                         </table>
 
+                        <!-- Placar exato (dinâmico por período) -->
+                        <table class="table table-minified table-striped table-bordered table-hover m-0"
+                               v-if="listPlacarExato().length">
+                            <thead>
+                            <tr style="background-color: #bbb">
+                                <th colspan="2">Placar exato — ${tempos[mJogo.tempo]}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="item in listPlacarExato()">
+                                <td>${item.title}</td>
+                                <td class="text-center py-1 px-2" width="5">
+                                    <a href="javascript:;" class="btn btn-warning btn-cotacao"
+                                       v-on:click="apostar(mJogo.jogo, mJogo.tempo, {campo: item.campo, title: item.title, sigla: item.sigla, grupo: 4, principal: '0'})">
+                                        ${mJogo.jogo.cotacoes[mJogo.tempo][item.campo]|maskReal}
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
                     </div>
 
                 </div>
@@ -348,16 +369,6 @@
                                     </ul>
                                 </div>
                             {% endif %}
-
-                            
-
-                            <div class="mb-2">
-                                <button type="button" class="btn btn-sm btn-warning"
-                                        v-on:click="toggleSomenteOdds"
-                                        v-bind:disabled="loadingOddsFilter">
-                                    ${ somenteComOdds ? 'Mostrar todos' : (loadingOddsFilter ? 'Carregando...' : 'Mostrar apenas com odds') }
-                                </button>
-                            </div>
 
                             {{ block('jogos') }}
 
@@ -612,6 +623,33 @@
                         });
                     }
                     return cotacoes;
+                },
+                listPlacarExato() {
+                    try {
+                        const tempo = this.mJogo.tempo + '';
+                        const odds = (this.mJogo.jogo && this.mJogo.jogo.cotacoes && this.mJogo.jogo.cotacoes[tempo]) || {};
+                        const items = [];
+                        const rex = /^cs_(\d+)_(\d+)$/;
+                        Object.keys(odds).forEach((campo) => {
+                            const v = odds[campo];
+                            if (v <= 1) return;
+                            const m = campo.match(rex);
+                            if (!m) return;
+                            const h = parseInt(m[1], 10), a = parseInt(m[2], 10);
+                            items.push({
+                                campo,
+                                title: `Resultado exato ${h}:${a}`,
+                                sigla: `CS ${h}:${a}`
+                            });
+                        });
+                        items.sort((a,b) => {
+                            const [ah,aa] = a.campo.replace('cs_','').split('_').map(n=>parseInt(n,10));
+                            const [bh,ba] = b.campo.replace('cs_','').split('_').map(n=>parseInt(n,10));
+                            if (ah === bh) return aa - ba;
+                            return ah - bh;
+                        });
+                        return items;
+                    } catch (e) { return []; }
                 },
                 totalCotacoes(cotacoes) {
                     var total = 0;
