@@ -224,6 +224,50 @@
                     } catch (e) { return []; }
                 },
 
+                // Seleciona/deseleciona uma odd e envia ao bilhete
+                apostar(jogo, tempo, cotacao) {
+                    try {
+                        const apostaEm = '' + tempo + cotacao.campo;
+
+                        if (jogo.apostaEm) {
+                            // Remove qualquer seleção anterior deste jogo
+                            (this.aposta.jogos || []).forEach((v, index) => {
+                                if (v && v.jogo && v.jogo.id == jogo.id) {
+                                    this.aposta.jogos.splice(index, 1);
+                                }
+                            });
+
+                            if (jogo.apostaEm === apostaEm) {
+                                // Mesmo clique -> apenas desmarca
+                                jogo.apostaEm = null;
+                                jogo.outras = false;
+                                return;
+                            }
+
+                            // Vai aplicar a nova seleção
+                            jogo.apostaEm = null;
+                        }
+
+                        // Nova seleção
+                        if (cotacao.principal == '1' && (tempo + '') == '90') {
+                            jogo.outras = false;
+                        } else {
+                            jogo.outras = true;
+                        }
+
+                        jogo.apostaEm = apostaEm;
+
+                        (this.aposta.jogos).push({
+                            jogo: jogo,
+                            tempo: tempo,
+                            cotacao: cotacao,
+                        });
+
+                        // Fecha o modal após a escolha
+                        $('#modal-cotacoes-live').modal('hide');
+                    } catch (e) {}
+                },
+
                 // ===== Bilhete (mesma lógica essencial do apostar.twig) =====
                 getCotacao() {
                     try {
@@ -366,9 +410,11 @@
                                 v-if="c.grupo == id && mJogo.jogo.cotacoes[mJogo.tempo] && mJogo.jogo.cotacoes[mJogo.tempo][c.campo] > 1">
                                 <td>${c.title}</td>
                                 <td class="text-center py-1 px-2" width="5">
-                                    <span class="btn btn-warning btn-cotacao disabled">
+                                    <a href="javascript:;" class="btn btn-warning btn-cotacao"
+                                       v-bind:class="{active: mJogo.jogo.apostaEm == (mJogo.tempo + c.campo)}"
+                                       v-on:click="apostar(mJogo.jogo, mJogo.tempo, c)">
                                         ${mJogo.jogo.cotacoes[mJogo.tempo][c.campo]|maskReal}
-                                    </span>
+                                    </a>
                                 </td>
                             </tr>
                             </tbody>
@@ -386,9 +432,11 @@
                             <tr v-for="item in listPlacarExato()">
                                 <td>${item.title}</td>
                                 <td class="text-center py-1 px-2" width="5">
-                                    <span class="btn btn-warning btn-cotacao disabled">
+                                    <a href="javascript:;" class="btn btn-warning btn-cotacao"
+                                       v-bind:class="{active: mJogo.jogo.apostaEm == (mJogo.tempo + item.campo)}"
+                                       v-on:click="apostar(mJogo.jogo, mJogo.tempo, {campo: item.campo, title: item.title, sigla: item.sigla, grupo: 4, principal: '0'})">
                                         ${mJogo.jogo.cotacoes[mJogo.tempo][item.campo]|maskReal}
-                                    </span>
+                                    </a>
                                 </td>
                             </tr>
                             </tbody>
