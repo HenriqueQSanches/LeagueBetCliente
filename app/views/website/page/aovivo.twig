@@ -66,6 +66,8 @@
                 </div>
             </div>
         </div>
+
+        {{ block('modal') }}
     </div>
 
 {% endblock %}
@@ -116,25 +118,81 @@
                 }
             },
             methods: {
-                totalCotacoes(cotacoes) {
-                    let total = 0;
+                countMappedForTempo(jogo, tempo) {
                     try {
-                        Object.values(cotacoes || {}).forEach((c) => {
-                            Object.values(c || {}).forEach((v) => {
-                                if (v > 1) total++;
-                            });
+                        const odds = (jogo && jogo.cotacoes && jogo.cotacoes[tempo]) || {};
+                        let total = 0;
+                        (this.cotacoes || []).forEach((c) => {
+                            const v = odds[c.campo];
+                            if (v && v > 1) total++;
                         });
-                    } catch(e){}
-                    return total;
+                        return total;
+                    } catch (e) { return 0; }
                 },
                 outrosCount(jogo) {
-                    const total = this.totalCotacoes(jogo.cotacoes || {});
-                    return total > 0 ? total : '';
+                    try {
+                        const tempo = '90';
+                        const odds = (jogo && jogo.cotacoes && jogo.cotacoes[tempo]) || {};
+                        // itens configurados
+                        let total = this.countMappedForTempo(jogo, tempo);
+                        // placar exato (cs_h_a)
+                        Object.keys(odds).forEach((k) => {
+                            if (/^cs_\d+_\d+$/.test(k) && odds[k] > 1) total++;
+                        });
+                        // subtrai 1x2 se presentes
+                        ['casa','empate','fora'].forEach(k => { if (odds[k] > 1) total--; });
+                        return total > 0 ? total : '';
+                    } catch (e) { return ''; }
                 },
                 maisCotacoes(jogo) {
                     this.mJogo.jogo = jogo;
                     this.mJogo.tempo = 90;
-                    $('#modal-cotacoes-live').modal('show');
+                    // Atualiza odds ao abrir
+                    const params = new URLSearchParams({ jogo: jogo.id });
+                    axios
+                        .get(url('apostar/odds') + '?' + params.toString())
+                        .then(({data}) => {
+                            const live = (data && data.cotacoes) || {};
+                            if (!this.mJogo.jogo.cotacoes) this.mJogo.jogo.cotacoes = {};
+                            Object.keys(live).forEach((tempo) => {
+                                if (!this.mJogo.jogo.cotacoes[tempo] || typeof this.mJogo.jogo.cotacoes[tempo] !== 'object') {
+                                    this.$set(this.mJogo.jogo.cotacoes, tempo, {});
+                                }
+                                const mercados = live[tempo] || {};
+                                Object.keys(mercados).forEach((campo) => {
+                                    this.$set(this.mJogo.jogo.cotacoes[tempo], campo, mercados[campo]);
+                                });
+                            });
+                        })
+                        .catch(() => {})
+                        .then(() => $('#modal-cotacoes-live').modal('show'));
+                },
+                listPlacarExato() {
+                    try {
+                        const tempo = this.mJogo.tempo + '';
+                        const odds = (this.mJogo.jogo && this.mJogo.jogo.cotacoes && this.mJogo.jogo.cotacoes[tempo]) || {};
+                        const items = [];
+                        const rex = /^cs_(\d+)_(\d+)$/;
+                        Object.keys(odds).forEach((campo) => {
+                            const v = odds[campo];
+                            if (v <= 1) return;
+                            const m = campo.match(rex);
+                            if (!m) return;
+                            const h = parseInt(m[1], 10), a = parseInt(m[2], 10);
+                            items.push({
+                                campo,
+                                title: `Resultado exato ${h}:${a}`,
+                                sigla: `CS ${h}:${a}`
+                            });
+                        });
+                        items.sort((a,b) => {
+                            const [ah,aa] = a.campo.replace('cs_','').split('_').map(n=>parseInt(n,10));
+                            const [bh,ba] = b.campo.replace('cs_','').split('_').map(n=>parseInt(n,10));
+                            if (ah === bh) return aa - ba;
+                            return ah - bh;
+                        });
+                        return items;
+                    } catch (e) { return []; }
                 },
             }
         });
@@ -186,6 +244,26 @@
                                 <td class="text-center py-1 px-2" width="5">
                                     <span class="btn btn-warning btn-cotacao disabled">
                                         ${mJogo.jogo.cotacoes[mJogo.tempo][c.campo]|maskReal}
+                                    </span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Placar exato (dinâmico por período) -->
+                        <table class="table table-minified table-striped table-bordered m-0"
+                               v-if="listPlacarExato().length">
+                            <thead>
+                            <tr style="background-color: #bbb">
+                                <th colspan="2">Placar exato — ${tempos[mJogo.tempo]}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="item in listPlacarExato()">
+                                <td>${item.title}</td>
+                                <td class="text-center py-1 px-2" width="5">
+                                    <span class="btn btn-warning btn-cotacao disabled">
+                                        ${mJogo.jogo.cotacoes[mJogo.tempo][item.campo]|maskReal}
                                     </span>
                                 </td>
                             </tr>
