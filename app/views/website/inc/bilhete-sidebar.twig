@@ -1,0 +1,119 @@
+<div class="bilhete rounded pb-1">
+
+    <header><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <h3 class="title rounded-top">
+            <i class="fa fa-file-text-o"></i> Bilhete
+        </h3>
+        <div class="bilhete-close d-block d-md-none" onclick="$('.bilhete').removeClass('show');">
+            <i class="fa fa-times"></i>
+        </div>
+    </header>
+
+    <div class="content">
+        <div class="lista-jogos" style="min-height: 250px;">
+            <div v-if="aposta.jogos.length < minJogos">
+                <div class="alert alert-warning m-0 rounded-0">
+                    Mínimo de jogos: ${minJogos}
+                </div>
+            </div>
+            <div v-if="aposta.jogos.length">
+                <table class="table table-striped table-hover table-aposta mb-0">
+                    <tbody>
+                    <tr class="tabelaBilheteTitulo">
+                        <td>Jogos</td>
+                        <td width="1px"></td>
+                    </tr>
+                    <tr v-for="(v, i) in aposta.jogos" v-if="v.jogo && v.jogo.casa && v.jogo.fora">
+                        <td>
+                            <div>
+                                <b>${v.jogo.casa}</b> x <b>${v.jogo.fora}</b>
+                            </div>
+                            <div>
+                                ${v.jogo.data.split('-').reverse().join('/')} às ${v.jogo.hora.replace(/:00$/, '')}
+                            </div>
+                            <div>
+                                ${v.cotacao.sigla} - Taxa:
+                                ${v.jogo.cotacoes[v.tempo][v.cotacao.campo]|maskReal}
+                                <div class="d-inline" v-if="v.tempo != '90'">
+                                    ${v.tempo == 'pt' ? 'Primeiro tempo': 'Segundo tempo'}
+                                </div>
+                            </div>
+                        </td>
+                        <td width="5">
+                            <a href="javascript:;" v-on:click="rmAposta(i)"
+                               class="text-danger">
+                                <i class="fa fa-times" style="font-size: 15px;"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container-fluid">
+
+            <div style="font-size: 14px;" class="pt-2">
+                <div class="row align-items-center">
+                    <div class="col-auto form-group">
+                        Número de jogos
+                    </div>
+                    <div class="col text-right form-group"
+                         v-bind:class="{'text-danger': aposta.jogos.length < minJogos}">
+                        ${aposta.jogos.length}
+                    </div>
+                </div>
+                <div class="row align-items-center">
+                    <div class="col-auto form-group">
+                        Valor da aposta
+                    </div>
+                    <div class="col form-group">
+                        <input type="number" v-model="valorAposta" v-bind:min="apostaMinima"
+                               v-bind:max="apostaMaxima" step="1.00" class="form-control form-control-sm"
+                               v-bind:class="{'text-danger': valorAposta < apostaMinima || valorAposta > apostaMaxima}"/>
+                    </div>
+                </div>
+                <div class="row align-items-center">
+                    <div class="col-auto form-group">
+                        Cotação
+                    </div>
+                    <div class="col form-group text-right"
+                         v-bind:class="getCotacao() < getCotacaoMinima() ? 'text-danger' : 'text-default'">
+                        ${getCotacao()|maskReal}
+                    </div>
+                </div>
+                <div class="row align-items-center">
+                    <div class="col-auto form-group">
+                        Valor do prêmio
+                    </div>
+                    <div class="col form-group text-right">
+                        R$ ${premio}
+                    </div>
+                </div>
+                <div class="row align-items-center">
+                    <div class="col-12 mb-2">
+                        <div class="row">
+                            <div class="col-6">
+                                <button class="btn btn-sm btn-block btn-danger"
+                                        v-bind:disabled="!apostaValida"
+                                        v-on:click="finalizarAposta">
+                                    {{ user ? 'Concluír' : 'Pré-bilhete' }}
+                                </button>
+                            </div>
+                            <div class="col-6">
+                                <button class="btn btn-sm btn-block btn-default"
+                                        v-on:click="limpaAposta">
+                                    Limpar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</div>
+

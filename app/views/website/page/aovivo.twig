@@ -68,8 +68,14 @@
         </div>
 
         {{ block('modal') }}
+
+        {{ block('bilhete') }}
     </div>
 
+{% endblock %}
+
+{% block bilhete %}
+    {% include 'website/inc/bilhete-sidebar.twig' %}
 {% endblock %}
 
 {% block script %}
@@ -106,6 +112,19 @@
                     cotacoes: [],
                     tempos: {90: 'Jogo completo', pt: 'Primeiro tempo', st: 'Segundo tempo'},
                     mJogo: { jogo: null, tempo: 90 },
+
+                    // Dados para o bilhete (mesmos nomes do apostar.twig)
+                    valorAposta: {{ apostaMinima }},
+                    aposta: {
+                        jogos: [],
+                    },
+                    cotacaoMaxima: {{ cotacaoMaxima ?: 99999999 }},
+                    cotacaoMinima: {{ cotacaoMinima ?: 1 }},
+                    condicaoCotacao: {{ condicaoCotacao|json_encode|raw }},
+                    apostaMinima: {{ apostaMinima ?: 1 }},
+                    apostaMaxima: {{ apostaMaxima ?: 999999 }},
+                    retornoMaximo: {{ retornoMaximo ?: 99999999 }},
+                    minJogos: {{ minJogos ?: 1 }},
                 }
             },
             filters: {
@@ -116,6 +135,16 @@
                         return value.toString().toReal();
                     }
                 }
+            },
+            computed: {
+                cotacao() { return this.getCotacao(); },
+                premio() { return this.getPremio().toString().toReal(); },
+                apostaValida() {
+                    if ((this.aposta.jogos || []).length >= this.minJogos) {
+                        return this.getCotacao() >= this.getCotacaoMinima();
+                    }
+                    return false;
+                },
             },
             methods: {
                 countMappedForTempo(jogo, tempo) {
@@ -193,6 +222,101 @@
                         });
                         return items;
                     } catch (e) { return []; }
+                },
+
+                // ===== Bilhete (mesma lógica essencial do apostar.twig) =====
+                getCotacao() {
+                    try {
+                        let cotacao = 1;
+                        (this.aposta.jogos || []).forEach((v) => {
+                            cotacao *= v.jogo.cotacoes[v.tempo][v.cotacao.campo];
+                        });
+                        return parseFloat(Math.min(cotacao, this.cotacaoMaxima));
+                    } catch (e) { return 1; }
+                },
+                getCotacaoMinima() {
+                    let cotacaoMinima = this.cotacaoMinima;
+                    const valorAposta = this.valorAposta;
+                    (this.condicaoCotacao || []).forEach((value) => {
+                        if ((value.min > 0 || value.max > 0) && value.cotacao > 0) {
+                            if (value.min <= valorAposta && value.max >= valorAposta) {
+                                cotacaoMinima = value.cotacao;
+                            }
+                        }
+                    });
+                    return cotacaoMinima;
+                },
+                getPremio() {
+                    const valorAposta = this.valorAposta;
+                    const cotacao = this.getCotacao();
+                    if (cotacao > 1) {
+                        return Math.min(valorAposta * cotacao, this.retornoMaximo);
+                    } else {
+                        return 0;
+                    }
+                },
+                rmAposta(index) {
+                    const aposta = this.aposta.jogos[index];
+                    if (aposta) {
+                        aposta.jogo.apostaEm = null;
+                        aposta.jogo.outras = false;
+                        this.aposta.jogos.splice(index, 1);
+                    }
+                },
+                limpaAposta() {
+                    (this.aposta.jogos || []).forEach((j) => {
+                        if (!j || !j.jogo) return;
+                        j.jogo.apostaEm = null;
+                        j.jogo.outras = false;
+                    });
+                    this.aposta.jogos = [];
+                    $(".bilhete").removeClass('show');
+                },
+                finalizarAposta() {
+                    const aposta = {
+                        valor: this.valorAposta,
+                        cliente: '',
+                        telefone: '',
+                        revendedor: '',
+                        jogos: [],
+                    };
+                    (this.aposta.jogos || []).forEach((v) => {
+                        if (!v || !v.jogo) return;
+                        aposta.jogos.push({
+                            jogo: v.jogo.id,
+                            tempo: v.tempo,
+                            cotacao: v.cotacao.campo,
+                        });
+                    });
+                    $('html').addClass('loading').removeClass('show-bilhete');
+                    axios
+                        .post(url('apostar/apostar'), aposta)
+                        .then((response) => {
+                            var e = response.data || {};
+                            if (e.result == 1) {
+                                this.limpaAposta();
+                                this.valorAposta = this.apostaMinima;
+                                window.localStorage.removeItem('apostaJogos');
+                                if (e.codigo) {
+                                    swal({
+                                        title: $.trim(e.codigo.replace(/(.{3})/g, '$1 ')),
+                                        text: 'Bilhete gerado com sucesso!\nProcure um dos nossos cambistas para validar o seu bilhete.',
+                                        icon: 'success',
+                                        button: {
+                                            text: 'Compartilhar whatsapp',
+                                            closeModal: true,
+                                            value: {link: e.link, share: e.share},
+                                        }
+                                    }).then((e) => { window.open(e.share, '_blank'); });
+                                } else {
+                                    swal('Sucesso', 'Aposta realizada com sucesso!', 'success');
+                                }
+                            } else {
+                                swal('Aviso!', e.message || 'Não foi possível concluir a aposta.', 'warning');
+                            }
+                        })
+                        .catch(() => {})
+                        .then(() => { $('html').removeClass('loading'); });
                 },
             }
         });
