@@ -1092,3 +1092,6 @@ Stack trace:
 [12-Nov-2025 13:19:41 America/Sao_Paulo] BetsAPI Error: PARAM_INVALID - Detail: event_id
 [12-Nov-2025 13:19:51 America/Sao_Paulo] BetsAPI Error: PARAM_INVALID - Detail: event_id
 [13-Nov-2025 10:48:01 America/Sao_Paulo] BetsAPI Error: PARAM_INVALID - Detail: event_id
+[14-Nov-2025 13:08:46 America/Sao_Paulo] BetsAPI V4 Error 0 Operation timed out after 30013 milliseconds with 0 bytes received 
+[14-Nov-2025 13:08:48 America/Sao_Paulo] BetsAPI V4 Error 502  error code: 502
+[14-Nov-2025 13:08:52 America/Sao_Paulo] BetsAPI Error: HTTP 502 - Response: error code: 502
