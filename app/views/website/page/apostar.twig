@@ -165,7 +165,7 @@
                     </div>
                 </td>
                 <td class="text-center" v-for="c in getCotacoesPrincipais()">
-                    <div v-if="jogo.cotacoes && jogo.cotacoes['90'] && jogo.cotacoes['90'][c.campo] > 1"
+                    <div v-if="has1x2(jogo) && jogo.cotacoes && jogo.cotacoes['90'] && parseFloat(jogo.cotacoes['90'][c.campo]) > 1"
                          class="btn-cotacao"
                          v-bind:class="{active: jogo.apostaEm == '90' + c.campo}"
                          v-bind:title="c.title"
@@ -173,15 +173,19 @@
                          v-on:click="apostar(jogo, '90', c)">
                         ${jogo.cotacoes['90'][c.campo]|maskReal}
                     </div>
-                    <div v-else class="btn-cotacao outras" title="Outras cotações"
+                    <div v-else class="btn-cotacao outras"
+                         title="Outras cotações"
                          v-on:click="maisCotacoes(jogo)">
-                        +
+                        <span v-text="outrosCount(jogo)"></span>
                     </div>
                 </td>
                 <td>
-                    <div class="btn-cotacao outras" data-toggle="tooltip" title="Outras cotações"
-                         v-bind:class="{active: jogo.outras}" v-on:click="maisCotacoes(jogo)">
-                        +${outrosCount(jogo)}
+                    <div class="btn-cotacao outras"
+                         data-toggle="tooltip"
+                         title="Outras cotações"
+                         v-bind:class="{active: jogo.outras}"
+                         v-on:click="maisCotacoes(jogo)">
+                        <span v-text="outrosCount(jogo)"></span>
                     </div>
                 </td>
             </tr>
@@ -277,6 +281,25 @@
 {% endblock %}
 
 {% block main %}
+
+    <style>
+        /* Igual ao Ao Vivo: número amarelo sobre fundo preto */
+        .btn-cotacao.outras,
+        .btn-cotacao.outras *,
+        .table-jogos .btn-cotacao.outras{
+            color: #ffc107 !important;
+            font-weight: 700 !important;
+        }
+        /* Garante o mesmo visual do Ao Vivo também no tema claro */
+        .table-jogos .btn-cotacao.outras{
+            background: #000 !important;
+            border-color: #000 !important;
+        }
+        .table-jogos .btn-cotacao.outras:hover{
+            background: #000 !important;
+            color: #ffc107 !important;
+        }
+    </style>
 
     <div class="page-title">
         <h3 class="title">Faça já sua aposta</h3>
@@ -430,6 +453,15 @@
                         this.paises = response.data.paises || [];
                         this.datas = response.data.datas || {};
                         this.dadosCarregados = true;
+                        // Após renderizar a lista, pré-carrega a contagem de \"outras cotações\"
+                        // para cada jogo visível, evitando depender apenas do hover.
+                        this.$nextTick(() => {
+                            try {
+                                this.queueOutrosCounts();
+                            } catch (e) {
+                                console.warn('Falha ao pré-carregar outros mercados', e);
+                            }
+                        });
                     })
                     .catch((error) => {
                         console.error('Erro ao carregar jogos:', error);
@@ -615,14 +647,38 @@
                     }
                 },
                 getCotacoesPrincipais() {
-                    var cotacoes = [];
-                    if (this.cotacoes) {
-                        this.cotacoes.forEach((c) => {
-                            if (c.principal == '1')
-                                cotacoes.push(c);
+                    // Sempre exibe 1X2 como colunas principais.
+                    return [
+                        { campo: 'casa', title: 'Casa', principal: '1' },
+                        { campo: 'empate', title: 'Empate', principal: '1' },
+                        { campo: 'fora', title: 'Fora', principal: '1' },
+                    ];
+                },
+                has1x2(jogo) {
+                    try {
+                        const odds = (jogo && jogo.cotacoes && jogo.cotacoes['90']) || {};
+                        const casa = parseFloat(odds.casa);
+                        const empate = parseFloat(odds.empate);
+                        const fora = parseFloat(odds.fora);
+                        return casa > 1 && empate > 1 && fora > 1;
+                    } catch (e) { return false; }
+                },
+                // Conta quantas cotações configuradas existem para um determinado período do jogo
+                countMappedForTempo(jogo, tempo) {
+                    try {
+                        const odds = (jogo && jogo.cotacoes && jogo.cotacoes[tempo]) || {};
+                        let total = 0;
+                        (this.cotacoes || []).forEach((c) => {
+                            // só conta mercados não-principais (evita 1X2)
+                            if (c && c.principal != '1') {
+                                const v = odds[c.campo];
+                                if (v && v > 1) total++;
+                            }
                         });
+                        return total;
+                    } catch (e) {
+                        return 0;
                     }
-                    return cotacoes;
                 },
                 listPlacarExato() {
                     try {
@@ -651,26 +707,129 @@
                         return items;
                     } catch (e) { return []; }
                 },
-                totalCotacoes(cotacoes) {
-                    var total = 0;
-
-                    Object.values(cotacoes).forEach((c) => {
-                        Object.values(c).forEach((v) => {
-                            if (v > 1)
-                                total++;
-                        });
-                    });
-
-                    return total;
-                },
                 outrosCount(jogo) {
                     try {
-                        const total = this.totalCotacoes(jogo.cotacoes || {});
-                        const principais = this.getCotacoesPrincipais().length;
-                        const count = total - principais;
-                        return count > 0 ? count : '';
-                    } catch (e) {
-                        return '';
+                        if (!jogo) return '';
+                        // usa valor em cache, se já calculado via prefetch
+                        if (typeof jogo._outrosCount !== 'undefined') {
+                            const n = parseInt(jogo._outrosCount, 10);
+                            return n > 0 ? String(n) : '';
+                        }
+                        const tempo = '90';
+                        const odds = (jogo.cotacoes && jogo.cotacoes[tempo]) || {};
+                        let count = 0;
+                        // conta mercados oficiais (exceto 1X2) já disponíveis em 90'
+                        (this.cotacoes || []).
+                          forEach((c) => {
+                            if (c && c.principal != '1') {
+                              const v = odds[c.campo];
+                              if (v && v > 1) count++;
+                            }
+                          });
+                        // adiciona linhas de placar exato já presentes
+                        Object.keys(odds).forEach((k) => {
+                            if (/^cs_\d+_\d+$/.test(k) && odds[k] > 1) count++;
+                        });
+                        // retorna apenas número inteiro
+                        return String(Math.max(0, parseInt(count, 10) || 0));
+                    } catch (e) { return ''; }
+                },
+                // Busca as odds estendidas e calcula o count, sem abrir modal
+                ensureOutrosCount(jogo) {
+                    if (!jogo) return;
+                    if (typeof jogo._outrosCount === 'number') return;
+                    if (jogo._loadingOutros) return;
+                    this.prefetchOutrosRemote(jogo);
+                },
+                prefetchOutros(jogo) {
+                    try {
+                        if (!jogo) return;
+                        if (jogo._loadingOutros) return;
+                        this.$set(jogo, '_loadingOutros', true);
+                        // Calcula localmente a quantidade de "outras cotações" usando apenas dados já carregados
+                        const tempo = '90';
+                        const odds = (jogo.cotacoes && jogo.cotacoes[tempo]) || {};
+                        let count = 0;
+                        (this.cotacoes || []).forEach((c) => {
+                            if (c && c.principal != '1') {
+                                const v = odds[c.campo];
+                                if (v && v > 1) count++;
+                            }
+                        });
+                        Object.keys(odds).forEach((k) => {
+                            if (/^cs_\d+_\d+$/.test(k) && odds[k] > 1) count++;
+                        });
+                        this.$set(jogo, '_outrosCount', Math.max(0, parseInt(count, 10) || 0));
+                        this.$set(jogo, '_loadingOutros', false);
+                    } catch (err) {
+                        // evita quebra do render por erro
+                        console.error('prefetchOutros error', err);
+                        this.$set(jogo, '_loading', false);
+                    }
+                },
+                // Fila controlada para buscar odds de alguns jogos por vez e popular _outrosCount
+                queueOutrosCounts() {
+                    const jogos = this.coletarJogos().filter(j => j && typeof j._outrosCount !== 'number');
+                    const maxPrefetch = 24; // limita total por página
+                    const concurrency = 4;  // limita concorrência
+                    const fila = jogos.slice(0, maxPrefetch);
+                    let idx = 0;
+                    const proximo = () => {
+                        if (idx >= fila.length) return Promise.resolve();
+                        const atual = fila[idx++];
+                        return this.prefetchOutrosRemote(atual).then(proximo);
+                    };
+                    // inicia N workers
+                    const workers = [];
+                    for (let i = 0; i < concurrency; i++) {
+                        workers.push(proximo());
+                    }
+                    Promise.all(workers).catch(() => {});
+                },
+                // Busca remota (1 jogo) e computa o contador com base nas odds retornadas
+                prefetchOutrosRemote(jogo) {
+                    try {
+                        if (!jogo || !jogo.id) return Promise.resolve();
+                        if (jogo._loadingOutros) return Promise.resolve();
+                        this.$set(jogo, '_loadingOutros', true);
+                        const params = new URLSearchParams({ jogo: jogo.id });
+                        return axios.get(url('apostar/odds') + '?' + params.toString())
+                            .then(({ data }) => {
+                                const live = (data && data.cotacoes) || {};
+                                if (!jogo.cotacoes || typeof jogo.cotacoes !== 'object') {
+                                    this.$set(jogo, 'cotacoes', {});
+                                }
+                                Object.keys(live).forEach((tempo) => {
+                                    if (!jogo.cotacoes[tempo] || typeof jogo.cotacoes[tempo] !== 'object') {
+                                        this.$set(jogo.cotacoes, tempo, {});
+                                    }
+                                    const mercados = live[tempo] || {};
+                                    Object.keys(mercados).forEach((campo) => {
+                                        this.$set(jogo.cotacoes[tempo], campo, mercados[campo]);
+                                    });
+                                });
+                                // calcula count em 90'
+                                const tempo = '90';
+                                const odds = (jogo.cotacoes && jogo.cotacoes[tempo]) || {};
+                                let count = 0;
+                                (this.cotacoes || []).forEach((c) => {
+                                    if (c && c.principal != '1') {
+                                        const v = odds[c.campo];
+                                        if (v && v > 1) count++;
+                                    }
+                                });
+                                Object.keys(odds).forEach((k) => {
+                                    if (/^cs_\d+_\d+$/.test(k) && odds[k] > 1) count++;
+                                });
+                                this.$set(jogo, '_outrosCount', count);
+                            })
+                            .catch(() => {})
+                            .finally(() => {
+                                this.$set(jogo, '_loadingOutros', false);
+                            });
+                    } catch (err) {
+                        this.$set(jogo, '_loadingOutros', false);
+                        return Promise.resolve();
                     }
                 },
                 getPaises() {
