@@ -145,10 +145,27 @@ $(document).ready(function() {
     
     // Função de busca
     $('#search-games').on('keyup', function() {
-        const searchTerm = $(this).val().toLowerCase();
+        const searchTerm = ($(this).val() || '').toString();
+        
+        // Integração com Vue (página de apostas)
+        try {
+            if (window.app && window.app.$data && typeof window.app.$data.search !== 'undefined') {
+                window.app.search = searchTerm;
+            }
+        } catch (e) {}
+        
+        // Integração com Vue (página ao vivo - se viermos a usar)
+        try {
+            if (window.appLive && window.appLive.$data && typeof window.appLive.$data.search !== 'undefined') {
+                window.appLive.search = searchTerm;
+            }
+        } catch (e) {}
+
+        // Fallback: filtra blocos puros de HTML (se existir estrutura não-Vue)
+        const term = searchTerm.toLowerCase();
         $('.riverbets-games-table').each(function() {
-            const text = $(this).text().toLowerCase();
-            $(this).toggle(text.includes(searchTerm));
+            const text = ($(this).text() || '').toLowerCase();
+            $(this).toggle(text.includes(term));
         });
     });
 });
