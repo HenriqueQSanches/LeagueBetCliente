@@ -54,7 +54,7 @@
                 <td class="text-center" v-for="c in getCotacoesPrincipais()">
                     <div v-if="has1x2(jogo) && jogo.cotacoes && jogo.cotacoes['90'] && parseFloat(jogo.cotacoes['90'][c.campo]) > 1"
                          class="btn-cotacao"
-                         v-bind:class="{active: jogo.apostaEm == '90' + c.campo}"
+                         v-bind:class="{active: isSelecionada(jogo, '90', c.campo)}"
                          v-bind:title="c.title"
                          data-toggle="tooltip"
                          v-on:click="apostar(jogo, '90', c)">
@@ -129,7 +129,7 @@
                                 <td>${c.title}</td>
                                 <td class="text-center py-1 px-2" width="5">
                                     <a href="javascript:;" class="btn btn-warning btn-cotacao"
-                                       v-bind:class="{active: mJogo.jogo.apostaEm == mJogo.tempo + c.campo }"
+                                       v-bind:class="{active: isSelecionada(mJogo.jogo, mJogo.tempo, c.campo)}"
                                        v-on:click="apostar(mJogo.jogo, mJogo.tempo, c)">
                                         ${mJogo.jogo.cotacoes[mJogo.tempo][c.campo]|maskReal}
                                     </a>
@@ -617,6 +617,25 @@
                         return casa > 1 && empate > 1 && fora > 1;
                     } catch (e) { return false; }
                 },
+                // Marca visual de seleção
+                isSelecionada(jogo, tempo, campo) {
+                    try {
+                        const keyTempo = '' + tempo;
+                        return (this.aposta.jogos || []).some(v => v && v.jogo && v.jogo.id == jogo.id && ('' + v.tempo) === keyTempo && v.cotacao && v.cotacao.campo === campo);
+                    } catch (e) { return false; }
+                },
+                findApostaIndex(jogo, tempo, campo) {
+                    try {
+                        const keyTempo = '' + tempo;
+                        return (this.aposta.jogos || []).findIndex(v => v && v.jogo && v.jogo.id == jogo.id && ('' + v.tempo) === keyTempo && v.cotacao && v.cotacao.campo === campo);
+                    } catch (e) { return -1; }
+                },
+                updateOutrasFlag(jogo) {
+                    try {
+                        const hasOutras = (this.aposta.jogos || []).some(v => v && v.jogo && v.jogo.id == jogo.id && (v.cotacao && v.cotacao.principal != '1' || ('' + v.tempo) !== '90'));
+                        jogo.outras = !!hasOutras;
+                    } catch (e) { jogo.outras = false; }
+                },
                 // Conta quantas cotações configuradas existem para um determinado período do jogo
                 countMappedForTempo(jogo, tempo) {
                     try {
@@ -956,59 +975,37 @@
                         });
                 },
                 apostar(jogo, tempo, cotacao) {
+                    try {
+                        const keyTempo = '' + tempo;
+                        const apostaEm = keyTempo + cotacao.campo;
 
-                    let apostaEm = tempo + cotacao.campo;
+                        // Se já existe alguma seleção deste jogo, remove todas antes de aplicar a nova
+                        for (let i = (this.aposta.jogos || []).length - 1; i >= 0; i--) {
+                            const v = this.aposta.jogos[i];
+                            if (v && v.jogo && v.jogo.id == jogo.id) {
+                                this.aposta.jogos.splice(i, 1);
+                            }
+                        }
 
-                    if (jogo.apostaEm) {
-
-                        // Removendo jogo da aposta
-                        this.aposta.jogos
-                            .forEach((v, index) => {
-                                if (v.jogo.id == jogo.id)
-                                    this.aposta.jogos.splice(index, 1);
-                            });
-
+                        // Toggle: se clicou na mesma, só desmarca
                         if (jogo.apostaEm === apostaEm) {
                             jogo.apostaEm = null;
-                        } else {
-                            jogo.apostaEm = null;
-                            if (this.filterJogo(jogo))
-                                this.apostar(jogo, tempo, cotacao);
+                            jogo.outras = false;
+                            return;
                         }
 
-                    } else {
+                        // Aplica nova seleção (1 por jogo)
+                        jogo.apostaEm = apostaEm;
+                        jogo.outras = !(cotacao.principal == '1' && keyTempo === '90');
 
-                        if (this.cotacaoMaxima > 0 && this.getCotacao() == this.cotacaoMaxima) {
-                            swal('Aviso!', 'Sua aposta já atingiu a cotação máxima.', 'warning');
-                        } else {
+                        this.aposta.jogos.push({
+                            jogo: jogo,
+                            tempo: keyTempo,
+                            cotacao: cotacao,
+                        });
 
-                            this.aposta.jogos
-                                .forEach((v, i) => {
-                                    if (v.jogo.id == jogo.id || !this.filterJogo(v.jogo)) {
-                                        this.aposta.jogos.splice(i, 1);
-                                    }
-                                });
-
-                            jogo.apostaEm = apostaEm;
-
-                            if (cotacao.principal == '1' && tempo == '90') {
-                                jogo.outras = false;
-                            } else {
-                                jogo.outras = true;
-                            }
-
-                            this.aposta.jogos
-                                .push({
-                                    jogo: jogo,
-                                    tempo: tempo,
-                                    cotacao: cotacao,
-                                });
-
-                            $('#modal-cotacoes').modal("hide");
-
-                        }
-                    }
-
+                        $('#modal-cotacoes').modal("hide");
+                    } catch (e) {}
                 },
                 inArray(needle, haystack) {
                     var length = haystack.length;
@@ -1062,6 +1059,7 @@
                             jogo: v.jogo.id,
                             tempo: v.tempo,
                             cotacao: v.cotacao.campo,
+                            valor: parseFloat(v.jogo.cotacoes[v.tempo][v.cotacao.campo] || 0)
                         });
 
                     });

@@ -466,12 +466,41 @@ SQL;
             foreach ($jogos as $v) {
 
                 $jogo = JogosModel::getByLabel('id', $v['jogo']);
-                $cotacao = CotacoesModel::getByLabel('campo', $v['cotacao']);
+                $campoCotacao = (string)$v['cotacao'];
+                $cotacao = CotacoesModel::getByLabel('campo', $campoCotacao);
+                $cotacaoInfo = null;
+                $isDynamic = false;
 
                 if (!$jogo instanceof JogoVO) {
                     throw new \Exception("Jogo inválido");
-                } else if (!$cotacao instanceof CotacaoVO) {
-                    throw new \Exception("Cotação inválida");
+                }
+
+                // Suporte a mercados dinâmicos não cadastrados (ex.: placar exato cs_h_a)
+                if (!$cotacao instanceof CotacaoVO) {
+                    // Aceitar mercados dinâmicos em geral (desde que exista odd > 1)
+                    $isDynamic = true;
+                    // Tratamento especial para Placar Exato
+                    if (preg_match('/^cs_(\d+)_(\d+)$/', $campoCotacao, $m)) {
+                        $h = (int)$m[1];
+                        $a = (int)$m[2];
+                        $cotacaoInfo = [
+                            'campo' => $campoCotacao,
+                            'titulo' => "Resultado exato {$h}:{$a}",
+                            'grupo' => 4,
+                            'sigla' => "CS {$h}:{$a}",
+                            'principal' => '0',
+                        ];
+                    } else {
+                        // Humaniza título básico para outros campos (impar, dplcasa, mais_2_5, esc_10_5_mais etc.)
+                        $titulo = strtoupper(str_replace(['_PT','_ST'], [' 1ºT',' 2ºT'], str_replace('_', ' ', $campoCotacao)));
+                        $cotacaoInfo = [
+                            'campo' => $campoCotacao,
+                            'titulo' => $titulo,
+                            'grupo' => 0,
+                            'sigla' => strtoupper(substr($campoCotacao, 0, 8)),
+                            'principal' => '0',
+                        ];
+                    }
                 } else if ($cotacao->getStatus() != 1) {
                     throw new \Exception("Cotação foi desativada");
                 } else {
@@ -488,7 +517,13 @@ SQL;
 
                 // Chave do tempo no JSON é string ("90","pt","st"); normalizar
                 $tempoKey = (string)$v['tempo'];
-                $valorCotacao = (float)($jogo->getCotacoes(true)[$tempoKey][$cotacao->getCampo()] ?? 1);
+                $campoBuscado = $cotacao instanceof CotacaoVO ? $cotacao->getCampo() : $campoCotacao;
+                // Aceita valor enviado pelo cliente (para cenários em que o mapeamento não está persistido no DB),
+                // mas valida/faz fallback via API se vier vazio/<=1
+                $valorCotacao = (float)($v['valor'] ?? 0);
+                if ($valorCotacao <= 1) {
+                    $valorCotacao = (float)($jogo->getCotacoes(true)[$tempoKey][$campoBuscado] ?? 1);
+                }
 
                 if ($valorCotacao <= 1) {
                     // Fallback: buscar valor da API em tempo real
@@ -505,7 +540,7 @@ SQL;
                             if (empty($mapped)) {
                                 $mapped = $client->getExtendedOdds($apiId) ?: [];
                             }
-                            $valorCotacao = (float)($mapped[$tempoKey][$cotacao->getCampo()] ?? 1);
+                            $valorCotacao = (float)($mapped[$tempoKey][$campoBuscado] ?? 1);
                         }
                     } catch (\Throwable $t) {
                         // silencioso; se continuar inválido, cai no erro abaixo
@@ -517,17 +552,17 @@ SQL;
                 }
 
                 $apostaJogos[] = ApostaJogosModel::newValueObject([
-                    'user' => $user ? $user->getId() : 0,
-                    'jogo' => $jogo->getId(),
-                    'valor' => $valor,
-                    'tempo' => $v['tempo'],
-                    'tipo' => $cotacao->getCampo(),
-                    'cotacaovalor' => $valorCotacao,
-                    'cotacaotitle' => $cotacao->getTitulo(),
-                    'cotacaogrupo' => $cotacao->getGrupo(),
-                    'cotacaosigla' => $cotacao->getSigla(),
-                    'jogos' => count($jogos),
-                    'cotacaocampo' => $cotacao->getCampo(),
+                    'User' => $user ? $user->getId() : 0,
+                    'Jogo' => $jogo->getId(),
+                    'Valor' => $valor,
+                    'Tempo' => $v['tempo'],
+                    'Tipo' => $campoBuscado,
+                    'CotacaoValor' => $valorCotacao,
+                    'CotacaoTitle' => $cotacao instanceof CotacaoVO ? $cotacao->getTitulo() : ($cotacaoInfo['titulo'] ?? ''),
+                    'CotacaoGrupo' => $cotacao instanceof CotacaoVO ? $cotacao->getGrupo() : ($cotacaoInfo['grupo'] ?? 0),
+                    'CotacaoSigla' => $cotacao instanceof CotacaoVO ? $cotacao->getSigla() : ($cotacaoInfo['sigla'] ?? ''),
+                    'Jogos' => count($jogos),
+                    'CotacaoCampo' => $campoBuscado,
                 ]);
 
             }

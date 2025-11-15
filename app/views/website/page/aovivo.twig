@@ -169,6 +169,24 @@
                 },
             },
             methods: {
+                isSelecionada(jogo, tempo, campo) {
+                    try {
+                        const keyTempo = '' + tempo;
+                        return (this.aposta.jogos || []).some(v => v && v.jogo && v.jogo.id == jogo.id && ('' + v.tempo) === keyTempo && v.cotacao && v.cotacao.campo === campo);
+                    } catch (e) { return false; }
+                },
+                findApostaIndex(jogo, tempo, campo) {
+                    try {
+                        const keyTempo = '' + tempo;
+                        return (this.aposta.jogos || []).findIndex(v => v && v.jogo && v.jogo.id == jogo.id && ('' + v.tempo) === keyTempo && v.cotacao && v.cotacao.campo === campo);
+                    } catch (e) { return -1; }
+                },
+                updateOutrasFlag(jogo) {
+                    try {
+                        const hasOutras = (this.aposta.jogos || []).some(v => v && v.jogo && v.jogo.id == jogo.id && (v.cotacao && v.cotacao.principal != '1' || ('' + v.tempo) !== '90'));
+                        jogo.outras = !!hasOutras;
+                    } catch (e) { jogo.outras = false; }
+                },
                 teamSlug(name) {
                     try {
                         return (name || '')
@@ -293,46 +311,37 @@
                     } catch (e) { return []; }
                 },
 
-                // Seleciona/deseleciona uma odd e envia ao bilhete
+                // Seleciona/deseleciona uma odd (1 por jogo)
                 apostar(jogo, tempo, cotacao) {
                     try {
-                        const apostaEm = '' + tempo + cotacao.campo;
+                        const keyTempo = '' + tempo;
+                        const apostaEm = keyTempo + cotacao.campo;
 
-                        if (jogo.apostaEm) {
-                            // Remove qualquer seleção anterior deste jogo
-                            (this.aposta.jogos || []).forEach((v, index) => {
-                                if (v && v.jogo && v.jogo.id == jogo.id) {
-                                    this.aposta.jogos.splice(index, 1);
-                                }
-                            });
-
-                            if (jogo.apostaEm === apostaEm) {
-                                // Mesmo clique -> apenas desmarca
-                                jogo.apostaEm = null;
-                                jogo.outras = false;
-                                return;
+                        // Remove seleções anteriores deste jogo
+                        for (let i = (this.aposta.jogos || []).length - 1; i >= 0; i--) {
+                            const v = this.aposta.jogos[i];
+                            if (v && v.jogo && v.jogo.id == jogo.id) {
+                                this.aposta.jogos.splice(i, 1);
                             }
+                        }
 
-                            // Vai aplicar a nova seleção
+                        // Toggle: mesma seleção => desmarca
+                        if (jogo.apostaEm === apostaEm) {
                             jogo.apostaEm = null;
-                        }
-
-                        // Nova seleção
-                        if (cotacao.principal == '1' && (tempo + '') == '90') {
                             jogo.outras = false;
-                        } else {
-                            jogo.outras = true;
+                            return;
                         }
 
+                        // Aplica nova seleção (1 por jogo)
                         jogo.apostaEm = apostaEm;
+                        jogo.outras = !(cotacao.principal == '1' && keyTempo === '90');
 
-                        (this.aposta.jogos).push({
+                        this.aposta.jogos.push({
                             jogo: jogo,
-                            tempo: tempo,
+                            tempo: keyTempo,
                             cotacao: cotacao,
                         });
 
-                        // Fecha o modal após a escolha
                         $('#modal-cotacoes-live').modal('hide');
                     } catch (e) {}
                 },
@@ -399,6 +408,7 @@
                             jogo: v.jogo.id,
                             tempo: v.tempo,
                             cotacao: v.cotacao.campo,
+                            valor: parseFloat((v.jogo.cotacoes && v.jogo.cotacoes[v.tempo] && v.jogo.cotacoes[v.tempo][v.cotacao.campo]) || 0),
                         });
                     });
                     $('html').addClass('loading').removeClass('show-bilhete');
@@ -480,7 +490,7 @@
                                 <td>${c.title}</td>
                                 <td class="text-center py-1 px-2" width="5">
                                     <a href="javascript:;" class="btn btn-warning btn-cotacao"
-                                       v-bind:class="{active: mJogo.jogo.apostaEm == (mJogo.tempo + c.campo)}"
+                                       v-bind:class="{active: isSelecionada(mJogo.jogo, mJogo.tempo, c.campo)}"
                                        v-on:click="apostar(mJogo.jogo, mJogo.tempo, c)">
                                         ${mJogo.jogo.cotacoes[mJogo.tempo][c.campo]|maskReal}
                                     </a>
@@ -502,7 +512,7 @@
                                 <td>${item.title}</td>
                                 <td class="text-center py-1 px-2" width="5">
                                     <a href="javascript:;" class="btn btn-warning btn-cotacao"
-                                       v-bind:class="{active: mJogo.jogo.apostaEm == (mJogo.tempo + item.campo)}"
+                                       v-bind:class="{active: isSelecionada(mJogo.jogo, mJogo.tempo, item.campo)}"
                                        v-on:click="apostar(mJogo.jogo, mJogo.tempo, {campo: item.campo, title: item.title, sigla: item.sigla, grupo: 4, principal: '0'})">
                                         ${mJogo.jogo.cotacoes[mJogo.tempo][item.campo]|maskReal}
                                     </a>
