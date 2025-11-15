@@ -41,8 +41,12 @@
             <tr v-for="jogo in getJogos(campeonato)" v-if="jogo && jogo.casa && jogo.fora">
                 <td>
                     <div v-on:click="maisCotacoes(jogo)" class="pointer">
-                        <div class="text-truncate">
-                            <b>${jogo.casa} x ${jogo.fora}</b>
+                        <div class="text-truncate team-line">
+                            <img v-bind:src="teamLogoUrl(jogo.casa)" class="team-logo" v-on:error="onLogoError">
+                            <b class="text-truncate">${jogo.casa}</b>
+                            <span class="mx-1">x</span>
+                            <img v-bind:src="teamLogoUrl(jogo.fora)" class="team-logo" v-on:error="onLogoError">
+                            <b class="text-truncate">${jogo.fora}</b>
                         </div>
                         <small>${jogo.data.split('-').reverse().join('/')} às ${jogo.hora.replace(/:00$/, '')}</small>
                     </div>
@@ -182,6 +186,23 @@
             background: #000 !important;
             color: #ffc107 !important;
         }
+    </style>
+
+    <style>
+        /* Logos dos times — tamanho fixo para não lesionar o layout */
+        .team-logo{
+            width: 18px;
+            height: 18px;
+            object-fit: contain;
+            margin-right: 6px;
+        }
+        .team-line{
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            min-width: 0;
+        }
+        .team-line .mx-1{ margin: 0 6px; }
     </style>
 
     <div class="page-title">
@@ -430,6 +451,56 @@
             watch: {
             },
             methods: {
+                teamSlug(name) {
+                    try {
+                        return (name || '')
+                            .toString()
+                            .toLowerCase()
+                            .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                            .replace(/[^a-z0-9]+/g, '-')
+                            .replace(/(^-+|-+$)/g, '');
+                    } catch (e) { return ''; }
+                },
+                teamLogoUrl(name) {
+                    const s = this.teamSlug(name);
+                    const n = s.replace(/-/g, ''); // normalizado sem hífen
+                    // Fallback automático para seleções nacionais (flags)
+                    const countryMap = {
+                        'brasil':'br','brazil':'br',
+                        'argentina':'ar',
+                        'venezuela':'ve',
+                        'australia':'au','australiaw':'au',
+                        'mexico':'mx','méxico':'mx',
+                        'portugal':'pt',
+                        'espanha':'es','spain':'es',
+                        'franca':'fr','france':'fr',
+                        'italia':'it','italy':'it',
+                        'alemanha':'de','germany':'de',
+                        'inglaterra':'gb-eng','england':'gb-eng',
+                        'estadosunidos':'us','eua':'us','usa':'us','unitedstates':'us',
+                        'japao':'jp','japan':'jp',
+                        'coreiadosul':'kr','southkorea':'kr',
+                        'uruguai':'uy','uruguay':'uy',
+                        'paraguai':'py','paraguay':'py',
+                        'chile':'cl',
+                        'colombia':'co',
+                        'peru':'pe',
+                        'equador':'ec','ecuador':'ec',
+                        'bolivia':'bo','bolívia':'bo',
+                        'venezuela':'ve',
+                        'canada':'ca','canadá':'ca',
+                        'granada':'gd',
+                        'ilhasvirgenseua':'vi','virginislandsus':'vi'
+                    };
+                    if (countryMap[n]) {
+                        const code = countryMap[n];
+                        return 'https://flagcdn.com/24x18/' + code + '.png';
+                    }
+                    return s ? ('img/teams/' + s + '.png') : '';
+                },
+                onLogoError(ev) {
+                    try { if (ev && ev.target) ev.target.style.display = 'none'; } catch (e) {}
+                },
                 onPaisChange() {
                     const qs = new URLSearchParams(window.location.search || '');
                     if (this.findPais && this.findPais !== '*') {
