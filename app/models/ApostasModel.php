@@ -510,9 +510,10 @@ SQL;
         // Validando jogos
         foreach ($apostaJogos as $apostaJogo) {
 
-            if (in_array($apostaJogo->getJogo(), $apostaJogosIds))
+            // Regra padrão do mercado: apenas 1 seleção por jogo no parlay
+            if (in_array($apostaJogo->getJogo(), $apostaJogosIds)) {
                 throw new \Exception("Jogo repetido na aposta, você só pode apostar em uma cotação de cada jogo");
-
+            }
             $apostaJogosIds[] = $apostaJogo->getJogo();
 
             $jogo = $apostaJogo->voJogo();
