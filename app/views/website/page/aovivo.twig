@@ -37,7 +37,13 @@
                                                 <div class="d-flex align-items-center">
                                                     <span class="badge badge-danger mr-2">AO VIVO</span>
                                                     <div>
-                                                        <div><b>${jogo.casa}</b> x <b>${jogo.fora}</b></div>
+                                                        <div class="team-line">
+                                                            <img v-bind:src="teamLogoUrl(jogo.casa)" class="team-logo" v-on:error="onLogoError">
+                                                            <b class="text-truncate">${jogo.casa}</b>
+                                                            <span class="mx-1">x</span>
+                                                            <img v-bind:src="teamLogoUrl(jogo.fora)" class="team-logo" v-on:error="onLogoError">
+                                                            <b class="text-truncate">${jogo.fora}</b>
+                                                        </div>
                                                         <small class="text-muted">${jogo.data.split('-').reverse().join('/')} ${jogo.hora.replace(/:00$/, '')}</small>
                                                     </div>
                                                 </div>
@@ -82,6 +88,22 @@
 
     <script src="node_modules/vue/dist/vue.min.js"></script>
     <script src="node_modules/axios/dist/axios.js"></script>
+
+    <style>
+        .team-logo{
+            width: 18px;
+            height: 18px;
+            object-fit: contain;
+            margin-right: 6px;
+        }
+        .team-line{
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            min-width: 0;
+        }
+        .team-line .mx-1{ margin: 0 6px; }
+    </style>
 
     <script type="text/javascript">
         window.appLive = new Vue({
@@ -147,6 +169,53 @@
                 },
             },
             methods: {
+                teamSlug(name) {
+                    try {
+                        return (name || '')
+                            .toString()
+                            .toLowerCase()
+                            .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                            .replace(/[^a-z0-9]+/g, '-')
+                            .replace(/(^-+|-+$)/g, '');
+                    } catch (e) { return ''; }
+                },
+                teamLogoUrl(name) {
+                    const s = this.teamSlug(name);
+                    const n = s.replace(/-/g, '');
+                    const countryMap = {
+                        'brasil':'br','brazil':'br',
+                        'argentina':'ar',
+                        'venezuela':'ve',
+                        'australia':'au','australiaw':'au',
+                        'mexico':'mx','méxico':'mx',
+                        'portugal':'pt',
+                        'espanha':'es','spain':'es',
+                        'franca':'fr','france':'fr',
+                        'italia':'it','italy':'it',
+                        'alemanha':'de','germany':'de',
+                        'inglaterra':'gb-eng','england':'gb-eng',
+                        'estadosunidos':'us','eua':'us','usa':'us','unitedstates':'us',
+                        'japao':'jp','japan':'jp',
+                        'coreiadosul':'kr','southkorea':'kr',
+                        'uruguai':'uy','uruguay':'uy',
+                        'paraguai':'py','paraguay':'py',
+                        'chile':'cl',
+                        'colombia':'co',
+                        'peru':'pe',
+                        'equador':'ec','ecuador':'ec',
+                        'bolivia':'bo','bolívia':'bo',
+                        'canada':'ca','canadá':'ca',
+                        'granada':'gd',
+                        'ilhasvirgenseua':'vi','virginislandsus':'vi'
+                    };
+                    if (countryMap[n]) {
+                        return 'https://flagcdn.com/24x18/' + countryMap[n] + '.png';
+                    }
+                    return s ? ('img/teams/' + s + '.png') : '';
+                },
+                onLogoError(ev) {
+                    try { if (ev && ev.target) ev.target.style.display = 'none'; } catch (e) {}
+                },
                 countMappedForTempo(jogo, tempo) {
                     try {
                         const odds = (jogo && jogo.cotacoes && jogo.cotacoes[tempo]) || {};
